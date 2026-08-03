@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#F6F5F1;-webkit-font-smoothing:antialiased}
+a{color:#17683F;text-decoration:none;font-weight:600}
+a:hover{color:#0E4A2B;text-decoration:underline}
+::selection{background:#F5A524;color:#14221A}
+@keyframes fbPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,165,36,.5)}50%{box-shadow:0 0 0 7px rgba(245,165,36,0)}}
+@keyframes fbShimmer{0%{background-position:-320px 0}100%{background-position:320px 0}}
+</style>
+</helmet>
+<div style="font-family:'IBM Plex Sans',sans-serif;color:#14221A;min-height:100vh;padding:52px 24px 110px;line-height:1.5">
+<div style="max-width:1140px;margin:0 auto">
+
+<!-- ============ HEADER ============ -->
+<header style="border-bottom:1px solid #E7E8E2;padding-bottom:32px">
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:34px;height:34px;border-radius:9px;background:#17683F;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px -6px rgba(23,104,63,.7)">
+<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#F5A524" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9L5 8z"/><path d="M8.5 8a3.5 3.5 0 0 1 7 0"/></svg>
+</div>
+<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.01em">FoodBundles</span>
+</div>
+<span style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#8A928B">Mobile UI System</span>
+<span style="margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8a5b00;background:#FDF0D7;border:1px solid #f4dca6;padding:5px 12px;border-radius:999px">For review · v0.1</span>
+</div>
+<h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:38px;line-height:1.08;letter-spacing:-.02em;margin:22px 0 0;max-width:20ch">Design system, navigation &amp; screen inventory</h1>
+<p style="font-size:16px;color:#667069;margin:14px 0 0;max-width:66ch;text-wrap:pretty">A B2B procurement tool for restaurants, hotels and their staff to source fresh produce from FoodBundles in Rwanda. The system below is tuned to read <strong style="color:#14221A;font-weight:600">trustworthy and efficient</strong> — restrained color, dense-but-legible type, and one deliberate signature: how order status is visualized. Please approve the tokens and nav shape before I design any screens.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:22px">
+<span style="font-size:12px;font-weight:600;background:#fff;border:1px solid #E7E8E2;padding:6px 12px;border-radius:999px">RWF · thousands-separated</span>
+<span style="font-size:12px;font-weight:600;background:#fff;border:1px solid #E7E8E2;padding:6px 12px;border-radius:999px">3 roles · role-relevant price</span>
+<span style="font-size:12px;font-weight:600;background:#fff;border:1px solid #E7E8E2;padding:6px 12px;border-radius:999px">6-step status flow</span>
+<span style="font-size:12px;font-weight:600;background:#fff;border:1px solid #E7E8E2;padding:6px 12px;border-radius:999px">4 payment methods</span>
+<span style="font-size:12px;font-weight:600;background:#fff;border:1px solid #E7E8E2;padding:6px 12px;border-radius:999px">Vouchers gated by subscription</span>
+</div>
+</header>
+
+<!-- ============ STEP 1 · COLOR ============ -->
+<section style="margin-top:56px">
+<div style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#17683F">Step 1 · Design tokens</div>
+<h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.01em;margin:6px 0 4px">Color</h2>
+<p style="font-size:15px;color:#667069;margin:0 0 22px;max-width:72ch;text-wrap:pretty">Anchored on a deep agricultural <strong style="color:#14221A;font-weight:600">green</strong> — fresh produce, growth and the "land of a thousand hills" — paired with a warm <strong style="color:#14221A;font-weight:600">marigold</strong> lifted from market produce (maize, ripe fruit) that carries CTAs and the "acting now" status. Deliberately not the flagged AI defaults: no cream-and-terracotta serif, no near-black-plus-neon, no broadsheet hairlines. For a procurement tool, restraint <em>is</em> the aesthetic; distinctiveness comes from the type and the status signature, not an exotic hue.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px">
+
+<div style="border:1px solid #E7E8E2;border-radius:12px;overflow:hidden;background:#fff">
+<div style="height:82px;background:#17683F"></div>
+<div style="padding:11px 12px"><div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">Leaf</div><div style="font-size:12px;color:#667069;font-variant-numeric:tabular-nums">#17683F</div><div style="font-size:11px;color:#8A928B;margin-top:3px">primary</div></div>
+</div>
+<div style="border:1px solid #E7E8E2;border-radius:12px;overflow:hidden;background:#fff">
+<div style="height:82px;background:#0E4A2B"></div>
+<div style="padding:11px 12px"><div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">Pine</div><div style="font-size:12px;color:#667069;font-variant-numeric:tabular-nums">#0E4A2B</div><div style="font-size:11px;color:#8A928B;margin-top:3px">primary-dark</div></div>
+</div>
+<div style="border:1px solid #E7E8E2;border-radius:12px;overflow:hidden;background:#fff">
+<div style="height:82px;background:#F5A524"></div>
+<div style="padding:11px 12px"><div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">Marigold</div><div style="font-size:12px;color:#667069;font-variant-numeric:tabular-nums">#F5A524</div><div style="font-size:11px;color:#8A928B;margin-top:3px">accent</div></div>
+</div>
+<div style="border:1px solid #E7E8E2;border-radius:12px;overflow:hidden;background:#fff">
+<div style="height:82px;background:#1E9E57"></div>
+<div style="padding:11px 12px"><div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">Ripe</div><div style="font-size:12px;color:#667069;font-variant-numeric:tabular-nums">#1E9E57</div><div style="font-size:11px;color:#8A928B;margin-top:3px">success</div></div>
+</div>
+<div style="border:1px solid #E7E8E2;border-radius:12px;overflow:hidden;background:#fff">
+<div style="height:82px;background:#D64545"></div>
+<div style="padding:11px 12px"><div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">Chili</div><div style="font-size:12px;color:#667069;font-variant-numeric:tabular-nums">#D64545</div><div style="font-size:11px;color:#8A928B;margin-top:3px">error</div></div>
+</div>
+<div style="border:1px solid #E7E8E2;border-radius:12px;overflow:hidden;background:#fff">
+<div style="height:82px;background:#F6F5F1;border-bottom:1px solid #E7E8E2"></div>
+<div style="padding:11px 12px"><div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">Oat</div><div style="font-size:12px;color:#667069;font-variant-numeric:tabular-nums">#F6F5F1</div><div style="font-size:11px;color:#8A928B;margin-top:3px">background</div></div>
+</div>
+<div style="border:1px solid #E7E8E2;border-radius:12px;overflow:hidden;background:#fff">
+<div style="height:82px;background:#FFFFFF;border-bottom:1px solid #E7E8E2"></div>
+<div style="padding:11px 12px"><div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">Paper</div><div style="font-size:12px;color:#667069;font-variant-numeric:tabular-nums">#FFFFFF</div><div style="font-size:11px;color:#8A928B;margin-top:3px">surface</div></div>
+</div>
+<div style="border:1px solid #E7E8E2;border-radius:12px;overflow:hidden;background:#fff">
+<div style="height:82px;background:#14221A"></div>
+<div style="padding:11px 12px"><div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">Ink</div><div style="font-size:12px;color:#667069;font-variant-numeric:tabular-nums">#14221A</div><div style="font-size:11px;color:#8A928B;margin-top:3px">text</div></div>
+</div>
+</div>
+<p style="font-size:13px;color:#8A928B;margin:14px 0 0">Support neutrals: text-secondary <span style="font-variant-numeric:tabular-nums">#667069</span> · hairline <span style="font-variant-numeric:tabular-nums">#E7E8E2</span> · upcoming/disabled <span style="font-variant-numeric:tabular-nums">#C7CCC6</span>. No new ad-hoc hues per screen — statuses reuse Leaf / Marigold / Ripe / Chili / neutral only.</p>
+</section>
+
+<!-- ============ STEP 1 · TYPE ============ -->
+<section style="margin-top:56px">
+<div style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#17683F">Step 1 · Design tokens</div>
+<h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.01em;margin:6px 0 4px">Typography</h2>
+<p style="font-size:15px;color:#667069;margin:0 0 22px;max-width:72ch;text-wrap:pretty">Two faces. <strong style="color:#14221A;font-weight:600">Space Grotesk</strong> for headings and — critically — every price: its engineered, even-width figures scan cleanly down a column. <strong style="color:#14221A;font-weight:600">IBM Plex Sans</strong> for body and UI: enterprise-grade legibility that signals "tool, not toy." Prices always use tabular figures and thousands separators.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:22px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#8A928B">Display &amp; prices</div>
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:30px;margin-top:8px;letter-spacing:-.01em">Space Grotesk</div>
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:24px;color:#667069;font-variant-numeric:tabular-nums;margin-top:2px">0 1 2 3 4 5 6 7 8 9</div>
+</div>
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:22px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#8A928B">Body &amp; UI</div>
+<div style="font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:30px;margin-top:8px">IBM Plex Sans</div>
+<div style="font-family:'IBM Plex Sans',sans-serif;font-weight:400;font-size:24px;color:#667069;font-variant-numeric:tabular-nums;margin-top:2px">0 1 2 3 4 5 6 7 8 9</div>
+</div>
+</div>
+
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;margin-top:16px;overflow:hidden;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 22px;border-bottom:1px solid #F0F1EC"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:34px;letter-spacing:-.02em">Display</span><span style="font-size:12px;color:#8A928B;font-variant-numeric:tabular-nums;white-space:nowrap">Space Grotesk · 34 / 700</span></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 22px;border-bottom:1px solid #F0F1EC"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.01em">Screen title (H1)</span><span style="font-size:12px;color:#8A928B;font-variant-numeric:tabular-nums;white-space:nowrap">Space Grotesk · 26 / 700</span></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 22px;border-bottom:1px solid #F0F1EC"><span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px">Section heading (H2)</span><span style="font-size:12px;color:#8A928B;font-variant-numeric:tabular-nums;white-space:nowrap">Space Grotesk · 20 / 600</span></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 22px;border-bottom:1px solid #F0F1EC"><span style="font-family:'IBM Plex Sans',sans-serif;font-weight:400;font-size:16px">Body — order confirmed and moving to you</span><span style="font-size:12px;color:#8A928B;font-variant-numeric:tabular-nums;white-space:nowrap">IBM Plex · 16 / 400</span></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 22px;border-bottom:1px solid #F0F1EC"><span style="font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:13px">Label · Delivery address</span><span style="font-size:12px;color:#8A928B;font-variant-numeric:tabular-nums;white-space:nowrap">IBM Plex · 13 / 500</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px"><span style="font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a5b00">IN&nbsp;TRANSIT</span><span style="font-size:12px;color:#8A928B;font-variant-numeric:tabular-nums;white-space:nowrap">IBM Plex · 11 / 600 · caps</span></div>
+</div>
+
+<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:#0E4A2B;border-radius:16px;margin-top:16px;padding:22px 26px">
+<div><div style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#8bd3a8">Price treatment</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:40px;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.01em;margin-top:4px">248,000 <span style="font-size:20px;color:#F5A524;font-weight:600">RWF</span></div></div>
+<p style="font-size:13px;color:#cfe6d8;margin:0;max-width:38ch">Hero prices in Space Grotesk 700, tabular figures, RWF suffix in Marigold. List prices drop to 16&nbsp;/&nbsp;600. A card shows exactly one price — the one for the logged-in role.</p>
+</div>
+</section>
+
+<!-- ============ STEP 1 · LAYOUT ============ -->
+<section style="margin-top:56px">
+<div style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#17683F">Step 1 · Design tokens</div>
+<h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.01em;margin:6px 0 4px">Space, radius &amp; elevation</h2>
+<p style="font-size:15px;color:#667069;margin:0 0 22px;max-width:72ch">A base-4 spacing scale, crisp-but-friendly radii, and a single soft shadow — cards sit on the Oat background like paper, not floating chrome.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-size:12px;font-weight:600;color:#8A928B;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px">Spacing · base-4</div>
+<div style="display:flex;align-items:flex-end;gap:10px">
+<div style="text-align:center"><div style="width:4px;height:4px;background:#17683F;border-radius:2px;margin:0 auto"></div><div style="font-size:11px;color:#8A928B;margin-top:8px;font-variant-numeric:tabular-nums">4</div></div>
+<div style="text-align:center"><div style="width:8px;height:8px;background:#17683F;border-radius:2px;margin:0 auto"></div><div style="font-size:11px;color:#8A928B;margin-top:8px;font-variant-numeric:tabular-nums">8</div></div>
+<div style="text-align:center"><div style="width:12px;height:12px;background:#17683F;border-radius:2px;margin:0 auto"></div><div style="font-size:11px;color:#8A928B;margin-top:8px;font-variant-numeric:tabular-nums">12</div></div>
+<div style="text-align:center"><div style="width:16px;height:16px;background:#17683F;border-radius:3px;margin:0 auto"></div><div style="font-size:11px;color:#8A928B;margin-top:8px;font-variant-numeric:tabular-nums">16</div></div>
+<div style="text-align:center"><div style="width:24px;height:24px;background:#17683F;border-radius:4px;margin:0 auto"></div><div style="font-size:11px;color:#8A928B;margin-top:8px;font-variant-numeric:tabular-nums">24</div></div>
+<div style="text-align:center"><div style="width:32px;height:32px;background:#17683F;border-radius:5px;margin:0 auto"></div><div style="font-size:11px;color:#8A928B;margin-top:8px;font-variant-numeric:tabular-nums">32</div></div>
+</div>
+</div>
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-size:12px;font-weight:600;color:#8A928B;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px">Radius</div>
+<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+<div style="text-align:center"><div style="width:46px;height:46px;background:#EEF0EC;border:1px solid #E7E8E2;border-radius:8px"></div><div style="font-size:11px;color:#8A928B;margin-top:8px">sm · 8</div></div>
+<div style="text-align:center"><div style="width:46px;height:46px;background:#EEF0EC;border:1px solid #E7E8E2;border-radius:12px"></div><div style="font-size:11px;color:#8A928B;margin-top:8px">md · 12</div></div>
+<div style="text-align:center"><div style="width:46px;height:46px;background:#EEF0EC;border:1px solid #E7E8E2;border-radius:16px"></div><div style="font-size:11px;color:#8A928B;margin-top:8px">lg · 16</div></div>
+<div style="text-align:center"><div style="width:46px;height:46px;background:#EEF0EC;border:1px solid #E7E8E2;border-radius:999px"></div><div style="font-size:11px;color:#8A928B;margin-top:8px">pill</div></div>
+</div>
+</div>
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-size:12px;font-weight:600;color:#8A928B;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px">Elevation</div>
+<div style="display:flex;align-items:center;gap:18px">
+<div style="text-align:center"><div style="width:56px;height:44px;background:#fff;border-radius:12px;box-shadow:0 1px 2px rgba(20,34,26,.08)"></div><div style="font-size:11px;color:#8A928B;margin-top:10px">sm</div></div>
+<div style="text-align:center"><div style="width:56px;height:44px;background:#fff;border-radius:12px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -14px rgba(20,34,26,.28)"></div><div style="font-size:11px;color:#8A928B;margin-top:10px">md · cards</div></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ============ STEP 1 · SIGNATURE ============ -->
+<section style="margin-top:56px">
+<div style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#F5A524">Step 1 · Signature element</div>
+<h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.01em;margin:6px 0 4px">The Order Status Rail</h2>
+<p style="font-size:15px;color:#667069;margin:0 0 22px;max-width:74ch;text-wrap:pretty">The one thing the app is recognized by. Every order lives on a connected-dot rail mapping the exact flow — <strong style="color:#14221A;font-weight:600">Pending → Confirmed → Preparing → Ready → In transit → Delivered</strong>. Completed steps fill <strong style="color:#17683F;font-weight:600">Leaf</strong>; the current step pulses <strong style="color:#8a5b00;font-weight:600">Marigold</strong>; upcoming steps stay hollow. It appears three ways, always named consistently: <strong style="color:#14221A;font-weight:600">OrderStatusRail</strong> (detail), <strong style="color:#14221A;font-weight:600">OrderProgressTrack</strong> (list cards), <strong style="color:#14221A;font-weight:600">OrderStatusBadge</strong> (label).</p>
+<div style="display:grid;grid-template-columns:minmax(230px,300px) 1fr;gap:16px;align-items:stretch">
+
+<!-- OrderStatusRail (vertical) -->
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:22px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A928B">OrderStatusRail</span><span style="font-family:'Space Grotesk',sans-serif;font-size:12px;color:#667069;font-variant-numeric:tabular-nums">#FB-24815</span></div>
+<div style="margin-top:14px">
+<!-- done -->
+<div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#17683F;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div style="width:2px;flex:1;background:#17683F;min-height:20px"></div></div><div style="padding-bottom:16px"><div style="font-weight:600;font-size:14px">Pending</div><div style="font-size:12px;color:#8A928B;font-variant-numeric:tabular-nums">08:42</div></div></div>
+<div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#17683F;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div style="width:2px;flex:1;background:#17683F;min-height:20px"></div></div><div style="padding-bottom:16px"><div style="font-weight:600;font-size:14px">Confirmed</div><div style="font-size:12px;color:#8A928B;font-variant-numeric:tabular-nums">08:55</div></div></div>
+<div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#17683F;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div style="width:2px;flex:1;background:#17683F;min-height:20px"></div></div><div style="padding-bottom:16px"><div style="font-weight:600;font-size:14px">Preparing</div><div style="font-size:12px;color:#8A928B;font-variant-numeric:tabular-nums">09:20</div></div></div>
+<div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#17683F;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div><div style="width:2px;flex:1;background:linear-gradient(#17683F,#C7CCC6);min-height:20px"></div></div><div style="padding-bottom:16px"><div style="font-weight:600;font-size:14px">Ready</div><div style="font-size:12px;color:#8A928B;font-variant-numeric:tabular-nums">09:48</div></div></div>
+<!-- current -->
+<div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#F5A524;border:3px solid #fff;animation:fbPulse 2s ease-in-out infinite"></div><div style="width:2px;flex:1;background:#C7CCC6;min-height:20px"></div></div><div style="padding-bottom:16px"><div style="font-weight:600;font-size:14px;color:#8a5b00">In transit</div><div style="font-size:12px;color:#8a5b00">Arriving ~10:30</div></div></div>
+<!-- upcoming -->
+<div style="display:flex;gap:12px"><div style="display:flex;flex-direction:column;align-items:center"><div style="width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #C7CCC6"></div></div><div><div style="font-weight:600;font-size:14px;color:#C7CCC6">Delivered</div><div style="font-size:12px;color:#C7CCC6">—</div></div></div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<!-- OrderProgressTrack compact -->
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A928B;margin-bottom:14px">OrderProgressTrack · list card</div>
+<div style="display:flex;align-items:center;gap:6px">
+<div style="height:6px;flex:1;border-radius:3px;background:#17683F"></div>
+<div style="height:6px;flex:1;border-radius:3px;background:#17683F"></div>
+<div style="height:6px;flex:1;border-radius:3px;background:#17683F"></div>
+<div style="height:6px;flex:1;border-radius:3px;background:#17683F"></div>
+<div style="height:6px;flex:1;border-radius:3px;background:#F5A524"></div>
+<div style="height:6px;flex:1;border-radius:3px;background:#E7E8E2"></div>
+</div>
+<div style="display:flex;justify-content:space-between;margin-top:10px"><span style="font-size:12px;color:#667069">Step 5 of 6</span><span style="font-size:12px;font-weight:600;color:#8a5b00">In transit</span></div>
+</div>
+<!-- OrderStatusBadge set -->
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2);flex:1">
+<div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A928B;margin-bottom:14px">OrderStatusBadge · all states</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:#EEF0EC;color:#667069">Pending</span>
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:#E4F1EA;color:#0E4A2B">Confirmed</span>
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:#E4F1EA;color:#0E4A2B">Preparing</span>
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:#E4F1EA;color:#0E4A2B">Ready</span>
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:#FDF0D7;color:#8a5b00">In transit</span>
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:#E1F3E8;color:#14663a">Delivered</span>
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:#FBE7E7;color:#a02d2d">Cancelled</span>
+<span style="font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:#EEF0EC;color:#a02d2d;border:1px dashed #e0b3b3">Refunded</span>
+</div>
+<p style="font-size:12px;color:#8A928B;margin:16px 0 0">Cancelled &amp; refunded are terminal side-states — shown as badges, never as rail steps.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ============ STEP 1 · STATES ============ -->
+<section style="margin-top:56px">
+<div style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#17683F">Step 1 · System pattern</div>
+<h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.01em;margin:6px 0 4px">Every screen ships three states</h2>
+<p style="font-size:15px;color:#667069;margin:0 0 22px;max-width:72ch">Loading, empty and error are designed once as reusable treatments, not per screen. Skeletons mirror the final content shape; empty and error states speak in the interface's voice.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A928B;margin-bottom:14px">Loading · skeleton</div>
+<div style="display:flex;gap:12px;align-items:center">
+<div style="width:56px;height:56px;border-radius:10px;background:linear-gradient(90deg,#EEF0EC 25%,#F6F7F3 37%,#EEF0EC 63%);background-size:320px 100%;animation:fbShimmer 1.4s linear infinite"></div>
+<div style="flex:1">
+<div style="height:12px;width:70%;border-radius:6px;background:linear-gradient(90deg,#EEF0EC 25%,#F6F7F3 37%,#EEF0EC 63%);background-size:320px 100%;animation:fbShimmer 1.4s linear infinite"></div>
+<div style="height:12px;width:42%;border-radius:6px;margin-top:9px;background:linear-gradient(90deg,#EEF0EC 25%,#F6F7F3 37%,#EEF0EC 63%);background-size:320px 100%;animation:fbShimmer 1.4s linear infinite"></div>
+<div style="height:18px;width:34%;border-radius:6px;margin-top:12px;background:linear-gradient(90deg,#E4F1EA 25%,#eef7f1 37%,#E4F1EA 63%);background-size:320px 100%;animation:fbShimmer 1.4s linear infinite"></div>
+</div>
+</div>
+</div>
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2);text-align:center">
+<div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A928B;margin-bottom:14px;text-align:left">Empty · specific</div>
+<div style="width:44px;height:44px;border-radius:12px;background:#E4F1EA;display:flex;align-items:center;justify-content:center;margin:6px auto 0"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#17683F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9L5 8z"/><path d="M8.5 8a3.5 3.5 0 0 1 7 0"/></svg></div>
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;margin-top:12px">No orders this week</div>
+<div style="font-size:13px;color:#8A928B;margin-top:4px">Your last delivery was Tue. Reorder in two taps →</div>
+</div>
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2);text-align:center">
+<div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8A928B;margin-bottom:14px;text-align:left">Error · in-voice</div>
+<div style="width:44px;height:44px;border-radius:12px;background:#FBE7E7;display:flex;align-items:center;justify-content:center;margin:6px auto 0"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#D64545" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;margin-top:12px">Couldn't refresh prices</div>
+<div style="font-size:13px;color:#8A928B;margin-top:4px">We kept your last-seen prices. Tap to retry.</div>
+</div>
+</div>
+</section>
+
+<!-- ============ STEP 2 · NAV ============ -->
+<section style="margin-top:64px;border-top:1px solid #E7E8E2;padding-top:40px">
+<div style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#17683F">Step 2 · Navigation architecture</div>
+<h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.01em;margin:6px 0 4px">Five tabs, five stacks, full-focus flows</h2>
+<p style="font-size:15px;color:#667069;margin:0 0 22px;max-width:72ch">A persistent 5-item bottom tab bar. Each tab owns its own stack; deep-focus flows (checkout, verification, auth) take over the full screen and hide the bar.</p>
+
+<!-- tab bar mock -->
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:18px;padding:12px 8px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2);max-width:440px">
+<div style="display:flex;justify-content:space-around;align-items:flex-end">
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:1"><div style="width:40px;height:32px;border-radius:10px;background:#E4F1EA;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#17683F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9L5 8z"/><path d="M8.5 8a3.5 3.5 0 0 1 7 0"/></svg></div><span style="font-size:11px;font-weight:600;color:#17683F">Shop</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:1"><div style="width:40px;height:32px;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#9AA39C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-2.2-1.4L13.5 21l-1.5-1.4L10.5 21l-2.3-1.4L6 21V3z"/><path d="M9 8h6M9 12h6M9 16h3.5"/></svg></div><span style="font-size:11px;font-weight:500;color:#9AA39C">Orders</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:1"><div style="width:40px;height:32px;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#9AA39C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8z"/><path d="M15 11h5v2h-5a1 1 0 0 1 0-2z"/></svg></div><span style="font-size:11px;font-weight:500;color:#9AA39C">Wallet</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:1"><div style="width:40px;height:32px;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#9AA39C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v1.5a1.8 1.8 0 0 0 0 3V15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1.5a1.8 1.8 0 0 0 0-3V9z"/><path d="M13 8.5v7" stroke-dasharray="2 2"/></svg></div><span style="font-size:11px;font-weight:500;color:#9AA39C">Vouchers</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:1"><div style="width:40px;height:32px;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#9AA39C" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/></svg></div><span style="font-size:11px;font-weight:500;color:#9AA39C">More</span></div>
+</div>
+</div>
+
+<!-- stack map -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:22px">
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#17683F">Shop</div>
+<div style="font-size:13px;color:#667069;line-height:1.9;margin-top:8px">Home / browse<br>→ Category · Search<br>→ Product detail<br>→ Cart<br>→ <span style="color:#8a5b00;font-weight:600">Checkout ⤢</span><br>→ <span style="color:#8a5b00;font-weight:600">Confirmation ⤢</span></div>
+</div>
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#17683F">Orders</div>
+<div style="font-size:13px;color:#667069;line-height:1.9;margin-top:8px">Order list<br>→ Order detail<br>&nbsp;&nbsp;&nbsp;(tracking rail)<br>→ Reorder</div>
+</div>
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#17683F">Wallet</div>
+<div style="font-size:13px;color:#667069;line-height:1.9;margin-top:8px">Balance / overview<br>→ <span style="color:#8a5b00;font-weight:600">Top-up ⤢</span><br>→ Transactions</div>
+</div>
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#17683F">Vouchers</div>
+<div style="font-size:13px;color:#667069;line-height:1.9;margin-top:8px">Locked / upgrade<br>→ Loan application<br>→ Active vouchers<br>→ <span style="color:#8a5b00;font-weight:600">Voucher OTP ⤢</span></div>
+</div>
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:14px;padding:18px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2)">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#17683F">More</div>
+<div style="font-size:13px;color:#667069;line-height:1.9;margin-top:8px">Subscription<br>Affiliators<br>Settings · Help<br>Notifications</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px">
+<div style="background:#FDF9EF;border:1px solid #f4dca6;border-radius:14px;padding:18px">
+<div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#8a5b00;margin-bottom:8px">⤢ Full-focus · no tab bar</div>
+<div style="font-size:13px;color:#5a4a20;line-height:1.7">Splash · Login · Signup · Forgot password · Checkout (address → payment) · OTP / 2FA verification · Order confirmation · Wallet top-up payment · Voucher OTP step. Modals (filters, add staff) present as bottom sheets over the current stack.</div>
+</div>
+<div style="background:#F1F6F3;border:1px solid #cfe6d8;border-radius:14px;padding:18px">
+<div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#17683F;margin-bottom:8px">Role context</div>
+<div style="font-size:13px;color:#3a5647;line-height:1.7"><strong>Restaurant · Hotel · Affiliator</strong> each see one role-relevant price per product. Affiliators act under a restaurant — a persistent "Ordering as [Restaurant]" banner sits above the tab bar in their session. Data is revalidated on focus so prices are never stale.</div>
+</div>
+</div>
+</section>
+
+<!-- ============ STEP 3 · INVENTORY ============ -->
+<section style="margin-top:64px;border-top:1px solid #E7E8E2;padding-top:40px">
+<div style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#17683F">Step 3 · Screen inventory</div>
+<h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.01em;margin:6px 0 4px">Every screen, by flow &amp; priority</h2>
+<p style="font-size:15px;color:#667069;margin:0 0 22px;max-width:72ch">Listed in your priority order. Each screen below is delivered with its loading, empty and error states. Tell me which flow to design first — I'd suggest <strong style="color:#14221A;font-weight:600">Auth</strong> or <strong style="color:#14221A;font-weight:600">Shop</strong>.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:16px">
+<sc-for list="{{ flows }}" as="flow" hint-placeholder-count="10">
+<div style="background:#fff;border:1px solid #E7E8E2;border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(20,34,26,.04),0 12px 28px -18px rgba(20,34,26,.2);display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:#fff;background:#17683F;min-width:26px;height:26px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums">{{ flow.n }}</span>
+<span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px">{{ flow.name }}</span>
+</div>
+<ul style="list-style:none;padding:0;margin:14px 0 0">
+<sc-for list="{{ flow.screens }}" as="screen" hint-placeholder-count="4">
+<li style="display:flex;align-items:flex-start;gap:9px;font-size:13px;color:#3a4a41;padding:4px 0"><span style="width:5px;height:5px;border-radius:50%;background:#F5A524;margin-top:7px;flex:none"></span><span>{{ screen }}</span></li>
+</sc-for>
+</ul>
+<sc-if value="{{ flow.note }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:auto;padding-top:14px;font-size:12px;color:#8A928B;border-top:1px solid #F0F1EC">{{ flow.note }}</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer style="margin-top:56px;background:#0E4A2B;border-radius:18px;padding:30px 32px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+<div>
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#fff">Awaiting your go-ahead</div>
+<p style="font-size:14px;color:#cfe6d8;margin:8px 0 0;max-width:62ch">Approve (or redline) the tokens and nav shape and I'll lock them in. Then point me at one flow to design first — Auth or Shop — and I'll build all its screens with loading, empty and error states.</p>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<span style="font-size:12px;font-weight:600;color:#0E4A2B;background:#F5A524;padding:9px 16px;border-radius:999px">1 · Tokens</span>
+<span style="font-size:12px;font-weight:600;color:#fff;background:rgba(255,255,255,.12);padding:9px 16px;border-radius:999px">2 · Nav</span>
+<span style="font-size:12px;font-weight:600;color:#fff;background:rgba(255,255,255,.12);padding:9px 16px;border-radius:999px">3 · Inventory</span>
+</div>
+</footer>
+
+</div>
+</div>
+<template id="__bundler_thumbnail" data-bg-color="#0E4A2B">
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+<rect width="1200" height="800" fill="#0E4A2B"/>
+<rect x="470" y="250" width="260" height="260" rx="58" fill="#17683F"/>
+<path d="M520 360h160l-14 128a11 11 0 0 1-11 10h-110a11 11 0 0 1-11-10z" fill="none" stroke="#F5A524" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M560 360a40 40 0 0 1 80 0" fill="none" stroke="#F5A524" stroke-width="20" stroke-linecap="round"/>
+</svg>
+</template>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      flows: [
+        { n: '01', name: 'Auth', note: 'Full-focus — no tab bar', screens: ['Splash', 'Login', 'Signup', 'Forgot password'] },
+        { n: '02', name: 'Shop', note: 'Role-relevant price on every product', screens: ['Home / browse', 'Category filter', 'Search', 'Product detail'] },
+        { n: '03', name: 'Cart & Checkout', note: 'Payment · OTP · Confirmation are full-focus', screens: ['Cart', 'Delivery address', 'Payment method selection', 'OTP / 2FA verification', 'Order confirmation'] },
+        { n: '04', name: 'Orders', note: 'Home of OrderStatusRail + OrderProgressTrack', screens: ['Order list', 'Order detail / tracking timeline', 'Reorder'] },
+        { n: '05', name: 'Wallet', note: 'CASH = prepaid wallet balance', screens: ['Balance / overview', 'Top-up flow', 'Transaction history'] },
+        { n: '06', name: 'Subscription', note: 'Active plan gates Vouchers', screens: ['Plan comparison', 'Current plan', 'Upgrade / downgrade'] },
+        { n: '07', name: 'Vouchers', note: 'No plan → upgrade prompt, never empty state', screens: ['Locked / upgrade-prompt state', 'Loan application form', 'Active vouchers list', 'Voucher-based checkout step'] },
+        { n: '08', name: 'Affiliators', note: 'Manager creates staff sub-accounts', screens: ['Staff list', 'Add / edit staff'] },
+        { n: '09', name: 'Settings / Profile / Help', note: '2FA setup powers VOUCHER checkout', screens: ['Account info', 'Authenticator / 2FA setup', 'Help center'] },
+        { n: '10', name: 'Notifications', note: 'Live order-status updates feed', screens: ['Notification list', 'In-app order-updates feed'] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
