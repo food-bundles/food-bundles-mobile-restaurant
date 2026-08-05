@@ -12,7 +12,7 @@ Repo state: branch `feat/mobile-ui`, base `main`.
 | Phase | Scope | State | Commit |
 |---|---|---|---|
 | 1 | Foundation — scaffold, theme, lib, i18n, nav shell | ✅ | 30f29bf |
-| 2 | Primitives + layout + icons | ⬜ | — |
+| 2 | Primitives + layout + icons | ✅ | 7eb386f |
 | 3 | Mock data, stores, domain components | ⬜ | — |
 | 4 | Public / guest flow (7 screens) | ⬜ | — |
 | 5 | Auth flow (4 screens) | ⬜ | — |
@@ -57,6 +57,23 @@ States covered: n/a — no data screens yet
 Decisions taken autonomously: see #1 and #2 below
 Deviations from the prototype: none
 
+### Phase 2 — Primitives, layout, icons  ✅  2026-08-05
+Commit: 7eb386f — feat(phase-2): primitives, layout components, icon set
+Built: src/components/primitives (Button, Card, Input, Badge, Skeleton, EmptyState,
+ErrorState); src/components/layout (ScreenScroll, SectionHeader, StickyFooter, SwipeRow);
+9 SVG icons in src/components/icons matching the prototype's exact paths (chevron-left,
+person, basket, check, plus, minus, orders, wallet, voucher, more), all 1.9 stroke/round
+caps; replaced the tab bar's Phase-1 letter-glyph placeholders with the real Orders/
+Wallet/Vouchers/More icon paths pulled from the design-system prototype's tab bar mock.
+Gates: tsc ✅ (fixed one strict-mode style-array type error in Input.tsx) · eslint ✅ ·
+line-limit ✅ (max 95 lines) · expo boots ✅ (`/status` → `packager-status:running`)
+States covered: n/a — Skeleton/EmptyState/ErrorState built as primitives, wired into real
+screens starting Phase 4+
+Decisions taken autonomously: see #3 below; also resolves Decision #1 from Phase 1 (tab
+bar now uses real icons, not glyphs)
+Deviations from the prototype: Skeleton uses an opacity pulse instead of a horizontal
+gradient sweep — see #3
+
 ## Decisions taken autonomously
 
 Anything the design did not settle, that I decided rather than blocking on. Each needs a
@@ -65,8 +82,9 @@ one-line rationale so it can be reversed cheaply.
 | # | Question | Decision | Rationale | Review |
 |---|---|---|---|---|
 | 0 | Premium subscription price — 50,000 (landing) vs 100,000 (in-app Plans) | **100,000 RWF/mo, 28,000 RWF/wk**; landing copy corrected to match | Confirmed by the product owner before the build started | settled |
-| 1 | Tab bar needs icons before Phase 2 builds the real SVG icon set | Letter-glyph placeholders (S/O/W/V/M) in tokenised colour/type, no emoji, no icon font | Component-library skill assigns `src/components/icons` to Phase 2; blocking Phase 1 on the full icon set would stall the nav shell for no reason | reversible in Phase 2 |
+| 1 | Tab bar needs icons before Phase 2 builds the real SVG icon set | Letter-glyph placeholders (S/O/W/V/M) in tokenised colour/type, no emoji, no icon font | Component-library skill assigns `src/components/icons` to Phase 2; blocking Phase 1 on the full icon set would stall the nav shell for no reason | **resolved in Phase 2** — replaced with real icon paths from the design-system prototype |
 | 2 | `npm ls` showed an invalid `ajv@6` vs `ajv@8` resolution (eslint wants 6, expo-router's `schema-utils`→`ajv-keywords` wants 8) that crashed `expo start` on `ajv/dist/compile/codegen` | Scoped `package.json` `overrides` to force `ajv@8` only inside `schema-utils`'s `ajv-keywords`, leaving eslint's own `ajv@6` untouched | A blanket `ajv` override (attempt 1) broke eslint itself (`ajv@6`-only API); scoping the override to the one subtree that needed it fixed `expo start` without regressing the lint gate | settled, verified both gates green after |
+| 3 | `Skeleton`'s spec calls for a horizontal gradient shimmer sweep, but the locked stack has no gradient library (`react-native-linear-gradient` is not in CLAUDE.md's stack table) | Built the loading cue as a looping opacity pulse (0.6↔1.0, 1.4s) on a flat `neutral`-tinted block instead | Conservative option: reuses existing tokens/deps rather than adding a new package for one effect; preserves the functional intent (a continuous, visible "this is loading" signal) without violating the "no new dependency" spirit of the locked stack | revisit if a gradient primitive is added for another reason later |
 
 ---
 
@@ -89,5 +107,3 @@ Work deliberately left out of scope, with the reason.
   Not one of the four stop conditions — no data or work is at risk, it is fully recoverable
   by running `git remote add origin <url> && git push -u origin feat/mobile-ui` once a
   remote exists.
-- **Tab bar icons are letter-glyph placeholders**, not the real SVG set — see Decision #1.
-  Phase 2 replaces them with proper `react-native-svg` icons from `src/components/icons`.
