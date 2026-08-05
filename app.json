@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "FoodBundles Restaurant",
+    "slug": "food-bundles-mobile-restaurant",
+    "scheme": "foodbundles",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "rw.foodbundles.restaurant"
+    },
+    "android": {
+      "package": "rw.foodbundles.restaurant"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
