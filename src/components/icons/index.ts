@@ -1,2 +1,11 @@
+export type { IconProps } from './types';
 export { PersonIcon } from './PersonIcon';
-export type { PersonIconProps } from './PersonIcon';
+export { ChevronLeftIcon } from './ChevronLeftIcon';
+export { BasketIcon } from './BasketIcon';
+export { CheckIcon } from './CheckIcon';
+export { PlusIcon } from './PlusIcon';
+export { MinusIcon } from './MinusIcon';
+export { OrdersIcon } from './OrdersIcon';
+export { WalletIcon } from './WalletIcon';
+export { VoucherIcon } from './VoucherIcon';
+export { MoreIcon } from './MoreIcon';

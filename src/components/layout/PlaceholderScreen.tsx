@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, hit, space, text } from '@/theme';
+import { ChevronLeftIcon } from '@/components/icons';
 
 export interface PlaceholderScreenProps {
   title: string;
@@ -18,7 +19,7 @@ export function PlaceholderScreen({ title, canGoBack = true, children }: Placeho
           accessibilityLabel="Go back"
           style={styles.backButton}
         >
-          <Text style={styles.backLabel}>‹</Text>
+          <ChevronLeftIcon />
         </Pressable>
       ) : null}
       <Text style={styles.title} accessibilityRole="header">
@@ -32,6 +33,5 @@ export function PlaceholderScreen({ title, canGoBack = true, children }: Placeho
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat, padding: space.lg, gap: space.md },
   backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  backLabel: { ...text.h1, color: color.ink },
   title: { ...text.h1, color: color.ink },
 });

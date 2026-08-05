@@ -1,18 +1,25 @@
 import { Tabs } from 'expo-router';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color, hit, radius, space, text } from '@/theme';
 import { useT } from '@/i18n';
+import { BasketIcon, OrdersIcon, WalletIcon, VoucherIcon, MoreIcon, type IconProps } from '@/components/icons';
 
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
   return <Text style={[styles.label, focused && styles.labelActive]}>{label}</Text>;
 }
 
-function TabIconPill({ glyph, focused }: { glyph: string; focused: boolean }) {
+function TabIconPill({
+  Icon,
+  focused,
+}: {
+  Icon: (props: IconProps) => React.JSX.Element;
+  focused: boolean;
+}) {
   return (
-    <Text style={[styles.pill, focused && styles.pillActive, focused && styles.glyphActive]}>
-      {glyph}
-    </Text>
+    <View style={[styles.pill, focused && styles.pillActive]}>
+      <Icon size={20} color={focused ? color.leaf : color.muted} />
+    </View>
   );
 }
 
@@ -34,7 +41,7 @@ export default function TabsLayout() {
         options={{
           title: t('tab_shop'),
           tabBarLabel: ({ focused }) => <TabLabel label={t('tab_shop')} focused={focused} />,
-          tabBarIcon: ({ focused }) => <TabIconPill glyph="S" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIconPill Icon={BasketIcon} focused={focused} />,
         }}
       />
       <Tabs.Screen
@@ -42,7 +49,7 @@ export default function TabsLayout() {
         options={{
           title: t('tab_orders'),
           tabBarLabel: ({ focused }) => <TabLabel label={t('tab_orders')} focused={focused} />,
-          tabBarIcon: ({ focused }) => <TabIconPill glyph="O" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIconPill Icon={OrdersIcon} focused={focused} />,
         }}
       />
       <Tabs.Screen
@@ -50,7 +57,7 @@ export default function TabsLayout() {
         options={{
           title: t('tab_wallet'),
           tabBarLabel: ({ focused }) => <TabLabel label={t('tab_wallet')} focused={focused} />,
-          tabBarIcon: ({ focused }) => <TabIconPill glyph="W" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIconPill Icon={WalletIcon} focused={focused} />,
         }}
       />
       <Tabs.Screen
@@ -58,7 +65,7 @@ export default function TabsLayout() {
         options={{
           title: t('tab_vouchers'),
           tabBarLabel: ({ focused }) => <TabLabel label={t('tab_vouchers')} focused={focused} />,
-          tabBarIcon: ({ focused }) => <TabIconPill glyph="V" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIconPill Icon={VoucherIcon} focused={focused} />,
         }}
       />
       <Tabs.Screen
@@ -66,7 +73,7 @@ export default function TabsLayout() {
         options={{
           title: t('tab_more'),
           tabBarLabel: ({ focused }) => <TabLabel label={t('tab_more')} focused={focused} />,
-          tabBarIcon: ({ focused }) => <TabIconPill glyph="M" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIconPill Icon={MoreIcon} focused={focused} />,
         }}
       />
     </Tabs>
@@ -77,13 +84,11 @@ const styles = StyleSheet.create({
   label: { ...text.micro, color: color.muted },
   labelActive: { color: color.leaf },
   pill: {
-    ...text.label,
-    color: color.muted,
-    width: 32,
-    height: 24,
-    textAlign: 'center',
+    width: 40,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: radius.sm,
   },
   pillActive: { backgroundColor: color.tintLeaf },
-  glyphActive: { color: color.leaf },
 });
