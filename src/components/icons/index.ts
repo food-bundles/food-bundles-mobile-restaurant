@@ -10,3 +10,5 @@ export { WalletIcon } from './WalletIcon';
 export { VoucherIcon } from './VoucherIcon';
 export { MoreIcon } from './MoreIcon';
 export { LogoMark } from './LogoMark';
+export { BellIcon } from './BellIcon';
+export { SearchIcon } from './SearchIcon';
