@@ -18,7 +18,7 @@ Repo state: branch `feat/mobile-ui`, base `main`.
 | 5 | Auth flow (4 screens) | ✅ | 729e7b6 |
 | 6 | Shop tab (5 screens) | ✅ | a763b86 |
 | 7 | Checkout flow (5 screens) | ✅ | 76e9d23 |
-| 8 | Orders tab (6 screens) | ⬜ | — |
+| 8 | Orders tab (6 screens) | ✅ | cb3e7a7 |
 | 9 | Wallet tab (3 screens) | ⬜ | — |
 | 10 | Subscription + vouchers (7 screens) | ⬜ | — |
 | 11 | More hub — affiliators, settings, notifications, support (13 screens) | ⬜ | — |
@@ -174,6 +174,28 @@ States covered: n/a — checkout has no data-loading states in the prototype spe
 values come from the active mock order); OTP's own processing/disabled state is present
 Decisions taken autonomously: none new this phase
 Deviations from the prototype: none structural
+
+### Phase 8 — Orders tab  ✅  2026-08-06
+Commit: cb3e7a7 — feat(phase-8): orders tab screens; split i18n files by domain
+Built: Orders List (demo-state toggle live/loading/empty/error wired to `uiStore`,
+active-order card, filter chips, pull-to-refresh, `OrderCard` using `OrderProgressTrack`
++ `OrderStatusBadge`, shimmer skeleton rows for loading, `EmptyState`/`ErrorState` for
+the other two); Order Detail (`OrderStatusRail`, meta card, items, EBM/payment-history
+action row, reorder CTA, contact support); Reorder (photo rows, out-of-stock line
+detection against the live catalogue, "Add N items to cart" reflecting only in-stock
+lines). Promoted `OrderItemsCard` from a checkout-local `_components` folder to shared
+`src/components/order` since Order Detail needed the same card checkout already built.
+Split `src/i18n/{en,rw,fr}.ts` into per-domain folders (`common`, `landing`, `guest`,
+`auth`, `shop`, `checkout`, `orders`, each with a merging `index.ts`) — the flat files
+had grown past 200 lines from 8 phases of accumulated keys; this also gives every future
+phase its own key file instead of continuing to grow shared monoliths.
+Gates: tsc ✅ · eslint ✅ · line-limit ✅ (was over 200 in all three locale files before
+the split; 193 files now, all ≤200) · expo boots ✅
+States covered: Orders List demonstrates all three (loading/empty/error) via the visible
+demo-state toggle, matching the prototype's own dev-only state switcher
+Decisions taken autonomously: none new this phase — the i18n split is a structural fix
+required by the line-limit gate, not a design decision
+Deviations from the prototype: none
 
 ## Decisions taken autonomously
 
