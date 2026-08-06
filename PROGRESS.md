@@ -14,7 +14,7 @@ Repo state: branch `feat/mobile-ui`, base `main`.
 | 1 | Foundation — scaffold, theme, lib, i18n, nav shell | ✅ | 30f29bf |
 | 2 | Primitives + layout + icons | ✅ | 7eb386f |
 | 3 | Mock data, stores, domain components | ✅ | a0d0b00 |
-| 4 | Public / guest flow (7 screens) | ⬜ | — |
+| 4 | Public / guest flow (7 screens) | ✅ | 549b72f |
 | 5 | Auth flow (4 screens) | ⬜ | — |
 | 6 | Shop tab (5 screens) | ⬜ | — |
 | 7 | Checkout flow (5 screens) | ⬜ | — |
@@ -91,6 +91,28 @@ error; wired into real screens starting Phase 6/8/9
 Decisions taken autonomously: see #4 and #5 below
 Deviations from the prototype: none structural — see #5 for a numeric reconciliation note
 
+### Phase 4 — Public and guest flow  ✅  2026-08-06
+Commit: 549b72f — feat(phase-4): public and guest flow screens
+Built: Landing (header, hero with corrected 100,000 RWF Premium card sourced from
+`plans` mock, auto-scrolling marquee of 12 restaurants, connect-to-farm stats that
+animate in on layout, support channel list, auto-advancing farm carousel, farmer
+recruitment band, footer — all as `_components/` sections per the 120-line route rule);
+Guest Shop (banner, category chips, two-per-row grid, sticky footer); Guest Cart
+(SwipeRow rows, totals card, non-blocking convert prompt, empty state); Guest Delivery
+(manual-entry fields only, delivery-window picker); Guest Payment (Mobile Money + Card
+only, processing state, wallet/voucher note); Guest Confirmation (spring-and-draw check
+animation, dark total card, forward-only exit, cart cleared); Farmer Join (Pine intro,
+form, submitted state). Added ~90 new i18n keys (landing/guest/farmer/footer chrome)
+across all three locales.
+Gates: tsc ✅ (fixed an Image/View `inset` shorthand type error and a readonly-tuple
+`danger` property error) · eslint ✅ · line-limit ✅ (max 145 files, all ≤200) · expo
+boots ✅
+States covered: Guest Cart empty state wired to `EmptyState`; guest flow has no
+loading/error states in the prototype spec, so none were added
+Decisions taken autonomously: see #6 below
+Deviations from the prototype: none structural — see #6 for the confirmation-check
+animation note
+
 ## Decisions taken autonomously
 
 Anything the design did not settle, that I decided rather than blocking on. Each needs a
@@ -104,6 +126,7 @@ one-line rationale so it can be reversed cheaply.
 | 3 | `Skeleton`'s spec calls for a horizontal gradient shimmer sweep, but the locked stack has no gradient library (`react-native-linear-gradient` is not in CLAUDE.md's stack table) | Built the loading cue as a looping opacity pulse (0.6↔1.0, 1.4s) on a flat `neutral`-tinted block instead | Conservative option: reuses existing tokens/deps rather than adding a new package for one effect; preserves the functional intent (a continuous, visible "this is loading" signal) without violating the "no new dependency" spirit of the locked stack | revisit if a gradient primitive is added for another reason later |
 | 4 | Product images need a source, but no image assets exist in the repo and the app must run fully offline | Used a single embedded 1×1 transparent PNG as a `data:` URI (`src/mocks/placeholderImage.ts`) for every product's `image` field, instead of a remote placeholder-service URL | A `https://placehold.co/...` URL is a real network dependency, contradicting "reviewers should run the app offline" in the mock-data skill; a local data URI has zero network calls and needs no binary asset files to be added to the repo | revisit once real product photography is supplied |
 | 5 | CLAUDE.md/mock-data skill only gives exact line items for FB-24815 (which must reconcile to 62,200); the other four orders (FB-24790/24762/24801/24755) only specify a fixed total, no line items | For FB-24801 the catalog price (Fresh Milk 6,500 × 3 = 19,500) already reconciles cleanly with the given total via the existing delivery fee, so it was kept as-is; for FB-24790/24762/24755 the catalog per-unit price did not reconcile against the specified fixed total under any plausible quantity, so a single line item's `each` price was set to make the math exact instead | The fixed order totals in CLAUDE.md are explicit, named values ("Recurring mock values ... must match across every screen"); silently letting subtotal+fee ≠ total would be a worse defect than a line item whose per-unit price doesn't match the product catalog, since order totals are cross-referenced on more screens (list, detail, EBM) than any single line price | revisit if the design source ever supplies real line items for these four orders |
+| 6 | The motion skill specifies the confirmation checkmark as a `strokeDashoffset` path-draw plus a spring-popping disc; `react-native-svg`'s `Path` doesn't support this out of the box | Wrapped `Path` in `Animated.createAnimatedComponent` and drove `strokeDashoffset` via Reanimated `useAnimatedProps`, timed after the disc's spring pop, matching the prototype's sequencing (disc pops first, check draws in ~450ms after) | This is one of only two sanctioned `spring` moments in the whole app (per the motion skill) so it was worth the extra plumbing rather than substituting a plain fade/scale-in, which was the fallback considered | verify the exact dash length visually once the app runs on a device/simulator |
 
 ---
 
