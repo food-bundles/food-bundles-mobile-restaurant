@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, hit, radius, space, text } from '@/theme';
-import { PersonIcon } from '@/components/icons';
+import { PersonIcon, LogoMark } from '@/components/icons';
 import { useT } from '@/i18n';
 
 export function LandingHeader() {
@@ -9,6 +9,7 @@ export function LandingHeader() {
 
   return (
     <View style={styles.container}>
+      <LogoMark size={40} />
       <Text style={styles.brand}>FoodBundles</Text>
       <Pressable
         onPress={() => router.push('/(public)/guest/shop')}
