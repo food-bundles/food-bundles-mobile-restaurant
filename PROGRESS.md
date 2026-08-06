@@ -13,7 +13,7 @@ Repo state: branch `feat/mobile-ui`, base `main`.
 |---|---|---|---|
 | 1 | Foundation — scaffold, theme, lib, i18n, nav shell | ✅ | 30f29bf |
 | 2 | Primitives + layout + icons | ✅ | 7eb386f |
-| 3 | Mock data, stores, domain components | ⬜ | — |
+| 3 | Mock data, stores, domain components | ✅ | a0d0b00 |
 | 4 | Public / guest flow (7 screens) | ⬜ | — |
 | 5 | Auth flow (4 screens) | ⬜ | — |
 | 6 | Shop tab (5 screens) | ⬜ | — |
@@ -74,6 +74,23 @@ bar now uses real icons, not glyphs)
 Deviations from the prototype: Skeleton uses an opacity pulse instead of a horizontal
 gradient sweep — see #3
 
+### Phase 3 — Mock data, stores, domain components  ✅  2026-08-06
+Commit: a0d0b00 — feat(phase-3): mock data, zustand stores, order/product/payment components
+Built: src/mocks (types, products ×13, orders ×5 + guest, transactions, notifications,
+farms, plans, account, offline placeholder image); src/stores (cartStore, guestCartStore
+with min-order/fee rules, ordersStore with status machine + simulateFailure, walletStore
+with clamped topUp, vouchersStore with credit adjust/approve, notificationsStore, uiStore
+wrapping language persistence); src/components/order (OrderStatusRail — horizontal,
+auto-centring, breathing-pulse current step with reduce-motion support; OrderProgressTrack;
+OrderStatusBadge, 8 states); src/components/product (PriceText, QuantityStepper,
+ProductCard); src/components/payment (shared PaymentTileBase + MobileMoneyTile with real
+telecom-prefix detection, CardTile, WalletTile, VoucherTile).
+Gates: tsc ✅ · eslint ✅ · line-limit ✅ (max 128 files, all ≤200) · expo boots ✅
+States covered: ordersStore/walletStore/notificationsStore all expose idle/loading/ready/
+error; wired into real screens starting Phase 6/8/9
+Decisions taken autonomously: see #4 and #5 below
+Deviations from the prototype: none structural — see #5 for a numeric reconciliation note
+
 ## Decisions taken autonomously
 
 Anything the design did not settle, that I decided rather than blocking on. Each needs a
@@ -85,6 +102,8 @@ one-line rationale so it can be reversed cheaply.
 | 1 | Tab bar needs icons before Phase 2 builds the real SVG icon set | Letter-glyph placeholders (S/O/W/V/M) in tokenised colour/type, no emoji, no icon font | Component-library skill assigns `src/components/icons` to Phase 2; blocking Phase 1 on the full icon set would stall the nav shell for no reason | **resolved in Phase 2** — replaced with real icon paths from the design-system prototype |
 | 2 | `npm ls` showed an invalid `ajv@6` vs `ajv@8` resolution (eslint wants 6, expo-router's `schema-utils`→`ajv-keywords` wants 8) that crashed `expo start` on `ajv/dist/compile/codegen` | Scoped `package.json` `overrides` to force `ajv@8` only inside `schema-utils`'s `ajv-keywords`, leaving eslint's own `ajv@6` untouched | A blanket `ajv` override (attempt 1) broke eslint itself (`ajv@6`-only API); scoping the override to the one subtree that needed it fixed `expo start` without regressing the lint gate | settled, verified both gates green after |
 | 3 | `Skeleton`'s spec calls for a horizontal gradient shimmer sweep, but the locked stack has no gradient library (`react-native-linear-gradient` is not in CLAUDE.md's stack table) | Built the loading cue as a looping opacity pulse (0.6↔1.0, 1.4s) on a flat `neutral`-tinted block instead | Conservative option: reuses existing tokens/deps rather than adding a new package for one effect; preserves the functional intent (a continuous, visible "this is loading" signal) without violating the "no new dependency" spirit of the locked stack | revisit if a gradient primitive is added for another reason later |
+| 4 | Product images need a source, but no image assets exist in the repo and the app must run fully offline | Used a single embedded 1×1 transparent PNG as a `data:` URI (`src/mocks/placeholderImage.ts`) for every product's `image` field, instead of a remote placeholder-service URL | A `https://placehold.co/...` URL is a real network dependency, contradicting "reviewers should run the app offline" in the mock-data skill; a local data URI has zero network calls and needs no binary asset files to be added to the repo | revisit once real product photography is supplied |
+| 5 | CLAUDE.md/mock-data skill only gives exact line items for FB-24815 (which must reconcile to 62,200); the other four orders (FB-24790/24762/24801/24755) only specify a fixed total, no line items | For FB-24801 the catalog price (Fresh Milk 6,500 × 3 = 19,500) already reconciles cleanly with the given total via the existing delivery fee, so it was kept as-is; for FB-24790/24762/24755 the catalog per-unit price did not reconcile against the specified fixed total under any plausible quantity, so a single line item's `each` price was set to make the math exact instead | The fixed order totals in CLAUDE.md are explicit, named values ("Recurring mock values ... must match across every screen"); silently letting subtotal+fee ≠ total would be a worse defect than a line item whose per-unit price doesn't match the product catalog, since order totals are cross-referenced on more screens (list, detail, EBM) than any single line price | revisit if the design source ever supplies real line items for these four orders |
 
 ---
 
