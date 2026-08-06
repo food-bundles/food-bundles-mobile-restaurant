@@ -1,0 +1,26 @@
+import type { orders as ordersEn } from '../en/orders';
+
+export const orders: Record<keyof typeof ordersEn, string> = {
+  orders_title: 'Ibyatumijwe',
+  orders_filterAll: 'Byose',
+  orders_filterActive: 'Bikora',
+  orders_filterPast: 'Byashize',
+  orders_emptyTitle: 'Nta itumiza urabona',
+  orders_emptySub: 'Ibyatumijwe byawe bizagaragara hano nyuma yo gutumiza.',
+  orders_browseProduce: 'Reba ibiribwa',
+  orders_errorTitle: 'Ntibyakunze gushaka ibyatumijwe byawe',
+  orders_errorSub: 'Reba umuyoboro wawe hanyuma ugerageze nanone.',
+  orders_retry: 'Ongera ugerageze',
+  orders_deliverTo: 'Gezayo',
+  orders_window: 'Igihe',
+  orders_total: 'Igiteranyo',
+  orders_items: 'Ibintu',
+  orders_downloadEbm: 'Kuramo EBM',
+  orders_paymentHistory: 'Amateka y’ubwishyu',
+  orders_reorderBtn: 'Ongera utumize ibi bintu',
+  orders_contactSupport: 'Vugana n’ubufasha',
+  orders_reorderTitle: 'Ongera gutumiza',
+  orders_reorderFrom: 'kuva kuri {{orderId}}',
+  orders_addItemsToCart: 'Ongeraho ibintu {{count}} mu gikapu',
+  orders_outOfStock: 'Ntibiboneka',
+};

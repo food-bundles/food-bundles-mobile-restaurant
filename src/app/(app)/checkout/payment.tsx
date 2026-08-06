@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { color, radius, space, text } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { PaymentMethodPicker } from './_components/PaymentMethodPicker';
-import { OrderItemsCard } from './_components/OrderItemsCard';
+import { OrderItemsCard } from '@/components/order';
 import { CheckoutStepHeader } from '@/components/checkout';
 import { PriceText } from '@/components/product';
 import { useCheckoutStore } from '@/stores';

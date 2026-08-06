@@ -6,16 +6,19 @@ import type { OrderLine } from '@/mocks/types';
 
 export interface OrderItemsCardProps {
   lines: OrderLine[];
+  title?: string;
+  showCount?: boolean;
 }
 
-export function OrderItemsCard({ lines }: OrderItemsCardProps) {
+export function OrderItemsCard({ lines, title, showCount = true }: OrderItemsCardProps) {
   const t = useT();
+  const label = title ?? t('checkout_itemsInOrder');
 
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
-        <Text style={styles.label}>{t('checkout_itemsInOrder')}</Text>
-        <Text style={styles.count}>{t('checkout_itemsCount', { count: lines.length })}</Text>
+        <Text style={styles.label}>{label}</Text>
+        {showCount ? <Text style={styles.count}>{t('checkout_itemsCount', { count: lines.length })}</Text> : null}
       </View>
       {lines.map((line) => (
         <View key={line.productId} style={styles.row}>

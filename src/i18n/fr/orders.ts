@@ -1,0 +1,26 @@
+import type { orders as ordersEn } from '../en/orders';
+
+export const orders: Record<keyof typeof ordersEn, string> = {
+  orders_title: 'Commandes',
+  orders_filterAll: 'Toutes',
+  orders_filterActive: 'Actives',
+  orders_filterPast: 'Passées',
+  orders_emptyTitle: 'Aucune commande pour le moment',
+  orders_emptySub: 'Vos commandes apparaîtront ici une fois passées.',
+  orders_browseProduce: 'Parcourir les produits',
+  orders_errorTitle: 'Impossible de charger vos commandes',
+  orders_errorSub: 'Vérifiez votre connexion et réessayez.',
+  orders_retry: 'Réessayer',
+  orders_deliverTo: 'Livrer à',
+  orders_window: 'Créneau',
+  orders_total: 'Total',
+  orders_items: 'Articles',
+  orders_downloadEbm: "Télécharger l'EBM",
+  orders_paymentHistory: 'Historique des paiements',
+  orders_reorderBtn: 'Commander à nouveau ces articles',
+  orders_contactSupport: 'Contacter le support',
+  orders_reorderTitle: 'Commander à nouveau',
+  orders_reorderFrom: 'depuis {{orderId}}',
+  orders_addItemsToCart: 'Ajouter {{count}} articles au panier',
+  orders_outOfStock: 'Rupture de stock',
+};
