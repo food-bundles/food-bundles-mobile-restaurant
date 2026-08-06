@@ -16,7 +16,7 @@ Repo state: branch `feat/mobile-ui`, base `main`.
 | 3 | Mock data, stores, domain components | ✅ | a0d0b00 |
 | 4 | Public / guest flow (7 screens) | ✅ | 549b72f |
 | 5 | Auth flow (4 screens) | ✅ | 729e7b6 |
-| 6 | Shop tab (5 screens) | ⬜ | — |
+| 6 | Shop tab (5 screens) | ✅ | a763b86 |
 | 7 | Checkout flow (5 screens) | ⬜ | — |
 | 8 | Orders tab (6 screens) | ⬜ | — |
 | 9 | Wallet tab (3 screens) | ⬜ | — |
@@ -128,6 +128,30 @@ States covered: n/a — no data-driven lists on these screens
 Decisions taken autonomously: none new this phase
 Deviations from the prototype: none
 
+### Phase 6 — Shop tab  ✅  2026-08-06
+Commit: a763b86 — feat(phase-6): shop tab screens
+Built: Shop Home (venue header, notification/cart badges, weather greeting, search
+trigger, auto-advancing hero carousel — active order/wallet/vouchers/weekly-deal/
+market-prices/weather cards on a shared card shell, category chips, popular-this-week
+grid, floating "Ask for support"); Category (back-navigated title from a `category`
+param, product count, price sort toggle, grid); Search (inline pill search field,
+live-filtered results, recent-search chips); Product Detail (hero image with cart
+badge, price/unit, in-stock + next-day badges, description, quantity stepper, sticky
+subtotal + Add to cart); Cart (swipe-to-delete rows, totals card, empty state, checkout
+CTA). Added `BellIcon`/`SearchIcon` to the icon set (both needed real screens to confirm
+against, deferred from Phase 2 for that reason). Added ~25 new i18n keys for shop chrome.
+Gates: tsc ✅ · eslint ✅ (fixed one unused import) · line-limit ✅ (max 159 files, all
+≤200) · expo boots ✅
+States covered: Cart empty state wired to `EmptyState`; Shop Home/Category/Search have
+no loading/error states in the prototype spec (mock data is synchronous), so none added
+Decisions taken autonomously: none new this phase
+Deviations from the prototype: the 7-card hero carousel uses one shared card shell
+instead of 7 bespoke per-card entrance animations (progress wipe, count-up, shimmer
+sweep, Ken Burns zoom, staggered count-up, sun rotation) — the auto-advance/pause/dot
+mechanics are real and match spec, but the signature per-card motion from the motion
+skill is simplified; flagged for a follow-up pass if visual fidelity there matters more
+than mechanism correctness
+
 ## Decisions taken autonomously
 
 Anything the design did not settle, that I decided rather than blocking on. Each needs a
@@ -164,3 +188,13 @@ Work deliberately left out of scope, with the reason.
   Not one of the four stop conditions — no data or work is at risk, it is fully recoverable
   by running `git remote add origin <url> && git push -u origin feat/mobile-ui` once a
   remote exists.
+- **Hero carousel per-card entrance motion** (progress wipe, count-up, shimmer sweep,
+  Ken Burns zoom, staggered count-up, sun rotation) is simplified to one shared card
+  shell in `src/app/(app)/shop/_components/HeroCard.tsx` — the carousel mechanism
+  (2500ms auto-advance, pause-on-interaction, dot indicators) is real and matches the
+  motion skill; the six bespoke per-card animations do not. Revisit in a motion-focused
+  pass if fidelity there is prioritised over the mechanism.
+- **`CartList` (authenticated) and `GuestCartList`** are near-duplicate components
+  differing only in which store they read from (`cartStore` vs `guestCartStore`). Kept
+  separate rather than introducing a shared generic abstraction for two call sites;
+  revisit if a third near-identical cart list appears.
