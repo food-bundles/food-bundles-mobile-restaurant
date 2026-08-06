@@ -1,5 +1,6 @@
 export { useSessionStore, canRequestVouchers } from './sessionStore';
 export { useCartStore } from './cartStore';
+export { useCheckoutStore } from './checkoutStore';
 export { useGuestCartStore, MINIMUM_ORDER, SMALL_ORDER_FEE } from './guestCartStore';
 export { useOrdersStore } from './ordersStore';
 export { useWalletStore, MAX_TOP_UP } from './walletStore';

@@ -7,14 +7,15 @@ const WINDOWS = ['9:00 AM – 12:00 PM', '12:00 PM – 3:00 PM', '3:00 PM – 6:
 export interface DeliveryWindowPickerProps {
   selected: number;
   onSelect: (index: number) => void;
+  hideLabel?: boolean;
 }
 
-export function DeliveryWindowPicker({ selected, onSelect }: DeliveryWindowPickerProps) {
+export function DeliveryWindowPicker({ selected, onSelect, hideLabel }: DeliveryWindowPickerProps) {
   const t = useT();
 
   return (
     <View>
-      <Text style={styles.label}>{t('guest_deliveryWindow')}</Text>
+      {hideLabel ? null : <Text style={styles.label}>{t('checkout_deliveryWindow')}</Text>}
       <View style={styles.list}>
         {WINDOWS.map((window, index) => {
           const active = index === selected;

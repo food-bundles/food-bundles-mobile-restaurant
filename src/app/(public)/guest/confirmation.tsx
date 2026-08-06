@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { color, radius, space, text } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { PriceText } from '@/components/product';
-import { ConfirmationCheck } from '../_components/ConfirmationCheck';
+import { ConfirmationCheck } from '@/components/checkout';
 import { ConvertPrompt } from '../_components/ConvertPrompt';
 import { useGuestCartStore } from '@/stores';
 import { useT } from '@/i18n';

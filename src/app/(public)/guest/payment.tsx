@@ -5,7 +5,7 @@ import { color, radius, space, text } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { MobileMoneyTile, CardTile } from '@/components/payment';
 import { GuestTotalsCard } from '../_components/GuestTotalsCard';
-import { CheckoutStepHeader } from '../_components/CheckoutStepHeader';
+import { CheckoutStepHeader } from '@/components/checkout';
 import { useGuestCartStore } from '@/stores';
 import { sleep, formatRwf } from '@/lib';
 import { useT } from '@/i18n';

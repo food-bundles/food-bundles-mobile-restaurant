@@ -4,8 +4,7 @@ import { router } from 'expo-router';
 import { color, radius, space, text } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { Input } from '@/components/primitives';
-import { CheckoutStepHeader } from '../_components/CheckoutStepHeader';
-import { DeliveryWindowPicker } from '../_components/DeliveryWindowPicker';
+import { CheckoutStepHeader, DeliveryWindowPicker } from '@/components/checkout';
 import { useT } from '@/i18n';
 
 export default function GuestDelivery() {
