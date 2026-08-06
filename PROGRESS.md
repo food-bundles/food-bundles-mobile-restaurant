@@ -17,7 +17,7 @@ Repo state: branch `feat/mobile-ui`, base `main`.
 | 4 | Public / guest flow (7 screens) | ✅ | 549b72f |
 | 5 | Auth flow (4 screens) | ✅ | 729e7b6 |
 | 6 | Shop tab (5 screens) | ✅ | a763b86 |
-| 7 | Checkout flow (5 screens) | ⬜ | — |
+| 7 | Checkout flow (5 screens) | ✅ | 76e9d23 |
 | 8 | Orders tab (6 screens) | ⬜ | — |
 | 9 | Wallet tab (3 screens) | ⬜ | — |
 | 10 | Subscription + vouchers (7 screens) | ⬜ | — |
@@ -151,6 +151,29 @@ sweep, Ken Burns zoom, staggered count-up, sun rotation) — the auto-advance/pa
 mechanics are real and match spec, but the signature per-card motion from the motion
 skill is simplified; flagged for a follow-up pass if visual fidelity there matters more
 than mechanism correctness
+
+### Phase 7 — Checkout flow  ✅  2026-08-06
+Commit: 76e9d23 — feat(phase-7): checkout flow screens
+Built: Checkout Delivery (styled SVG Kigali map with marigold pin + accuracy radius,
+saved-address card, add-another/manual-entry toggle, shared delivery-window picker);
+Checkout Payment (dark order-total card, all four payment tiles via a new
+`PaymentMethodPicker`, items-in-order card, Pay CTA); Voucher step (credit-available /
+remaining-after math, OTP notice); OTP (6 real digit boxes driven by a hidden numeric
+input, 30s resend countdown, disabled-until-complete Verify & pay); Confirmation (spring
++ stroke-draw check, dark total card with order ref/status badge, items card, forward-
+only Track order / Continue shopping that clears the cart). New `checkoutStore`
+(address/window/method/phone, shared by both delivery and payment steps).
+Mid-phase cleanup: promoted `CheckoutStepHeader`, `DeliveryWindowPicker` and
+`ConfirmationCheck` out of `(public)/_components` into a shared `src/components/checkout`
+— Phase 4 had built them for the guest flow only, then this phase needed the same three
+components from `(app)/checkout`, which would have meant importing across route groups.
+Gates: tsc ✅ · eslint ✅ (fixed two unused imports, one of which was dead store state —
+removed the unused `checkoutStore.otpMode` field entirely rather than leave it unread) ·
+line-limit ✅ (max 165 files, all ≤200) · expo boots ✅
+States covered: n/a — checkout has no data-loading states in the prototype spec (all
+values come from the active mock order); OTP's own processing/disabled state is present
+Decisions taken autonomously: none new this phase
+Deviations from the prototype: none structural
 
 ## Decisions taken autonomously
 
