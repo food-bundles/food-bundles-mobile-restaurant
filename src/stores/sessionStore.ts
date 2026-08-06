@@ -1,16 +1,15 @@
 import { create } from 'zustand';
-
-export type Role = 'RESTAURANT' | 'HOTEL' | 'AFFILIATOR';
-export type Tier = 'NONE' | 'BASIC' | 'PREMIUM';
+import type { Role, Tier } from '@/mocks/types';
 
 interface SessionState {
   isAuthenticated: boolean;
   role: Role;
   tier: Tier;
   subscribed: boolean;
-  canRequestVouchers: boolean;
   login: () => void;
   logout: () => void;
+  setTier: (tier: Tier) => void;
+  setRole: (role: Role) => void;
 }
 
 export const useSessionStore = create<SessionState>((set) => ({
@@ -18,8 +17,10 @@ export const useSessionStore = create<SessionState>((set) => ({
   role: 'RESTAURANT',
   tier: 'NONE',
   subscribed: false,
-  canRequestVouchers: true,
   login: () => set({ isAuthenticated: true }),
-  logout: () =>
-    set({ isAuthenticated: false, role: 'RESTAURANT', tier: 'NONE', subscribed: false }),
+  logout: () => set({ isAuthenticated: false, role: 'RESTAURANT', tier: 'NONE', subscribed: false }),
+  setTier: (tier) => set({ tier, subscribed: tier !== 'NONE' }),
+  setRole: (role) => set({ role }),
 }));
+
+export const canRequestVouchers = (role: Role): boolean => role !== 'AFFILIATOR';
