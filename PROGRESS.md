@@ -15,7 +15,7 @@ Repo state: branch `feat/mobile-ui`, base `main`.
 | 2 | Primitives + layout + icons | ✅ | 7eb386f |
 | 3 | Mock data, stores, domain components | ✅ | a0d0b00 |
 | 4 | Public / guest flow (7 screens) | ✅ | 549b72f |
-| 5 | Auth flow (4 screens) | ⬜ | — |
+| 5 | Auth flow (4 screens) | ✅ | 729e7b6 |
 | 6 | Shop tab (5 screens) | ⬜ | — |
 | 7 | Checkout flow (5 screens) | ⬜ | — |
 | 8 | Orders tab (6 screens) | ⬜ | — |
@@ -112,6 +112,21 @@ loading/error states in the prototype spec, so none were added
 Decisions taken autonomously: see #6 below
 Deviations from the prototype: none structural — see #6 for the confirmation-check
 animation note
+
+### Phase 5 — Auth flow  ✅  2026-08-06
+Commit: 729e7b6 — feat(phase-5): auth flow screens
+Built: Splash (Pine background, logo mark, progress bar filled to 66%, tap-to-skip);
+Login (email/password with Show toggle, forgot-password link, log in, create-account
+link); Signup (business name, Restaurant/Hotel toggle, phone, optional TIN with EBM
+helper note, staff-added-later note); Forgot password (email, send reset link, in-voice
+confirmation hint, back to login). Added `LogoMark` icon component (the leaf-basket
+mark) to replace three separate ad-hoc re-implementations of the same SVG across Splash,
+Login and the Landing header. Added ~30 new i18n keys for auth chrome across all three
+locales.
+Gates: tsc ✅ · eslint ✅ · line-limit ✅ (max 146 files, all ≤200) · expo boots ✅
+States covered: n/a — no data-driven lists on these screens
+Decisions taken autonomously: none new this phase
+Deviations from the prototype: none
 
 ## Decisions taken autonomously
 
