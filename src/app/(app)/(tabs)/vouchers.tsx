@@ -1,8 +1,10 @@
-import { PlaceholderScreen } from '@/components/layout/PlaceholderScreen';
-import { useSessionStore } from '@/stores/sessionStore';
+import { VouchersLocked } from './_components/VouchersLocked';
+import { VouchersActive } from './_components/VouchersActive';
+import { useSessionStore, isVouchersUnlocked } from '@/stores';
 
 export default function Vouchers() {
-  const tier = useSessionStore((s) => s.tier);
-  const title = tier === 'NONE' ? 'Vouchers — Locked' : 'Vouchers — Active';
-  return <PlaceholderScreen title={title} canGoBack={false} />;
+  const tier = useSessionStore((state) => state.tier);
+  const unlocked = isVouchersUnlocked(tier);
+
+  return unlocked ? <VouchersActive /> : <VouchersLocked />;
 }

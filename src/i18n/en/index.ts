@@ -6,6 +6,7 @@ import { shop } from './shop';
 import { checkout } from './checkout';
 import { orders } from './orders';
 import { wallet } from './wallet';
+import { subscription } from './subscription';
 
 export const en = {
   ...common,
@@ -16,6 +17,7 @@ export const en = {
   ...checkout,
   ...orders,
   ...wallet,
+  ...subscription,
 } as const;
 
 export type TranslationKey = keyof typeof en;

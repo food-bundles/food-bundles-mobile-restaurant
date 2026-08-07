@@ -6,6 +6,7 @@ import { shop } from './shop';
 import { checkout } from './checkout';
 import { orders } from './orders';
 import { wallet } from './wallet';
+import { subscription } from './subscription';
 
 export const fr = {
   ...common,
@@ -16,4 +17,5 @@ export const fr = {
   ...checkout,
   ...orders,
   ...wallet,
+  ...subscription,
 };

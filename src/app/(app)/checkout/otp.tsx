@@ -1,18 +1,30 @@
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { color, hit, radius, space, text } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { ChevronLeftIcon, VoucherIcon } from '@/components/icons';
 import { OtpBoxes } from './_components/OtpBoxes';
 import { sleep } from '@/lib';
 import { useT } from '@/i18n';
+import { useVouchersStore } from '@/stores';
+import type { Href } from 'expo-router';
 
 const CODE_LENGTH = 6;
 const RESEND_SECONDS = 30;
 
+type Purpose = 'payment' | 'underwriting' | 'creditLine';
+
+const DESTINATIONS: Record<Purpose, Href> = {
+  payment: '/(app)/checkout/confirmation',
+  underwriting: { pathname: '/(app)/subscription/underwriting', params: { completed: '1' } },
+  creditLine: { pathname: '/(app)/vouchers/credit-line', params: { completed: '1' } },
+};
+
 export default function Otp() {
   const t = useT();
+  const { purpose } = useLocalSearchParams<{ purpose?: Purpose }>();
+  const submitCreditRequest = useVouchersStore((state) => state.submitRequest);
   const [code, setCode] = useState('');
   const [seconds, setSeconds] = useState(RESEND_SECONDS);
   const [verifying, setVerifying] = useState(false);
@@ -25,9 +37,13 @@ export default function Otp() {
 
   const onVerify = async () => {
     setVerifying(true);
-    await sleep(1300);
+    if (purpose === 'creditLine') {
+      await submitCreditRequest();
+    } else {
+      await sleep(1300);
+    }
     setVerifying(false);
-    router.replace('/(app)/checkout/confirmation');
+    router.replace(DESTINATIONS[purpose ?? 'payment']);
   };
 
   return (
@@ -105,7 +121,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: space.lg,
   },
   verifyDisabled: { opacity: 0.5 },
   verifyLabel: { ...text.bodySemi, color: color.paper },
