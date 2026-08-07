@@ -5,6 +5,7 @@ import { auth } from './auth';
 import { shop } from './shop';
 import { checkout } from './checkout';
 import { orders } from './orders';
+import { wallet } from './wallet';
 
 export const en = {
   ...common,
@@ -14,6 +15,7 @@ export const en = {
   ...shop,
   ...checkout,
   ...orders,
+  ...wallet,
 } as const;
 
 export type TranslationKey = keyof typeof en;
