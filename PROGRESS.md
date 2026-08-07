@@ -20,7 +20,7 @@ Repo state: branch `feat/mobile-ui`, base `main`.
 | 7 | Checkout flow (5 screens) | ✅ | 76e9d23 |
 | 8 | Orders tab (6 screens) | ✅ | cb3e7a7 |
 | 9 | Wallet tab (3 screens) | ✅ | 938f038 |
-| 10 | Subscription + vouchers (7 screens) | ⬜ | — |
+| 10 | Subscription + vouchers (7 screens) | ✅ | 1d234b4 |
 | 11 | More hub — affiliators, settings, notifications, support (13 screens) | ⬜ | — |
 | 12 | Polish — motion review, a11y/i18n audit, line-limit sweep | ⬜ | — |
 
@@ -212,6 +212,33 @@ Decisions taken autonomously: see #7 below
 Deviations from the prototype: none — the Share link / Ask accountant actions render
 functioning bottom sheets rather than a native share intent (which the mocked-app rule
 already forbids reaching for), see #7
+
+### Phase 10 — Subscription and vouchers  ✅  2026-08-07
+Commit: 1d234b4 — feat(phase-10): subscription and vouchers screens
+Built: Subscription Current (live plan card, unlock-vouchers CTA); Plans (weekly/monthly
+billing toggle, Basic/Premium cards routing through the terms-gate); Terms (expand,
+read, and an accept checkbox gating a disabled-until-checked continue button, first
+upgrade only — `sessionStore.termsAccepted`); Underwriting (TIN, reason, first-time
+toggle, frequency, repayment-duration option rows → OTP → its own completed state, not
+a separate screen); Vouchers Locked (feature list, upgrade CTA, never an empty list) and
+Vouchers Active (own Active/Repayment-due label, credit card, use-at-checkout, apply-
+for-more, next-settlement row) — both live under the same `vouchers` tab route switching
+on `sessionStore.tier`; Credit line (stepper amount picker within the approved limit →
+OTP → its own approved state).
+Fixed a real bug found while wiring this phase: `checkout/otp.tsx` hardcoded its
+post-verify destination to the payment-confirmation route, which would have silently
+sent the underwriting and credit-line flows to the wrong screen after OTP. Added a
+`purpose` param (`payment` / `underwriting` / `creditLine`) with a destinations map, and
+a `completed=1` param convention so Underwriting and Credit line render their own
+completed state instead of introducing separate "success" screens not in the 51-screen
+inventory.
+Gates: tsc ✅ · eslint ✅ (fixed one unused import) · line-limit ✅ (213 files, all
+≤200) · expo boots ✅
+States covered: n/a — no data-loading lists on these 7 screens; Underwriting/Credit line
+completed states are reachable and real, not just described
+Decisions taken autonomously: none new this phase — the OTP purpose param is a bug fix
+required for the new flows to work at all, not a design decision
+Deviations from the prototype: none
 
 ## Decisions taken autonomously
 
