@@ -19,7 +19,7 @@ Repo state: branch `feat/mobile-ui`, base `main`.
 | 6 | Shop tab (5 screens) | ✅ | a763b86 |
 | 7 | Checkout flow (5 screens) | ✅ | 76e9d23 |
 | 8 | Orders tab (6 screens) | ✅ | cb3e7a7 |
-| 9 | Wallet tab (3 screens) | ⬜ | — |
+| 9 | Wallet tab (3 screens) | ✅ | 938f038 |
 | 10 | Subscription + vouchers (7 screens) | ⬜ | — |
 | 11 | More hub — affiliators, settings, notifications, support (13 screens) | ⬜ | — |
 | 12 | Polish — motion review, a11y/i18n audit, line-limit sweep | ⬜ | — |
@@ -197,6 +197,22 @@ Decisions taken autonomously: none new this phase — the i18n split is a struct
 required by the line-limit gate, not a design decision
 Deviations from the prototype: none
 
+### Phase 9 — Wallet tab  ✅  2026-08-07
+Commit: 938f038 — feat(phase-9): wallet tab screens
+Built: Wallet Balance (Pine balance card, Top up / History actions, recent-activity list
+linking transactions back to their order); Top-up (manually typed thousands-separated
+amount, quick-amount chips, merged Mobile Money + Card tiles with phone-swap, functional
+Share-link / Ask-accountant bottom sheets — see #7 below — manual-amount Pay CTA);
+Transactions (type filter chips, empty state, order-linked rows). New `ActionSheet`
+component (modal + scrim + sheet) shared by both wallet actions.
+Gates: tsc ✅ · eslint ✅ · line-limit ✅ (202 files, all ≤200) · expo boots ✅
+States covered: Transactions wired to `EmptyState`; wallet fetch uses the store's
+loading/ready states already built in Phase 3
+Decisions taken autonomously: see #7 below
+Deviations from the prototype: none — the Share link / Ask accountant actions render
+functioning bottom sheets rather than a native share intent (which the mocked-app rule
+already forbids reaching for), see #7
+
 ## Decisions taken autonomously
 
 Anything the design did not settle, that I decided rather than blocking on. Each needs a
@@ -211,6 +227,7 @@ one-line rationale so it can be reversed cheaply.
 | 4 | Product images need a source, but no image assets exist in the repo and the app must run fully offline | Used a single embedded 1×1 transparent PNG as a `data:` URI (`src/mocks/placeholderImage.ts`) for every product's `image` field, instead of a remote placeholder-service URL | A `https://placehold.co/...` URL is a real network dependency, contradicting "reviewers should run the app offline" in the mock-data skill; a local data URI has zero network calls and needs no binary asset files to be added to the repo | revisit once real product photography is supplied |
 | 5 | CLAUDE.md/mock-data skill only gives exact line items for FB-24815 (which must reconcile to 62,200); the other four orders (FB-24790/24762/24801/24755) only specify a fixed total, no line items | For FB-24801 the catalog price (Fresh Milk 6,500 × 3 = 19,500) already reconciles cleanly with the given total via the existing delivery fee, so it was kept as-is; for FB-24790/24762/24755 the catalog per-unit price did not reconcile against the specified fixed total under any plausible quantity, so a single line item's `each` price was set to make the math exact instead | The fixed order totals in CLAUDE.md are explicit, named values ("Recurring mock values ... must match across every screen"); silently letting subtotal+fee ≠ total would be a worse defect than a line item whose per-unit price doesn't match the product catalog, since order totals are cross-referenced on more screens (list, detail, EBM) than any single line price | revisit if the design source ever supplies real line items for these four orders |
 | 6 | The motion skill specifies the confirmation checkmark as a `strokeDashoffset` path-draw plus a spring-popping disc; `react-native-svg`'s `Path` doesn't support this out of the box | Wrapped `Path` in `Animated.createAnimatedComponent` and drove `strokeDashoffset` via Reanimated `useAnimatedProps`, timed after the disc's spring pop, matching the prototype's sequencing (disc pops first, check draws in ~450ms after) | This is one of only two sanctioned `spring` moments in the whole app (per the motion skill) so it was worth the extra plumbing rather than substituting a plain fade/scale-in, which was the fallback considered | verify the exact dash length visually once the app runs on a device/simulator |
+| 7 | The nav skill lists Top-up's "Share link" and "Ask accountant" rows as bottom sheets, but doesn't specify their content since neither shares real data (no OS share intent, no accountant contact list exist in this mocked app) | Built a generic `ActionSheet` (modal + scrim + sheet) with in-voice copy that describes what the action does, closable via a real button | A tappable row that does nothing on press is dead code per the "no placeholder... dead code" rule; a full native share-sheet integration would be a real dependency for a detail neither CLAUDE.md nor the prototype asks for — the sheet is the conservative middle option | revisit if a specific share/accountant flow is specified later |
 
 ---
 
