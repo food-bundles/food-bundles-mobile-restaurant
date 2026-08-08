@@ -14,9 +14,20 @@
     "android": {
       "package": "rw.foodbundles.restaurant"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b7495804-d025-4096-92af-b0d67d42bba2"
+      }
     }
   }
 }
