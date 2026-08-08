@@ -22,7 +22,7 @@ Repo state: branch `feat/mobile-ui`, base `main`.
 | 9 | Wallet tab (3 screens) | ✅ | 938f038 |
 | 10 | Subscription + vouchers (7 screens) | ✅ | 1d234b4 |
 | 11 | More hub — affiliators, settings, notifications, support (13 screens) | ✅ | 84fec92 |
-| 12 | Polish — motion review, a11y/i18n audit, line-limit sweep | ⬜ | — |
+| 12 | Polish — motion review, a11y/i18n audit, line-limit sweep | ✅ | e479e33 |
 
 States: ⬜ not started · 🔄 in progress · ✅ done · ⚠️ done with a flagged decision
 
@@ -266,6 +266,48 @@ Decisions taken autonomously: see #8 and #9 below
 Deviations from the prototype: omitted the "Website translation · Google" row from
 Account settings — see #8
 
+### Phase 12 — Polish  ✅  2026-08-08
+Commit: e479e33 — fix(phase-12): translate remaining hardcoded a11y labels and chrome strings
+Built: no new screens — full-app polish pass.
+Motion review: audited every hardcoded `duration:` (8 hits) and `borderRadius:` (32 hits)
+literal via grep; all confirmed legitimate (signature one-off animation timings the motion
+skill names explicitly, or circle-radius-equals-half-of-width/height geometry for avatars/
+dots/toggles) — none were violations of the two-duration or four-radius-token rules.
+A11y/i18n audit found and fixed real defects, all outside the original grep's own scope
+once traced by hand:
+- `EmptyState`/`ErrorState` icon-wrap used a stray `borderRadius: 12` instead of the
+  established `radius.lg` (16) pattern used by every other 44×44+ icon wrap.
+- `ErrorState`'s Retry button rendered a raw English literal instead of `t('action_retry')`
+  — a shared component used on every error screen in the app.
+- 20 icon-only controls across splash, quantity/credit steppers, landing hero images,
+  wallet share/ask-accountant, payment tiles (all 4), OTP input, order actions, address/
+  2FA screens carried hardcoded English `accessibilityLabel`s. Added ~25 new keys across
+  `common`/`shop`/`checkout`/`wallet`/`orders`/`settings`/`landing` (en/rw/fr) and wired
+  `useT()` into every one.
+- Extending the same sweep past `accessibilityLabel` turned up visible-text violations the
+  original grep pattern couldn't catch: all 4 payment tiles' `title`/`subtitle` props
+  ("Prepaid wallet", "Card", "Voucher (credit)", "Mobile Money" + subtitles), `ProductCard`'s
+  "SALE" badge / "was {price}" / lower-case-starting "Add {name} to cart" label, and
+  `SwipeRow`'s "Remove" button label. All translated across en/rw/fr.
+- Left as literals, deliberately: `LogoMark`'s "FoodBundles" a11y label and the three
+  visible brand-name mentions of it (identical in all 3 locales — a proper noun, not
+  chrome copy), and `VISA`/`MC`/`MTN`/`Airtel` logo-chip labels (telecom/card brand marks,
+  not translatable UI text) — consistent with the skill's "mock product and order content
+  stays in English" carve-out extended to real-world brand names.
+Navigation reachability: audited all 46 route files under `src/app` (excluding `_layout`
+and `_components`) for at least one inbound `router.push`/`replace`/`<Link>` reference.
+Zero orphans — every screen is reachable through real navigation, including all dynamic
+routes and the four-destination OTP flow. The "51 screens" figure in CLAUDE.md/Phase-1's
+log does not reconcile 1:1 to route files; the gap is almost certainly prototype-side
+modal/sheet states (EBM preview sheet, wallet action sheets, underwriting/credit-line
+"completed" states) that were implemented as in-file states rather than separate routes,
+not missing screens — see Deferred/follow-up.
+Gates: tsc ✅ · eslint ✅ · line-limit ✅ (244 files, all ≤200) · expo boots ✅ (Metro
+starts clean, no bundler errors)
+States covered: n/a — no new data screens this phase
+Decisions taken autonomously: see #10 below
+Deviations from the prototype: none
+
 ## Decisions taken autonomously
 
 Anything the design did not settle, that I decided rather than blocking on. Each needs a
@@ -283,6 +325,7 @@ one-line rationale so it can be reversed cheaply.
 | 7 | The nav skill lists Top-up's "Share link" and "Ask accountant" rows as bottom sheets, but doesn't specify their content since neither shares real data (no OS share intent, no accountant contact list exist in this mocked app) | Built a generic `ActionSheet` (modal + scrim + sheet) with in-voice copy that describes what the action does, closable via a real button | A tappable row that does nothing on press is dead code per the "no placeholder... dead code" rule; a full native share-sheet integration would be a real dependency for a detail neither CLAUDE.md nor the prototype asks for — the sheet is the conservative middle option | revisit if a specific share/accountant flow is specified later |
 | 8 | The Account settings prototype includes a "Website translation · Google" row embedding a live Google Translate widget (`google_translate_element`) | Omitted the row entirely rather than build a fake or non-functional version of it | This is an artifact of the HTML prototype's own translation tooling, not an app feature — the app already ships a real EN/RW/FR language switcher (the `settings_language` row) that covers the same user need natively; embedding a third-party web widget or a non-functional placeholder row would both violate "no invented copy" and "fully mocked, no network calls" | revisit only if a real, native reason for a third in-app translation control appears |
 | 9 | CLAUDE.md's mock-data skill only set `FB-24815.ebmAvailable: false` from Phase 3 (invented before this phase read the actual EBM invoices screen, which lists exactly FB-24815 and FB-24790) | Corrected `FB-24815.ebmAvailable` to `true` | CLAUDE.md's domain rule is explicit — "EBM documents attach to paid orders" — and FB-24815 is paid (Mobile Money at checkout, currently mid-delivery); the prototype's own EBM invoices screen lists it by name, so the Phase 3 flag was simply wrong once the actual screen spec was read, not a genuine two-way conflict | settled, corrected in `src/mocks/orders.ts` |
+| 10 | Brand/proper-noun strings caught by the a11y/i18n grep sweep — `LogoMark`'s "FoodBundles" label, and payment-tile logo chips "VISA"/"MC"/"MTN"/"Airtel" | Left as English literals, not routed through `useT()` | These are proper nouns / real-world brand marks, identical by definition in every locale — translating "FoodBundles" into Kinyarwanda or French would just reproduce the same string via three keys instead of one literal; the accessibility-i18n skill's "mock product and order content stays in English" carve-out extends naturally to brand names for the same reason | settled — revisit only if a locale ever needs a genuinely different brand rendering (e.g. a transliterated telecom name) |
 
 ---
 
@@ -315,3 +358,12 @@ Work deliberately left out of scope, with the reason.
   differing only in which store they read from (`cartStore` vs `guestCartStore`). Kept
   separate rather than introducing a shared generic abstraction for two call sites;
   revisit if a third near-identical cart list appears.
+- **"51 screens" vs. 46 route files**: a Phase-12 reachability audit counted 46 route
+  files under `src/app` (excluding `_layout.tsx`/`_components/`), all reachable with zero
+  orphans. The 5-screen gap against CLAUDE.md's "51 screens" figure is very likely
+  prototype-side modal/sheet states (EBM preview sheet, wallet Share-link/Ask-accountant
+  sheets, Underwriting/Credit-line "completed" states) that this build correctly
+  implemented as in-file states within an existing route rather than as separate route
+  files — matching the "not a separate screen" call already logged in Phase 10's build
+  note. No missing navigation was found; this is a documentation reconciliation item, not
+  a functional gap.
