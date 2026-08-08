@@ -7,6 +7,10 @@ import { checkout } from './checkout';
 import { orders } from './orders';
 import { wallet } from './wallet';
 import { subscription } from './subscription';
+import { more } from './more';
+import { affiliators } from './affiliators';
+import { settings } from './settings';
+import { notifications } from './notifications';
 
 export const en = {
   ...common,
@@ -18,6 +22,10 @@ export const en = {
   ...orders,
   ...wallet,
   ...subscription,
+  ...more,
+  ...affiliators,
+  ...settings,
+  ...notifications,
 } as const;
 
 export type TranslationKey = keyof typeof en;

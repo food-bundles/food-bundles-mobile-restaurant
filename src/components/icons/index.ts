@@ -12,3 +12,8 @@ export { MoreIcon } from './MoreIcon';
 export { LogoMark } from './LogoMark';
 export { BellIcon } from './BellIcon';
 export { SearchIcon } from './SearchIcon';
+export { ChevronRightIcon } from './ChevronRightIcon';
+export { HelpIcon } from './HelpIcon';
+export { CloseIcon } from './CloseIcon';
+export { LocationPinIcon } from './LocationPinIcon';
+export { SendIcon } from './SendIcon';

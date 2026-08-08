@@ -26,4 +26,7 @@ export const shop: Record<keyof typeof shopEn, string> = {
   shop_checkout: 'Commander',
   shop_emptyCartTitle: 'Votre panier est vide',
   shop_emptyCartMessage: 'Ajoutez des produits depuis la boutique pour les voir ici.',
+  shop_weeklyDeal: 'Offre de la semaine',
+  shop_orderByForNextDay: 'Commandez avant 16h pour une livraison le lendemain.',
+  shop_paymentOptions: 'Options de paiement',
 };

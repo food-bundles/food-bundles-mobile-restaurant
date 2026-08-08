@@ -26,4 +26,7 @@ export const shop: Record<keyof typeof shopEn, string> = {
   shop_checkout: 'Ishyura',
   shop_emptyCartTitle: 'Igikapu cyawe kirimo ubusa',
   shop_emptyCartMessage: 'Ongeraho ibiribwa uvuye mu iduka kugira ngo ubibone hano.',
+  shop_weeklyDeal: 'Igiciro cy’icyumweru',
+  shop_orderByForNextDay: 'Tumiza mbere ya 4h za nimugoroba kugira ngo ubone igeza umunsi ukurikira.',
+  shop_paymentOptions: 'Uburyo bwo kwishyura',
 };

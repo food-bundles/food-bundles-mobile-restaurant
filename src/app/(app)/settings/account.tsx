@@ -1,5 +1,127 @@
-import { PlaceholderScreen } from '@/components/layout/PlaceholderScreen';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { color, hit, radius, space, text } from '@/theme';
+import { ScreenScroll } from '@/components/layout';
+import { ChevronLeftIcon } from '@/components/icons';
+import { SettingsRow } from './_components/SettingsRow';
+import { useSessionStore } from '@/stores';
+import { useLanguage } from '@/stores';
+import { useT } from '@/i18n';
+import { account } from '@/mocks';
+import type { Language } from '@/i18n';
+
+const LANGUAGES: { code: Language; label: string }[] = [
+  { code: 'en', label: 'English' },
+  { code: 'rw', label: 'Kinyarwanda' },
+  { code: 'fr', label: 'Français' },
+];
 
 export default function Account() {
-  return <PlaceholderScreen title="Account" />;
+  const t = useT();
+  const logout = useSessionStore((state) => state.logout);
+  const [language, setLanguage] = useLanguage();
+
+  const onLogout = () => {
+    logout();
+    router.replace('/(auth)/login');
+  };
+
+  const cycleLanguage = () => {
+    const index = LANGUAGES.findIndex((entry) => entry.code === language);
+    setLanguage(LANGUAGES[(index + 1) % LANGUAGES.length].code);
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Pressable
+          onPress={() => router.back()}
+          accessibilityRole="button"
+          accessibilityLabel={t('action_back')}
+          style={styles.backButton}
+        >
+          <ChevronLeftIcon />
+        </Pressable>
+        <Text style={styles.title}>{t('settings_account')}</Text>
+      </View>
+      <ScreenScroll contentInsetBottom={40}>
+        <View style={styles.profileCard}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarLabel}>AU</Text>
+          </View>
+          <View>
+            <Text style={styles.name}>{account.managerName}</Text>
+            <Text style={styles.role}>{t('more_managerLabel', { business: account.businessName })}</Text>
+          </View>
+        </View>
+        <Text style={styles.sectionLabel}>{t('settings_account')}</Text>
+        <View style={styles.group}>
+          <SettingsRow label={t('settings_businessDetails')} onPress={() => router.push('/(app)/settings/business')} />
+          <SettingsRow label={t('settings_deliveryAddresses')} onPress={() => router.push('/(app)/settings/addresses')} />
+          <SettingsRow label={t('settings_ebmInvoices')} onPress={() => router.push('/(app)/settings/ebm')} />
+          <SettingsRow label={t('settings_messagesSupport')} onPress={() => router.push('/(app)/support/chat')} />
+          <SettingsRow
+            label={t('settings_twoFactor')}
+            trailing={
+              <View style={styles.onBadge}>
+                <Text style={styles.onBadgeLabel}>{t('settings_twoFactorOn')}</Text>
+              </View>
+            }
+            onPress={() => router.push('/(app)/settings/two-factor')}
+            isLast
+          />
+        </View>
+        <View style={styles.group}>
+          <SettingsRow
+            label={t('settings_language')}
+            trailing={<Text style={styles.langValue}>{LANGUAGES.find((l) => l.code === language)?.label}</Text>}
+            onPress={cycleLanguage}
+          />
+          <SettingsRow label={t('settings_logOut')} onPress={onLogout} destructive isLast />
+        </View>
+      </ScreenScroll>
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: color.oat },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    paddingHorizontal: space.md,
+    paddingBottom: space.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: color.hairline,
+  },
+  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
+  title: { ...text.h2, color: color.ink },
+  profileCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.md,
+    backgroundColor: color.paper,
+    borderWidth: 1,
+    borderColor: color.hairline,
+    borderRadius: radius.lg,
+    padding: space.md,
+    marginTop: space.md,
+  },
+  avatar: { width: 52, height: 52, borderRadius: 26, backgroundColor: color.tintLeaf, alignItems: 'center', justifyContent: 'center' },
+  avatarLabel: { ...text.h2, color: color.pine },
+  name: { ...text.h2, color: color.ink },
+  role: { ...text.caption, color: color.secondary, marginTop: 2 },
+  sectionLabel: { ...text.overline, color: color.secondary, marginTop: space.lg, marginBottom: space.sm },
+  group: {
+    backgroundColor: color.paper,
+    borderWidth: 1,
+    borderColor: color.hairline,
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+    marginTop: space.md,
+  },
+  onBadge: { backgroundColor: color.tintRipe, borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 3 },
+  onBadgeLabel: { ...text.micro, color: color.tintedGreenText },
+  langValue: { ...text.caption, color: color.secondary },
+});

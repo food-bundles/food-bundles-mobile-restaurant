@@ -24,4 +24,7 @@ export const shop = {
   shop_checkout: 'Checkout',
   shop_emptyCartTitle: 'Your cart is empty',
   shop_emptyCartMessage: 'Add produce from the shop to see it here.',
+  shop_weeklyDeal: 'Weekly deal',
+  shop_orderByForNextDay: 'Order by 4 PM for next-day delivery.',
+  shop_paymentOptions: 'Payment options',
 } as const;

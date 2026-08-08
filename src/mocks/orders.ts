@@ -17,7 +17,7 @@ export const orders: Order[] = [
     method: 'MOBILE_MONEY',
     window: 'Today, 9:00 AM – 12:00 PM',
     address: 'KG 11 Ave, Kimihurura, Kigali',
-    ebmAvailable: false,
+    ebmAvailable: true,
   },
   {
     id: 'FB-24790',

@@ -85,6 +85,24 @@ export interface NotificationItem {
   orderId?: string;
 }
 
+export interface Address {
+  id: string;
+  label: string;
+  street: string;
+  landmark?: string;
+  phone: string;
+  isDefault: boolean;
+}
+
+export type AffiliatorStatus = 'ACTIVE' | 'INVITED';
+
+export interface Affiliator {
+  id: string;
+  name: string;
+  role: string;
+  status: AffiliatorStatus;
+}
+
 export interface Farm {
   id: string;
   name: string;
