@@ -47,4 +47,7 @@ export const landing: Record<keyof typeof landingEn, string> = {
   farmer_crops: 'Que cultivez-vous ?',
   farmer_submit: 'Envoyer',
   farmer_submitNote: 'Un agent de terrain vous appellera dans les deux jours ouvrables.',
+
+  a11y_chefImage: 'Un chef préparant des produits frais',
+  a11y_farmImage: 'Des ouvriers agricoles récoltant des produits',
 };

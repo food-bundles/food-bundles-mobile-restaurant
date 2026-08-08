@@ -12,7 +12,7 @@ export function LandingHero() {
       <Image
         source={PLACEHOLDER_IMAGE}
         accessible
-        accessibilityLabel="Chef preparing fresh produce"
+        accessibilityLabel={t('a11y_chefImage')}
         style={styles.image}
       />
       <View style={styles.overlay} />

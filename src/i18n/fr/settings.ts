@@ -43,4 +43,7 @@ export const settings: Record<keyof typeof settingsEn, string> = {
   ebm_intro: 'Factures électroniques de la Rwanda Revenue Authority liées à vos commandes payées.',
   ebm_downloadPdf: 'Télécharger la facture EBM en PDF',
   ebm_pdf: 'PDF',
+
+  a11y_addAddress: 'Ajouter une adresse',
+  a11y_authenticatorQr: 'Code QR d’authentification',
 };

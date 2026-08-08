@@ -46,4 +46,7 @@ export const landing: Record<keyof typeof landingEn, string> = {
   farmer_crops: 'Ni ibihe bihingwa uhinga?',
   farmer_submit: 'Ohereza',
   farmer_submitNote: 'Umukozi w’ubuhinzi azakuhamagara mu minsi ibiri y’akazi.',
+
+  a11y_chefImage: 'Umutetsi ategura imboga n’imbuto nshya',
+  a11y_farmImage: 'Abakozi b’umurima basaruye imboga n’imbuto',
 };

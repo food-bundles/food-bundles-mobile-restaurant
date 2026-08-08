@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, space, text } from '@/theme';
+import { color, radius, space, text } from '@/theme';
 import { Button } from './Button';
 
 export interface EmptyStateAction {
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   iconWrap: {
     width: 44,
     height: 44,
-    borderRadius: 12,
+    borderRadius: radius.lg,
     backgroundColor: color.tintLeaf,
     alignItems: 'center',
     justifyContent: 'center',

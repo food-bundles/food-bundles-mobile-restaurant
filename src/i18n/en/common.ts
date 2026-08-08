@@ -20,6 +20,10 @@ export const common = {
   action_cancel: 'Cancel',
   action_save: 'Save',
   action_close: 'Close',
+  action_remove: 'Remove',
 
   common_loading: 'Loading…',
+  a11y_skipSplash: 'Skip splash screen',
+  a11y_decreaseQty: 'Decrease quantity',
+  a11y_increaseQty: 'Increase quantity',
 } as const;

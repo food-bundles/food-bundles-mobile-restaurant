@@ -27,4 +27,8 @@ export const shop = {
   shop_weeklyDeal: 'Weekly deal',
   shop_orderByForNextDay: 'Order by 4 PM for next-day delivery.',
   shop_paymentOptions: 'Payment options',
+
+  shop_sale: 'SALE',
+  shop_wasPrice: 'was {{amount}}',
+  shop_addToCartFor: 'Add {{name}} to cart',
 } as const;

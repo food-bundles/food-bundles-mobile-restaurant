@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, hit, space, text } from '@/theme';
 import { ChevronLeftIcon } from '@/components/icons';
+import { useT } from '@/i18n';
 
 export interface PlaceholderScreenProps {
   title: string;
@@ -10,13 +11,15 @@ export interface PlaceholderScreenProps {
 }
 
 export function PlaceholderScreen({ title, canGoBack = true, children }: PlaceholderScreenProps) {
+  const t = useT();
+
   return (
     <View style={styles.container}>
       {canGoBack ? (
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          accessibilityLabel={t('action_back')}
           style={styles.backButton}
         >
           <ChevronLeftIcon />

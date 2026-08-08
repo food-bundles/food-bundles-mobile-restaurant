@@ -67,7 +67,7 @@ export default function Otp() {
           onChangeText={(next) => setCode(next.replace(/\D/g, '').slice(0, CODE_LENGTH))}
           keyboardType="number-pad"
           maxLength={CODE_LENGTH}
-          accessibilityLabel="Enter one-time code"
+          accessibilityLabel={t('a11y_enterOtp')}
           style={styles.hiddenInput}
         />
         <OtpBoxes value={code} length={CODE_LENGTH} />

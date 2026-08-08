@@ -16,7 +16,7 @@ export function OrderActionsRow({ ebmAvailable }: OrderActionsRowProps) {
         onPress={() => router.push('/(app)/settings/ebm')}
         disabled={!ebmAvailable}
         accessibilityRole="button"
-        accessibilityLabel="Preview EBM invoice"
+        accessibilityLabel={t('a11y_previewEbm')}
         style={[styles.action, !ebmAvailable && styles.actionDisabled]}
       >
         <Text style={styles.actionLabel}>{t('orders_downloadEbm')}</Text>
@@ -24,7 +24,7 @@ export function OrderActionsRow({ ebmAvailable }: OrderActionsRowProps) {
       <Pressable
         onPress={() => router.push('/(app)/wallet/transactions')}
         accessibilityRole="button"
-        accessibilityLabel="View payment history for this order"
+        accessibilityLabel={t('a11y_paymentHistory')}
         style={styles.action}
       >
         <Text style={styles.actionLabel}>{t('orders_paymentHistory')}</Text>

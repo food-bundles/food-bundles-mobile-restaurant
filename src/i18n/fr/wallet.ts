@@ -26,4 +26,7 @@ export const wallet: Record<keyof typeof walletEn, string> = {
   wallet_accountantSheetTitle: 'Demander à votre comptable',
   wallet_accountantSheetMessage:
     'Envoyez cette demande de recharge à votre comptable afin qu’il puisse la compléter en votre nom.',
+
+  a11y_shareTopUpLink: 'Partager le lien de recharge',
+  a11y_askAccountantTopUp: 'Demander à votre comptable de recharger',
 };

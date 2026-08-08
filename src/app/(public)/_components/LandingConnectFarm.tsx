@@ -41,7 +41,7 @@ export function LandingConnectFarm() {
       <Image
         source={PLACEHOLDER_IMAGE}
         accessible
-        accessibilityLabel="Farm workers harvesting produce"
+        accessibilityLabel={t('a11y_farmImage')}
         style={styles.image}
       />
       <View style={styles.statsRow}>

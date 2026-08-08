@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { color, hit, radius } from '@/theme';
 import { PriceText } from '@/components/product';
 import { MinusIcon, PlusIcon } from '@/components/icons';
+import { useT } from '@/i18n';
 
 const STEP = 10000;
 
@@ -11,12 +12,14 @@ export interface CreditAmountPickerProps {
 }
 
 export function CreditAmountPicker({ amount, onAdjust }: CreditAmountPickerProps) {
+  const t = useT();
+
   return (
     <View style={styles.row}>
       <Pressable
         onPress={() => onAdjust(-STEP)}
         accessibilityRole="button"
-        accessibilityLabel="Decrease credit amount"
+        accessibilityLabel={t('a11y_decreaseQty')}
         hitSlop={8}
         style={styles.hitArea}
       >
@@ -28,7 +31,7 @@ export function CreditAmountPicker({ amount, onAdjust }: CreditAmountPickerProps
       <Pressable
         onPress={() => onAdjust(STEP)}
         accessibilityRole="button"
-        accessibilityLabel="Increase credit amount"
+        accessibilityLabel={t('a11y_increaseQty')}
         hitSlop={8}
         style={styles.hitArea}
       >

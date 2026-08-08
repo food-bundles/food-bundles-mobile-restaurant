@@ -23,4 +23,7 @@ export const wallet = {
   wallet_accountantSheetTitle: 'Ask your accountant',
   wallet_accountantSheetMessage:
     'Send this top-up request to your accountant so they can complete it on your behalf.',
+
+  a11y_shareTopUpLink: 'Share top-up link',
+  a11y_askAccountantTopUp: 'Ask your accountant to top up',
 } as const;

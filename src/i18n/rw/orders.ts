@@ -23,4 +23,7 @@ export const orders: Record<keyof typeof ordersEn, string> = {
   orders_reorderFrom: 'kuva kuri {{orderId}}',
   orders_addItemsToCart: 'Ongeraho ibintu {{count}} mu gikapu',
   orders_outOfStock: 'Ntibiboneka',
+
+  a11y_previewEbm: 'Reba mbere fagitire ya EBM',
+  a11y_paymentHistory: 'Reba amateka y’ubwishyu bw’iri tumiza',
 };

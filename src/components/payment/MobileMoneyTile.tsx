@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { color, hit, space, text } from '@/theme';
 import { detectTelecom } from '@/lib';
+import { useT } from '@/i18n';
 import { PaymentTileBase } from './PaymentTileBase';
 
 export interface MobileMoneyTileProps {
@@ -19,15 +20,16 @@ function TelecomLogo({ label, active, tint }: { label: string; active: boolean; 
 }
 
 export function MobileMoneyTile({ selected, onPress, phone, onChangeNumber }: MobileMoneyTileProps) {
+  const t = useT();
   const telecom = detectTelecom(phone);
 
   return (
     <PaymentTileBase
       selected={selected}
       onPress={onPress}
-      accessibilityLabel="Pay with Mobile Money"
-      title="Mobile Money"
-      subtitle="MTN MoMo or Airtel Money"
+      accessibilityLabel={t('a11y_payWithMobileMoney')}
+      title={t('paymentTile_mobileMoneyTitle')}
+      subtitle={t('paymentTile_mobileMoneySubtitle')}
       logos={
         <View style={styles.logos}>
           <TelecomLogo label="MTN" active={telecom === 'MTN'} tint={color.mtn} />
@@ -40,10 +42,10 @@ export function MobileMoneyTile({ selected, onPress, phone, onChangeNumber }: Mo
           <Pressable
             onPress={onChangeNumber}
             accessibilityRole="button"
-            accessibilityLabel="Change mobile money number"
+            accessibilityLabel={t('a11y_changeMobileNumber')}
             style={styles.changeButton}
           >
-            <Text style={styles.changeLabel}>Change</Text>
+            <Text style={styles.changeLabel}>{t('paymentTile_change')}</Text>
           </Pressable>
         </View>
       }

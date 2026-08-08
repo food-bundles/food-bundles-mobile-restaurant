@@ -7,6 +7,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import { color, duration, easing, radius, space, text } from '@/theme';
+import { useT } from '@/i18n';
 
 export interface SwipeRowProps {
   onDelete: () => void;
@@ -18,6 +19,7 @@ const CLAMP_MIN = -104;
 const DELETE_THRESHOLD = -58;
 
 export function SwipeRow({ onDelete, deleteLabel, children }: SwipeRowProps) {
+  const t = useT();
   const translateX = useSharedValue(0);
 
   const pan = Gesture.Pan()
@@ -47,7 +49,7 @@ export function SwipeRow({ onDelete, deleteLabel, children }: SwipeRowProps) {
           accessibilityLabel={deleteLabel}
           style={styles.deleteButton}
         >
-          <Text style={styles.deleteLabel}>Remove</Text>
+          <Text style={styles.deleteLabel}>{t('action_remove')}</Text>
         </Pressable>
       </View>
       <GestureDetector gesture={pan}>

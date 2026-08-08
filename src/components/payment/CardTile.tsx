@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { color, space, text } from '@/theme';
+import { useT } from '@/i18n';
 import { PaymentTileBase } from './PaymentTileBase';
 
 export interface CardTileProps {
@@ -9,13 +10,15 @@ export interface CardTileProps {
 }
 
 export function CardTile({ selected, onPress, maskedNumber = '•••• •••• •••• 0000' }: CardTileProps) {
+  const t = useT();
+
   return (
     <PaymentTileBase
       selected={selected}
       onPress={onPress}
-      accessibilityLabel="Pay with card"
-      title="Card"
-      subtitle="Visa or Mastercard"
+      accessibilityLabel={t('a11y_payWithCard')}
+      title={t('paymentTile_cardTitle')}
+      subtitle={t('paymentTile_cardSubtitle')}
       logos={
         <View style={styles.logos}>
           <View style={[styles.logo, { backgroundColor: color.visa }]}>
@@ -29,7 +32,7 @@ export function CardTile({ selected, onPress, maskedNumber = '•••• •�
       expandedContent={
         <View>
           <Text style={styles.masked}>{maskedNumber}</Text>
-          <Text style={styles.note}>Continues on a secure Flutterwave page</Text>
+          <Text style={styles.note}>{t('paymentTile_cardNote')}</Text>
         </View>
       }
     />

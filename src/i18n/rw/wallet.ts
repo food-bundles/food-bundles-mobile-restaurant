@@ -24,4 +24,7 @@ export const wallet: Record<keyof typeof walletEn, string> = {
   wallet_shareSheetMessage: 'Sangiza iri huza n’uwo ushaka ko yakwishyurira — amafaranga arahamara.',
   wallet_accountantSheetTitle: 'Saba umubare w’amafaranga',
   wallet_accountantSheetMessage: 'Ohereza iki gusaba ku mubare w’amafaranga wawe kugira ngo abikorere mu izina ryawe.',
+
+  a11y_shareTopUpLink: 'Sangiza ihuza ry’ukwongeramo',
+  a11y_askAccountantTopUp: 'Saba umubare w’amafaranga wawe kongeramo',
 };

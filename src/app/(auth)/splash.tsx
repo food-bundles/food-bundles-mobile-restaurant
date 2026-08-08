@@ -3,8 +3,11 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, radius, space, text } from '@/theme';
 import { LogoMark } from '@/components/icons';
+import { useT } from '@/i18n';
 
 export default function Splash() {
+  const t = useT();
+
   useEffect(() => {
     const timer = setTimeout(() => router.replace('/(public)/landing'), 1700);
     return () => clearTimeout(timer);
@@ -15,7 +18,7 @@ export default function Splash() {
       style={styles.container}
       onPress={() => router.replace('/(public)/landing')}
       accessibilityRole="button"
-      accessibilityLabel="Skip splash screen"
+      accessibilityLabel={t('a11y_skipSplash')}
     >
       <View style={styles.center}>
         <LogoMark size={78} />

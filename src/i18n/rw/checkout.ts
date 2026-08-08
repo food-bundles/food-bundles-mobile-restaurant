@@ -34,4 +34,22 @@ export const checkout: Record<keyof typeof checkoutEn, string> = {
   checkout_items: 'Ibintu',
   checkout_trackOrder: 'Kurikirana itumiza',
   checkout_continueShopping: 'Komeza kugura',
+
+  a11y_enterOtp: 'Andika kode y’ikoreshwa rimwe',
+  a11y_payWithWallet: 'Ishyura ukoresheje ikofi yishyuwe mbere',
+  a11y_payWithCard: 'Ishyura ukoresheje ikarita',
+  a11y_payWithVoucher: 'Ishyura ukoresheje inguzanyo',
+  a11y_payWithMobileMoney: 'Ishyura ukoresheje Mobile Money',
+  a11y_changeMobileNumber: 'Hindura numero ya Mobile Money',
+
+  paymentTile_walletTitle: 'Ikofi yishyuwe mbere',
+  paymentTile_walletBalance: 'Amafaranga ahari {{amount}}',
+  paymentTile_cardTitle: 'Ikarita',
+  paymentTile_cardSubtitle: 'Visa cyangwa Mastercard',
+  paymentTile_cardNote: 'Bikomeza ku rupapuro rwizewe rwa Flutterwave',
+  paymentTile_voucherTitle: 'Inguzanyo (icyizigiro)',
+  paymentTile_voucherSubtitle: 'Emeza ukoresheje OTP',
+  paymentTile_mobileMoneyTitle: 'Mobile Money',
+  paymentTile_mobileMoneySubtitle: 'MTN MoMo cyangwa Airtel Money',
+  paymentTile_change: 'Hindura',
 };

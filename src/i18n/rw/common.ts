@@ -22,6 +22,10 @@ export const common: Record<keyof typeof commonEn, string> = {
   action_cancel: 'Hagarika',
   action_save: 'Bika',
   action_close: 'Funga',
+  action_remove: 'Kuraho',
 
   common_loading: 'Birimo gutegurwa…',
+  a11y_skipSplash: 'Simbuka ku mbonekarize y’itangira',
+  a11y_decreaseQty: 'Gabanya umubare',
+  a11y_increaseQty: 'Ongera umubare',
 };

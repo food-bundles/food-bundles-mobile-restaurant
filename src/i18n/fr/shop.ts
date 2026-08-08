@@ -29,4 +29,8 @@ export const shop: Record<keyof typeof shopEn, string> = {
   shop_weeklyDeal: 'Offre de la semaine',
   shop_orderByForNextDay: 'Commandez avant 16h pour une livraison le lendemain.',
   shop_paymentOptions: 'Options de paiement',
+
+  shop_sale: 'PROMO',
+  shop_wasPrice: 'avant {{amount}}',
+  shop_addToCartFor: 'Ajouter {{name}} au panier',
 };

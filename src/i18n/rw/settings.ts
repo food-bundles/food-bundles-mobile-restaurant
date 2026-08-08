@@ -42,4 +42,7 @@ export const settings: Record<keyof typeof settingsEn, string> = {
   ebm_intro: 'Fagitire za EBM zihuza n’ibyatumijwe byawe byishyuwe.',
   ebm_downloadPdf: 'Kuramo fagitire ya EBM PDF',
   ebm_pdf: 'PDF',
+
+  a11y_addAddress: 'Ongeraho aderesi',
+  a11y_authenticatorQr: 'Kode ya QR y’ikoreshwa ryo kwemeza',
 };

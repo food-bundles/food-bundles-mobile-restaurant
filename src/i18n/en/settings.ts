@@ -40,4 +40,7 @@ export const settings = {
   ebm_intro: 'Rwanda Revenue Authority e-invoices linked to your paid orders.',
   ebm_downloadPdf: 'Download EBM invoice PDF',
   ebm_pdf: 'PDF',
+
+  a11y_addAddress: 'Add address',
+  a11y_authenticatorQr: 'Authenticator QR code',
 } as const;

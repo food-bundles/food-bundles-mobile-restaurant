@@ -28,7 +28,7 @@ export default function TwoFactorSetup() {
       <ScreenScroll contentInsetBottom={80}>
         <Text style={styles.intro}>{t('settings_twoFactorIntro')}</Text>
         <View style={styles.qrWrap}>
-          <View style={styles.qrPlaceholder} accessible accessibilityLabel="Authenticator QR code" />
+          <View style={styles.qrPlaceholder} accessible accessibilityLabel={t('a11y_authenticatorQr')} />
         </View>
         <View style={styles.keyRow}>
           <Text style={styles.keyText}>{SECRET_KEY}</Text>

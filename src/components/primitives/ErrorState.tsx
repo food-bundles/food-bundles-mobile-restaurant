@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, space, text } from '@/theme';
+import { color, radius, space, text } from '@/theme';
+import { useT } from '@/i18n';
 import { Button } from './Button';
 
 export interface ErrorStateProps {
@@ -9,6 +10,8 @@ export interface ErrorStateProps {
 }
 
 export function ErrorState({ title, message, onRetry }: ErrorStateProps) {
+  const t = useT();
+
   return (
     <View style={styles.container}>
       <View style={styles.iconWrap} />
@@ -16,7 +19,7 @@ export function ErrorState({ title, message, onRetry }: ErrorStateProps) {
       <Text style={styles.message}>{message}</Text>
       <View style={styles.action}>
         <Button variant="secondary" size="sm" onPress={onRetry}>
-          Retry
+          {t('action_retry')}
         </Button>
       </View>
     </View>
@@ -28,7 +31,7 @@ const styles = StyleSheet.create({
   iconWrap: {
     width: 44,
     height: 44,
-    borderRadius: 12,
+    borderRadius: radius.lg,
     backgroundColor: color.tintChili,
   },
   title: { ...text.h2, color: color.ink, marginTop: space.md, textAlign: 'center' },

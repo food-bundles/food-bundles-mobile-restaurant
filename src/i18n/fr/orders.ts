@@ -23,4 +23,7 @@ export const orders: Record<keyof typeof ordersEn, string> = {
   orders_reorderFrom: 'depuis {{orderId}}',
   orders_addItemsToCart: 'Ajouter {{count}} articles au panier',
   orders_outOfStock: 'Rupture de stock',
+
+  a11y_previewEbm: "Aperçu de la facture EBM",
+  a11y_paymentHistory: 'Voir l’historique des paiements de cette commande',
 };

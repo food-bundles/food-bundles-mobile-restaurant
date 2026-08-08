@@ -32,4 +32,22 @@ export const checkout = {
   checkout_items: 'Items',
   checkout_trackOrder: 'Track order',
   checkout_continueShopping: 'Continue shopping',
+
+  a11y_enterOtp: 'Enter one-time code',
+  a11y_payWithWallet: 'Pay with prepaid wallet',
+  a11y_payWithCard: 'Pay with card',
+  a11y_payWithVoucher: 'Pay with voucher credit',
+  a11y_payWithMobileMoney: 'Pay with Mobile Money',
+  a11y_changeMobileNumber: 'Change mobile money number',
+
+  paymentTile_walletTitle: 'Prepaid wallet',
+  paymentTile_walletBalance: 'Balance {{amount}}',
+  paymentTile_cardTitle: 'Card',
+  paymentTile_cardSubtitle: 'Visa or Mastercard',
+  paymentTile_cardNote: 'Continues on a secure Flutterwave page',
+  paymentTile_voucherTitle: 'Voucher (credit)',
+  paymentTile_voucherSubtitle: 'Confirm with OTP',
+  paymentTile_mobileMoneyTitle: 'Mobile Money',
+  paymentTile_mobileMoneySubtitle: 'MTN MoMo or Airtel Money',
+  paymentTile_change: 'Change',
 } as const;

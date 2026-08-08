@@ -1,6 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { color, hit, radius, shadow, space, text } from '@/theme';
 import type { Product } from '@/mocks/types';
+import { useT } from '@/i18n';
 import { PriceText } from './PriceText';
 import { QuantityStepper } from './QuantityStepper';
 
@@ -14,6 +15,8 @@ export interface ProductCardProps {
 }
 
 export function ProductCard({ product, onPress, onAdd, qty = 0, onInc, onDec }: ProductCardProps) {
+  const t = useT();
+
   return (
     <Pressable
       onPress={onPress}
@@ -24,7 +27,7 @@ export function ProductCard({ product, onPress, onAdd, qty = 0, onInc, onDec }: 
       <Image source={product.image} accessible={false} style={styles.image} />
       {product.wasPrice ? (
         <View style={styles.discountBadge}>
-          <Text style={styles.discountLabel}>SALE</Text>
+          <Text style={styles.discountLabel}>{t('shop_sale')}</Text>
         </View>
       ) : null}
       <View style={styles.body}>
@@ -35,7 +38,9 @@ export function ProductCard({ product, onPress, onAdd, qty = 0, onInc, onDec }: 
         <View style={styles.priceRow}>
           <PriceText amount={product.price} size="md" />
           {product.wasPrice ? (
-            <Text style={styles.wasPrice}>was {product.wasPrice.toLocaleString('en-US')}</Text>
+            <Text style={styles.wasPrice}>
+              {t('shop_wasPrice', { amount: product.wasPrice.toLocaleString('en-US') })}
+            </Text>
           ) : null}
         </View>
       </View>
@@ -47,10 +52,10 @@ export function ProductCard({ product, onPress, onAdd, qty = 0, onInc, onDec }: 
         <Pressable
           onPress={onAdd}
           accessibilityRole="button"
-          accessibilityLabel={`Add ${product.name} to cart`}
+          accessibilityLabel={t('shop_addToCartFor', { name: product.name })}
           style={styles.addButton}
         >
-          <Text style={styles.addLabel}>Add</Text>
+          <Text style={styles.addLabel}>{t('shop_add')}</Text>
         </Pressable>
       )}
     </Pressable>

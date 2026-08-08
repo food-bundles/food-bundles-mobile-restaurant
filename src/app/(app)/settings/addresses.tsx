@@ -25,7 +25,7 @@ export default function Addresses() {
         <Pressable
           onPress={() => router.push({ pathname: '/(app)/settings/address/[id]', params: { id: 'new' } })}
           accessibilityRole="button"
-          accessibilityLabel="Add address"
+          accessibilityLabel={t('a11y_addAddress')}
           style={styles.addButton}
         >
           <PlusIcon color={color.paper} />

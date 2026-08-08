@@ -34,4 +34,22 @@ export const checkout: Record<keyof typeof checkoutEn, string> = {
   checkout_items: 'Articles',
   checkout_trackOrder: 'Suivre la commande',
   checkout_continueShopping: 'Continuer les achats',
+
+  a11y_enterOtp: 'Saisir le code à usage unique',
+  a11y_payWithWallet: 'Payer avec le portefeuille prépayé',
+  a11y_payWithCard: 'Payer par carte',
+  a11y_payWithVoucher: 'Payer avec un crédit bon',
+  a11y_payWithMobileMoney: 'Payer avec Mobile Money',
+  a11y_changeMobileNumber: 'Changer le numéro Mobile Money',
+
+  paymentTile_walletTitle: 'Portefeuille prépayé',
+  paymentTile_walletBalance: 'Solde {{amount}}',
+  paymentTile_cardTitle: 'Carte',
+  paymentTile_cardSubtitle: 'Visa ou Mastercard',
+  paymentTile_cardNote: 'Se poursuit sur une page Flutterwave sécurisée',
+  paymentTile_voucherTitle: 'Bon (crédit)',
+  paymentTile_voucherSubtitle: 'Confirmer avec un code OTP',
+  paymentTile_mobileMoneyTitle: 'Mobile Money',
+  paymentTile_mobileMoneySubtitle: 'MTN MoMo ou Airtel Money',
+  paymentTile_change: 'Changer',
 };

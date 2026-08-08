@@ -22,6 +22,10 @@ export const common: Record<keyof typeof commonEn, string> = {
   action_cancel: 'Annuler',
   action_save: 'Enregistrer',
   action_close: 'Fermer',
+  action_remove: 'Retirer',
 
   common_loading: 'Chargement…',
+  a11y_skipSplash: "Passer l'écran de démarrage",
+  a11y_decreaseQty: 'Diminuer la quantité',
+  a11y_increaseQty: 'Augmenter la quantité',
 };

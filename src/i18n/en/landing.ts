@@ -44,4 +44,7 @@ export const landing = {
   farmer_crops: 'What do you grow?',
   farmer_submit: 'Submit',
   farmer_submitNote: 'A field officer calls within two working days.',
+
+  a11y_chefImage: 'Chef preparing fresh produce',
+  a11y_farmImage: 'Farm workers harvesting produce',
 } as const;

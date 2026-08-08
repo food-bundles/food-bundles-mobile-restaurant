@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { color, hit, radius, space, text } from '@/theme';
 import { MinusIcon, PlusIcon } from '@/components/icons';
+import { useT } from '@/i18n';
 
 export interface QuantityStepperProps {
   qty: number;
@@ -9,12 +10,14 @@ export interface QuantityStepperProps {
 }
 
 export function QuantityStepper({ qty, onInc, onDec }: QuantityStepperProps) {
+  const t = useT();
+
   return (
     <View style={styles.container}>
       <Pressable
         onPress={onDec}
         accessibilityRole="button"
-        accessibilityLabel="Decrease quantity"
+        accessibilityLabel={t('a11y_decreaseQty')}
         hitSlop={8}
         style={styles.hitArea}
       >
@@ -26,7 +29,7 @@ export function QuantityStepper({ qty, onInc, onDec }: QuantityStepperProps) {
       <Pressable
         onPress={onInc}
         accessibilityRole="button"
-        accessibilityLabel="Increase quantity"
+        accessibilityLabel={t('a11y_increaseQty')}
         hitSlop={8}
         style={styles.hitArea}
       >

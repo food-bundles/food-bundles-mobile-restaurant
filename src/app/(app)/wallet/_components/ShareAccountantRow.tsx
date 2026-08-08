@@ -15,7 +15,7 @@ export function ShareAccountantRow({ onShare, onAskAccountant }: ShareAccountant
       <Pressable
         onPress={onShare}
         accessibilityRole="button"
-        accessibilityLabel="Share top-up link"
+        accessibilityLabel={t('a11y_shareTopUpLink')}
         style={styles.action}
       >
         <Text style={styles.label}>{t('wallet_shareLink')}</Text>
@@ -23,7 +23,7 @@ export function ShareAccountantRow({ onShare, onAskAccountant }: ShareAccountant
       <Pressable
         onPress={onAskAccountant}
         accessibilityRole="button"
-        accessibilityLabel="Ask your accountant to top up"
+        accessibilityLabel={t('a11y_askAccountantTopUp')}
         style={styles.action}
       >
         <Text style={styles.label}>{t('wallet_askAccountant')}</Text>
