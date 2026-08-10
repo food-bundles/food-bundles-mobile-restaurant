@@ -1,8 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
-import { ChevronLeftIcon } from '@/components/icons';
+import { color, radius, space, text } from '@/theme';
+import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { SettingsRow } from './_components/SettingsRow';
 import { useSessionStore } from '@/stores';
 import { useLanguage } from '@/stores';
@@ -33,17 +32,7 @@ export default function Account() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('settings_account')}</Text>
-      </View>
+      <ScreenHeader title={t('settings_account')} />
       <ScreenScroll contentInsetBottom={40}>
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
@@ -86,17 +75,6 @@ export default function Account() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   profileCard: {
     flexDirection: 'row',
     alignItems: 'center',

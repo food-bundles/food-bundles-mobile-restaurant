@@ -11,6 +11,7 @@ export interface InputProps {
   helper?: string;
   keyboardType?: KeyboardTypeOptions;
   secureTextEntry?: boolean;
+  editable?: boolean;
   rightSlot?: React.ReactNode;
 }
 
@@ -23,6 +24,7 @@ export function Input({
   helper,
   keyboardType,
   secureTextEntry,
+  editable = true,
   rightSlot,
 }: InputProps) {
   const id = useId();
@@ -32,17 +34,18 @@ export function Input({
       <Text style={styles.label} nativeID={id}>
         {label}
       </Text>
-      <View style={[styles.row, Boolean(error) && styles.rowError]}>
+      <View style={[styles.row, Boolean(error) && styles.rowError, !editable && styles.rowDisabled]}>
         <TextInput
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
           keyboardType={keyboardType}
           secureTextEntry={secureTextEntry}
+          editable={editable}
           placeholderTextColor={color.muted}
           accessibilityLabel={label}
           accessibilityLabelledBy={id}
-          style={styles.input}
+          style={[styles.input, !editable && styles.inputDisabled]}
         />
         {rightSlot}
       </View>
@@ -70,7 +73,9 @@ const styles = StyleSheet.create({
     backgroundColor: color.paper,
   },
   rowError: { borderColor: color.chili },
+  rowDisabled: { backgroundColor: color.neutral },
   input: { ...text.body, color: color.ink, flex: 1, paddingVertical: space.sm },
+  inputDisabled: { color: color.muted },
   errorText: { ...text.caption, color: color.chili, marginTop: space.xs },
   helperText: { ...text.caption, color: color.muted, marginTop: space.xs },
 });

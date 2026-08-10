@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
-import { ChevronLeftIcon } from '@/components/icons';
+import { color, radius, space, text } from '@/theme';
+import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { OrderStatusRail, OrderStatusBadge, OrderItemsCard } from '@/components/order';
 import { OrderMetaCard } from './_components/OrderMetaCard';
 import { OrderActionsRow } from './_components/OrderActionsRow';
@@ -19,20 +18,7 @@ export default function OrderDetail() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{order.id}</Text>
-        <View style={styles.badgeRight}>
-          <OrderStatusBadge status={order.status} />
-        </View>
-      </View>
+      <ScreenHeader title={order.id} trailing={<OrderStatusBadge status={order.status} />} />
       <ScreenScroll contentInsetBottom={40}>
         {order.step > 0 ? (
           <View style={styles.railCard}>
@@ -71,18 +57,6 @@ export default function OrderDetail() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink, flex: 1 },
-  badgeRight: { alignItems: 'flex-end' },
   railCard: {
     backgroundColor: color.paper,
     borderWidth: 1,

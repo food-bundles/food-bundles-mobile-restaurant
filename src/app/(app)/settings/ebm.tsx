@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
-import { color, hit, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
-import { ChevronLeftIcon } from '@/components/icons';
+import { StyleSheet, Text, View } from 'react-native';
+import { color, space, text } from '@/theme';
+import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { EbmInvoiceRow } from './_components/EbmInvoiceRow';
 import { EbmPreviewSheet } from './_components/EbmPreviewSheet';
 import { orders } from '@/mocks';
@@ -17,17 +15,7 @@ export default function EbmInvoices() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('ebm_title')}</Text>
-      </View>
+      <ScreenHeader title={t('ebm_title')} />
       <ScreenScroll contentInsetBottom={40}>
         <Text style={styles.intro}>{t('ebm_intro')}</Text>
         {eligibleOrders.map((order) => (
@@ -41,16 +29,5 @@ export default function EbmInvoices() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   intro: { ...text.caption, color: color.secondary, marginTop: space.sm, marginBottom: space.md },
 });

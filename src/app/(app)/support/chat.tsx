@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color, hit, radius, space, text } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { ChevronLeftIcon, SendIcon } from '@/components/icons';
@@ -24,6 +25,7 @@ const ANSWERS: Record<string, string> = {
 
 export default function Chat() {
   const t = useT();
+  const insets = useSafeAreaInsets();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState('');
 
@@ -35,7 +37,7 @@ export default function Chat() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"

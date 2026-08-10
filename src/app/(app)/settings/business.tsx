@@ -1,39 +1,30 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll, StickyFooter } from '@/components/layout';
-import { ChevronLeftIcon } from '@/components/icons';
+import { color, radius, space, text } from '@/theme';
+import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { Input } from '@/components/primitives';
 import { useT } from '@/i18n';
 import { account } from '@/mocks';
 
 export default function BusinessDetails() {
   const t = useT();
+  const [businessName, setBusinessName] = useState(account.businessName);
+  const [address, setAddress] = useState(account.address);
+  const [tin, setTin] = useState(account.tin);
+  const [contactPerson, setContactPerson] = useState(`${account.managerName} · ${account.phone}`);
+  const [email, setEmail] = useState(account.email);
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('business_title')}</Text>
-      </View>
+      <ScreenHeader title={t('business_title')} />
       <ScreenScroll contentInsetBottom={80}>
         <View style={styles.fields}>
-          <Input label={t('business_name')} value={account.businessName} onChangeText={() => undefined} />
-          <Input label={t('business_address')} value={account.address} onChangeText={() => undefined} />
-          <Input label={t('underwriting_tin')} value={account.tin} onChangeText={() => undefined} />
-          <Input
-            label={t('business_contactPerson')}
-            value={`${account.managerName} · ${account.phone}`}
-            onChangeText={() => undefined}
-          />
-          <Input label={t('business_email')} value={account.email} onChangeText={() => undefined} />
+          <Input label={t('business_name')} value={businessName} onChangeText={setBusinessName} />
+          <Input label={t('business_address')} value={address} onChangeText={setAddress} />
+          <Input label={t('underwriting_tin')} value={tin} onChangeText={setTin} />
+          <Input label={t('business_contactPerson')} value={contactPerson} onChangeText={setContactPerson} />
+          <Input label={t('business_email')} value={email} onChangeText={setEmail} keyboardType="email-address" />
         </View>
       </ScreenScroll>
       <StickyFooter>
@@ -52,17 +43,6 @@ export default function BusinessDetails() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   fields: { gap: space.md, marginTop: space.md },
   saveButton: {
     minHeight: 48,

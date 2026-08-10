@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll, StickyFooter } from '@/components/layout';
-import { ChevronLeftIcon, CheckIcon } from '@/components/icons';
+import { color, radius, space, text } from '@/theme';
+import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
+import { CheckIcon } from '@/components/icons';
 import { CreditAmountPicker } from './_components/CreditAmountPicker';
 import { PriceText } from '@/components/product';
 import { useVouchersStore } from '@/stores';
@@ -41,17 +41,7 @@ export default function CreditLine() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('creditLine_title')}</Text>
-      </View>
+      <ScreenHeader title={t('creditLine_title')} />
       <ScreenScroll contentInsetBottom={80}>
         <Text style={styles.intro}>{t('creditLine_intro')}</Text>
         <View style={styles.pickerGap}>
@@ -78,17 +68,6 @@ export default function CreditLine() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   intro: { ...text.body, color: color.secondary, marginTop: space.md },
   pickerGap: { marginTop: space.lg },
   limitRow: {

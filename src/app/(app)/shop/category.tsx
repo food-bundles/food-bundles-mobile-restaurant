@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
-import { color, hit, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
-import { ChevronLeftIcon } from '@/components/icons';
+import { StyleSheet, Text, View } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { color, space, text } from '@/theme';
+import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { ProductGrid } from './_components/ProductGrid';
 import { SortToggle, type SortOrder } from './_components/SortToggle';
 import { products } from '@/mocks';
@@ -37,17 +36,7 @@ export default function Category() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{title}</Text>
-      </View>
+      <ScreenHeader title={title} />
       <ScreenScroll contentInsetBottom={40}>
         <View style={styles.metaRow}>
           <Text style={styles.count}>{t('shop_productsCount', { count: sorted.length })}</Text>
@@ -63,17 +52,6 @@ export default function Category() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',

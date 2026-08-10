@@ -1,42 +1,51 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { color, hit, space, text } from '@/theme';
 import { ChevronLeftIcon } from '@/components/icons';
 import { useT } from '@/i18n';
 
-export interface CheckoutStepHeaderProps {
+export interface ScreenHeaderProps {
   title: string;
-  step: 1 | 2;
+  subtitle?: string;
+  canGoBack?: boolean;
+  onBack?: () => void;
+  trailing?: React.ReactNode;
 }
 
-export function CheckoutStepHeader({ title, step }: CheckoutStepHeaderProps) {
+export function ScreenHeader({ title, subtitle, canGoBack = true, onBack, trailing }: ScreenHeaderProps) {
   const t = useT();
   const insets = useSafeAreaInsets();
 
   return (
-    <View>
-      <View style={[styles.row, { paddingTop: insets.top + space.sm }]}>
+    <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
+      {canGoBack ? (
         <Pressable
-          onPress={() => router.back()}
+          onPress={onBack ?? (() => router.back())}
           accessibilityRole="button"
           accessibilityLabel={t('action_back')}
           style={styles.backButton}
         >
           <ChevronLeftIcon />
         </Pressable>
-        <Text style={styles.title}>{title}</Text>
+      ) : null}
+      <View style={styles.titleCol}>
+        <Text style={styles.title} numberOfLines={1} accessibilityRole="header">
+          {title}
+        </Text>
+        {subtitle ? (
+          <Text style={styles.subtitle} numberOfLines={1}>
+            {subtitle}
+          </Text>
+        ) : null}
       </View>
-      <View style={styles.progressRow}>
-        <View style={[styles.segment, styles.segmentDone]} />
-        <View style={[styles.segment, step === 2 && styles.segmentDone]} />
-      </View>
+      {trailing}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  row: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
@@ -44,10 +53,10 @@ const styles = StyleSheet.create({
     paddingBottom: space.sm,
     borderBottomWidth: 1,
     borderBottomColor: color.hairline,
+    backgroundColor: color.oat,
   },
   backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
+  titleCol: { flex: 1 },
   title: { ...text.h2, color: color.ink },
-  progressRow: { flexDirection: 'row', gap: space.xs, paddingHorizontal: space.md, marginTop: space.sm },
-  segment: { flex: 1, height: 4, borderRadius: 2, backgroundColor: color.hairline },
-  segmentDone: { backgroundColor: color.leaf },
+  subtitle: { ...text.caption, color: color.secondary, marginTop: 2 },
 });

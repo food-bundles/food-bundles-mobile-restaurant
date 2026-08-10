@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll, StickyFooter } from '@/components/layout';
-import { ChevronLeftIcon, BasketIcon } from '@/components/icons';
+import { color, radius, space, text } from '@/theme';
+import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
+import { BasketIcon } from '@/components/icons';
 import { EmptyState } from '@/components/primitives';
 import { CartList } from './_components/CartList';
 import { CartTotalsCard } from './_components/CartTotalsCard';
@@ -16,22 +16,7 @@ export default function Cart() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <View>
-          <Text style={styles.title}>{t('shop_cart')}</Text>
-          <Text style={styles.subtitle}>
-            {account.businessName} · {t('shop_tapToEdit')}
-          </Text>
-        </View>
-      </View>
+      <ScreenHeader title={t('shop_cart')} subtitle={`${account.businessName} · ${t('shop_tapToEdit')}`} />
       <ScreenScroll contentInsetBottom={80}>
         {itemCount === 0 ? (
           <EmptyState
@@ -65,18 +50,6 @@ export default function Cart() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
-  subtitle: { ...text.caption, color: color.secondary },
   totalsGap: { marginTop: space.md },
   checkoutButton: {
     minHeight: 48,

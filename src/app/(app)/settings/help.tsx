@@ -1,35 +1,26 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
-import { ChevronLeftIcon } from '@/components/icons';
+import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { SearchField } from '@/app/(app)/shop/_components/SearchField';
 import { SettingsRow } from './_components/SettingsRow';
 import { useT } from '@/i18n';
 
 export default function Help() {
   const t = useT();
+  const [query, setQuery] = useState('');
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('help_title')}</Text>
-      </View>
+      <ScreenHeader title={t('help_title')} />
       <ScreenScroll contentInsetBottom={40}>
-        <SearchField value="" onChangeText={() => undefined} placeholder={t('help_search')} />
+        <SearchField value={query} onChangeText={setQuery} placeholder={t('help_search')} />
         <Text style={styles.sectionLabel}>{t('help_topics')}</Text>
         <View style={styles.group}>
-          <SettingsRow label={t('help_ordersDelivery')} onPress={() => undefined} />
-          <SettingsRow label={t('help_walletPayments')} onPress={() => undefined} />
-          <SettingsRow label={t('help_vouchersCredit')} onPress={() => undefined} isLast />
+          <SettingsRow label={t('help_ordersDelivery')} onPress={() => router.push('/(app)/(tabs)')} />
+          <SettingsRow label={t('help_walletPayments')} onPress={() => router.push('/(app)/(tabs)/wallet')} />
+          <SettingsRow label={t('help_vouchersCredit')} onPress={() => router.push('/(app)/(tabs)/vouchers')} isLast />
         </View>
         <View style={styles.contactCard}>
           <View style={styles.contactText}>
@@ -52,17 +43,6 @@ export default function Help() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   sectionLabel: { ...text.overline, color: color.secondary, marginTop: space.lg, marginBottom: space.sm },
   group: {
     backgroundColor: color.paper,

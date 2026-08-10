@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
-import { ChevronLeftIcon, PlusIcon } from '@/components/icons';
+import { ScreenScroll, ScreenHeader } from '@/components/layout';
+import { PlusIcon } from '@/components/icons';
 import { AffiliatorRow } from './_components/AffiliatorRow';
 import { affiliators, account } from '@/mocks';
 import { useT } from '@/i18n';
@@ -12,25 +12,19 @@ export default function AffiliatorsList() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('aff_title')}</Text>
-        <Pressable
-          onPress={() => router.push('/(app)/affiliators/add')}
-          accessibilityRole="button"
-          accessibilityLabel={t('aff_addTitle')}
-          style={styles.addButton}
-        >
-          <PlusIcon color={color.paper} />
-        </Pressable>
-      </View>
+      <ScreenHeader
+        title={t('aff_title')}
+        trailing={
+          <Pressable
+            onPress={() => router.push('/(app)/affiliators/add')}
+            accessibilityRole="button"
+            accessibilityLabel={t('aff_addTitle')}
+            style={styles.addButton}
+          >
+            <PlusIcon color={color.paper} />
+          </Pressable>
+        }
+      />
       <ScreenScroll contentInsetBottom={40}>
         <Text style={styles.subtitle}>{t('aff_subtitle', { business: account.businessName })}</Text>
         <View style={styles.listGap}>
@@ -53,17 +47,6 @@ export default function AffiliatorsList() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink, flex: 1 },
   addButton: {
     width: hit.min,
     height: hit.min,

@@ -1,8 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll, StickyFooter } from '@/components/layout';
-import { ChevronLeftIcon } from '@/components/icons';
+import { color, radius, space, text } from '@/theme';
+import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { EmptyState } from '@/components/primitives';
 import { BasketIcon } from '@/components/icons';
 import { GuestCartList } from '../_components/GuestCartList';
@@ -17,17 +16,7 @@ export default function GuestCart() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('guest_yourBasket')}</Text>
-      </View>
+      <ScreenHeader title={t('guest_yourBasket')} />
       <ScreenScroll contentInsetBottom={80}>
         {itemCount === 0 ? (
           <EmptyState
@@ -65,17 +54,6 @@ export default function GuestCart() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   totalsGap: { marginTop: space.md },
   promptGap: { marginTop: space.md },
   swipeHint: { ...text.caption, color: color.muted, textAlign: 'center', marginTop: space.md },

@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
-import { color, hit, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
-import { ChevronLeftIcon, WalletIcon } from '@/components/icons';
+import { StyleSheet, View } from 'react-native';
+import { color, space } from '@/theme';
+import { ScreenScroll, ScreenHeader } from '@/components/layout';
+import { WalletIcon } from '@/components/icons';
 import { EmptyState } from '@/components/primitives';
 import { TransactionRow } from './_components/TransactionRow';
 import { TransactionFilterChips, type TransactionFilter } from './_components/TransactionFilterChips';
@@ -28,17 +27,7 @@ export default function Transactions() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('wallet_transactions')}</Text>
-      </View>
+      <ScreenHeader title={t('wallet_transactions')} />
       <ScreenScroll contentInsetBottom={40}>
         <View style={styles.filterGap}>
           <TransactionFilterChips selected={filter} onSelect={setFilter} />
@@ -63,17 +52,6 @@ export default function Transactions() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   filterGap: { marginTop: space.md, marginBottom: space.sm },
   listGap: { marginTop: space.sm },
 });

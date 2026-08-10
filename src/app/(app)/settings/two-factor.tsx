@@ -1,30 +1,21 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll, StickyFooter } from '@/components/layout';
-import { ChevronLeftIcon } from '@/components/icons';
+import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { useT } from '@/i18n';
 
 const SECRET_KEY = 'K5D2 · 9F3A · 7C1B';
+const CODE_LENGTH = 6;
 
 export default function TwoFactorSetup() {
   const t = useT();
   const [copied, setCopied] = useState(false);
+  const [code, setCode] = useState('');
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('settings_twoFactor')}</Text>
-      </View>
+      <ScreenHeader title={t('settings_twoFactor')} />
       <ScreenScroll contentInsetBottom={80}>
         <Text style={styles.intro}>{t('settings_twoFactorIntro')}</Text>
         <View style={styles.qrWrap}>
@@ -43,15 +34,25 @@ export default function TwoFactorSetup() {
         </View>
         <Text style={styles.label}>{t('settings_enterCode')}</Text>
         <View style={styles.codeBox}>
-          <Text style={styles.codePlaceholder}>— — — — — —</Text>
+          <TextInput
+            value={code}
+            onChangeText={(next) => setCode(next.replace(/\D/g, '').slice(0, CODE_LENGTH))}
+            keyboardType="number-pad"
+            maxLength={CODE_LENGTH}
+            placeholder="— — — — — —"
+            placeholderTextColor={color.muted}
+            accessibilityLabel={t('settings_enterCode')}
+            style={styles.codeInput}
+          />
         </View>
       </ScreenScroll>
       <StickyFooter>
         <Pressable
           onPress={() => router.back()}
+          disabled={code.length !== CODE_LENGTH}
           accessibilityRole="button"
           accessibilityLabel={t('settings_enable2fa')}
-          style={styles.enableButton}
+          style={[styles.enableButton, code.length !== CODE_LENGTH && styles.enableDisabled]}
         >
           <Text style={styles.enableLabel}>{t('settings_enable2fa')}</Text>
         </Pressable>
@@ -62,17 +63,6 @@ export default function TwoFactorSetup() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   intro: { ...text.body, color: color.secondary, marginTop: space.md },
   qrWrap: { alignItems: 'center', marginTop: space.lg },
   qrPlaceholder: {
@@ -105,7 +95,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     padding: space.md,
   },
-  codePlaceholder: { ...text.h2, color: color.muted, letterSpacing: 4 },
+  codeInput: { ...text.h2, color: color.ink, letterSpacing: 4, minHeight: hit.min },
   enableButton: {
     minHeight: 48,
     backgroundColor: color.leaf,
@@ -113,5 +103,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  enableDisabled: { opacity: 0.5 },
   enableLabel: { ...text.bodySemi, color: color.paper },
 });

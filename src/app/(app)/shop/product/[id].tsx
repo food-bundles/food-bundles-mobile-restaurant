@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color, hit, radius, space, text } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { ChevronLeftIcon, BasketIcon } from '@/components/icons';
@@ -11,6 +12,7 @@ import { useT } from '@/i18n';
 
 export default function ProductDetail() {
   const t = useT();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const product = useMemo(() => products.find((p) => p.id === id), [id]);
   const cartItemCount = useCartStore((state) => state.itemCount());
@@ -32,7 +34,7 @@ export default function ProductDetail() {
           onPress={() => router.back()}
           accessibilityRole="button"
           accessibilityLabel={t('action_back')}
-          style={styles.heroButton}
+          style={[styles.heroButton, { top: insets.top + space.sm }]}
         >
           <ChevronLeftIcon />
         </Pressable>
@@ -40,7 +42,7 @@ export default function ProductDetail() {
           onPress={() => router.push('/(app)/shop/cart')}
           accessibilityRole="button"
           accessibilityLabel={t('shop_openCart')}
-          style={styles.heroButtonRightPosition}
+          style={[styles.heroButtonRightPosition, { top: insets.top + space.sm }]}
         >
           <BasketIcon />
           {cartItemCount > 0 ? (
@@ -102,7 +104,6 @@ const styles = StyleSheet.create({
   heroImage: { width: '100%', height: '100%' },
   heroButton: {
     position: 'absolute',
-    top: space.md,
     left: space.md,
     width: hit.min,
     height: hit.min,
@@ -113,7 +114,6 @@ const styles = StyleSheet.create({
   },
   heroButtonRightPosition: {
     position: 'absolute',
-    top: space.md,
     right: space.md,
     width: hit.min,
     height: hit.min,

@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll, StickyFooter } from '@/components/layout';
-import { ChevronLeftIcon } from '@/components/icons';
+import { color, radius, space, text } from '@/theme';
+import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { MobileMoneyTile, CardTile } from '@/components/payment';
 import { TopupAmountInput } from './_components/TopupAmountInput';
 import { QuickAmountChips } from './_components/QuickAmountChips';
@@ -32,17 +31,7 @@ export default function TopUp() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('wallet_topUpWallet')}</Text>
-      </View>
+      <ScreenHeader title={t('wallet_topUpWallet')} />
       <ScreenScroll contentInsetBottom={80}>
         <View style={styles.amountGap}>
           <TopupAmountInput amount={amount} onChangeAmount={setAmount} />
@@ -99,17 +88,6 @@ export default function TopUp() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   amountGap: { marginTop: space.xl },
   chipsGap: { marginTop: space.lg },
   sectionLabel: { ...text.overline, color: color.secondary, marginTop: space.xl, marginBottom: space.sm },

@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
-import { ChevronLeftIcon } from '@/components/icons';
+import { color, space } from '@/theme';
+import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { BillingToggle } from './_components/BillingToggle';
 import { PlanSelectCard } from './_components/PlanSelectCard';
 import { plans } from '@/mocks';
@@ -28,17 +27,7 @@ export default function Plans() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('sub_plans')}</Text>
-      </View>
+      <ScreenHeader title={t('sub_plans')} />
       <ScreenScroll contentInsetBottom={40}>
         <View style={styles.toggleGap}>
           <BillingToggle selected={billingCycle} onSelect={setBillingCycle} />
@@ -60,17 +49,6 @@ export default function Plans() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   toggleGap: { marginTop: space.md },
   cardsGap: { gap: space.md, marginTop: space.md },
 });

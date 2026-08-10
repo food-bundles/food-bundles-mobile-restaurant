@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color, space, text } from '@/theme';
 import { EmptyState, ErrorState } from '@/components/primitives';
 import { DemoStateToggle } from '../orders/_components/DemoStateToggle';
@@ -17,6 +18,7 @@ export default function OrdersList() {
   const t = useT();
   const demoState = useUiStore((state) => state.ordersDemoState);
   const setDemoState = useUiStore((state) => state.setOrdersDemoState);
+  const insets = useSafeAreaInsets();
   const [filter, setFilter] = useState<OrderFilter>('all');
   const [refreshing, setRefreshing] = useState(false);
 
@@ -41,7 +43,7 @@ export default function OrdersList() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
         <Text style={styles.title}>{t('orders_title')}</Text>
         <DemoStateToggle selected={demoState} onSelect={setDemoState} />
       </View>

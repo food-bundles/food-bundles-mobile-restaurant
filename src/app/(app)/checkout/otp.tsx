@@ -62,6 +62,9 @@ export default function Otp() {
       <Text style={styles.title}>{t('checkout_verifyTitle')}</Text>
       <Text style={styles.subtitle}>{t('checkout_otpSub')}</Text>
       <View style={styles.boxesWrap}>
+        <View style={styles.boxesVisual} pointerEvents="none">
+          <OtpBoxes value={code} length={CODE_LENGTH} />
+        </View>
         <TextInput
           value={code}
           onChangeText={(next) => setCode(next.replace(/\D/g, '').slice(0, CODE_LENGTH))}
@@ -70,7 +73,6 @@ export default function Otp() {
           accessibilityLabel={t('a11y_enterOtp')}
           style={styles.hiddenInput}
         />
-        <OtpBoxes value={code} length={CODE_LENGTH} />
       </View>
       {seconds > 0 ? (
         <Text style={styles.resendText}>{t('checkout_resendIn', { seconds })}</Text>
@@ -111,7 +113,8 @@ const styles = StyleSheet.create({
   title: { ...text.h1, color: color.ink, marginTop: space.md },
   subtitle: { ...text.body, color: color.secondary, marginTop: space.xs, marginBottom: space.lg },
   boxesWrap: { position: 'relative' },
-  hiddenInput: { position: 'absolute', opacity: 0, height: 1, width: 1 },
+  boxesVisual: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
+  hiddenInput: { opacity: 0, height: 56 },
   resendText: { ...text.caption, color: color.secondary, textAlign: 'center', marginTop: space.md },
   resendButton: { minHeight: hit.min, alignItems: 'center', justifyContent: 'center', marginTop: space.md },
   resendLabel: { ...text.label, color: color.leaf },

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll, StickyFooter } from '@/components/layout';
-import { ChevronLeftIcon, CheckIcon } from '@/components/icons';
+import { color, radius, space, text } from '@/theme';
+import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
+import { CheckIcon } from '@/components/icons';
 import { Input } from '@/components/primitives';
 import { OptionRow } from './_components/OptionRow';
 import { useT } from '@/i18n';
@@ -44,20 +44,10 @@ export default function Underwriting() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('underwriting_title')}</Text>
-      </View>
+      <ScreenHeader title={t('underwriting_title')} />
       <ScreenScroll contentInsetBottom={80}>
         <View style={styles.fields}>
-          <Input label={t('underwriting_tin')} value={account.tin} onChangeText={() => undefined} />
+          <Input label={t('underwriting_tin')} value={account.tin} onChangeText={() => undefined} editable={false} />
           <Input label={t('underwriting_reason')} value={reason} onChangeText={setReason} />
           <View>
             <Text style={styles.label}>{t('underwriting_firstTime')}</Text>
@@ -112,17 +102,6 @@ export default function Underwriting() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   fields: { gap: space.lg, marginTop: space.md },
   label: { ...text.label, color: color.ink, marginBottom: space.sm },
   button: {

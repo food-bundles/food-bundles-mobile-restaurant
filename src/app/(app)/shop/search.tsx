@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color, hit, radius, space, text } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { SearchField } from './_components/SearchField';
@@ -12,6 +13,7 @@ const RECENT_SEARCHES = ['Onions', 'Eggs', 'Cabbage'];
 
 export default function Search() {
   const t = useT();
+  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
 
   const results = useMemo(() => {
@@ -22,7 +24,7 @@ export default function Search() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
         <SearchField value={query} onChangeText={setQuery} placeholder={t('shop_searchProduce')} />
         <Pressable
           onPress={() => router.back()}

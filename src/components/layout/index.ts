@@ -1,5 +1,7 @@
 export { ScreenScroll } from './ScreenScroll';
 export type { ScreenScrollProps } from './ScreenScroll';
+export { ScreenHeader } from './ScreenHeader';
+export type { ScreenHeaderProps } from './ScreenHeader';
 export { SectionHeader } from './SectionHeader';
 export type { SectionHeaderProps } from './SectionHeader';
 export { StickyFooter } from './StickyFooter';

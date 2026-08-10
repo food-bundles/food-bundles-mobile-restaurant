@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll, StickyFooter } from '@/components/layout';
-import { ChevronLeftIcon, PersonIcon } from '@/components/icons';
+import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
+import { PersonIcon } from '@/components/icons';
 import { Input } from '@/components/primitives';
 import { PermissionRow } from './_components/PermissionRow';
 import { useT } from '@/i18n';
@@ -18,17 +18,7 @@ export default function AddAffiliator() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <Text style={styles.title}>{t('aff_addTitle')}</Text>
-      </View>
+      <ScreenHeader title={t('aff_addTitle')} />
       <ScreenScroll contentInsetBottom={80}>
         <Text style={styles.label}>{t('aff_photo')}</Text>
         <View style={styles.photoRow}>
@@ -74,17 +64,6 @@ export default function AddAffiliator() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
   label: { ...text.label, color: color.ink, marginTop: space.md, marginBottom: space.sm },
   photoRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   photoPlaceholder: {
