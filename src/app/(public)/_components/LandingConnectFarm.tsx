@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, View, type LayoutChangeEvent } from 'react-nat
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { color, radius, space, text } from '@/theme';
 import { useT } from '@/i18n';
-import { PLACEHOLDER_IMAGE } from '@/mocks';
+import { LANDING_IMAGES } from '@/mocks';
 
 const STATS = [
   { key: 'delivery', value: '24/7', label: 'Delivery' },
@@ -39,7 +39,7 @@ export function LandingConnectFarm() {
       <Text style={styles.title}>{t('landing_connectTitle')}</Text>
       <Text style={styles.subtitle}>{t('landing_connectSubtitle')}</Text>
       <Image
-        source={PLACEHOLDER_IMAGE}
+        source={LANDING_IMAGES.farmWorkersHarvesting}
         accessible
         accessibilityLabel={t('a11y_farmImage')}
         style={styles.image}

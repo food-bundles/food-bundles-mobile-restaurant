@@ -107,6 +107,7 @@ export interface Farm {
   id: string;
   name: string;
   category: ProductCategory;
+  image: ImageSourcePropType;
 }
 
 export interface Plan {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { color, radius, space, text } from '@/theme';
 import { useT } from '@/i18n';
-import { farms, PLACEHOLDER_IMAGE } from '@/mocks';
+import { farms } from '@/mocks';
 
 export function LandingFarms() {
   const t = useT();
@@ -23,7 +23,7 @@ export function LandingFarms() {
       <Text style={styles.subtitle}>{t('landing_farmsSubtitle')}</Text>
       <View style={styles.card}>
         <Image
-          source={PLACEHOLDER_IMAGE}
+          source={activeFarm.image}
           accessible
           accessibilityLabel={`${activeFarm.name} farm`}
           style={styles.image}

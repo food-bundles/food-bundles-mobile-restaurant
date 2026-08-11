@@ -8,4 +8,4 @@ export { affiliators } from './affiliators';
 export { addresses } from './addresses';
 export { plans } from './plans';
 export { account } from './account';
-export { PLACEHOLDER_IMAGE } from './placeholderImage';
+export { LANDING_IMAGES } from './landingImages';

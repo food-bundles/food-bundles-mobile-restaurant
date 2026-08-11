@@ -2,7 +2,7 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, radius, space, text } from '@/theme';
 import { useT } from '@/i18n';
-import { PLACEHOLDER_IMAGE } from '@/mocks';
+import { LANDING_IMAGES } from '@/mocks';
 
 export function LandingHero() {
   const t = useT();
@@ -10,7 +10,7 @@ export function LandingHero() {
   return (
     <View style={styles.container}>
       <Image
-        source={PLACEHOLDER_IMAGE}
+        source={LANDING_IMAGES.chefPreparing}
         accessible
         accessibilityLabel={t('a11y_chefImage')}
         style={styles.image}

@@ -1,5 +1,5 @@
 import type { Product } from './types';
-import { PLACEHOLDER_IMAGE } from './placeholderImage';
+import { PRODUCT_IMAGES } from './productImages';
 
 export const products: Product[] = [
   {
@@ -9,7 +9,7 @@ export const products: Product[] = [
     price: 12500,
     rating: 4.6,
     category: 'FRESH_VEGETABLES',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.irishPotatoes,
   },
   {
     id: 'fresh-tomatoes',
@@ -18,7 +18,7 @@ export const products: Product[] = [
     price: 8200,
     rating: 4.5,
     category: 'FRESH_VEGETABLES',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.freshTomatoes,
   },
   {
     id: 'red-onions',
@@ -27,7 +27,7 @@ export const products: Product[] = [
     price: 9600,
     rating: 4.4,
     category: 'FRESH_VEGETABLES',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.redOnions,
   },
   {
     id: 'cabbage',
@@ -37,7 +37,7 @@ export const products: Product[] = [
     wasPrice: 4200,
     rating: 4.3,
     category: 'DISCOUNTED',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.cabbage,
   },
   {
     id: 'spinach',
@@ -46,7 +46,7 @@ export const products: Product[] = [
     price: 3900,
     rating: 4.5,
     category: 'FRESH_VEGETABLES',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.spinach,
   },
   {
     id: 'green-beans',
@@ -55,7 +55,7 @@ export const products: Product[] = [
     price: 6800,
     rating: 4.6,
     category: 'FRESH_VEGETABLES',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.greenBeans,
   },
   {
     id: 'carrots',
@@ -64,7 +64,7 @@ export const products: Product[] = [
     price: 5400,
     rating: 4.4,
     category: 'FRESH_VEGETABLES',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.carrots,
   },
   {
     id: 'eggs',
@@ -73,7 +73,7 @@ export const products: Product[] = [
     price: 9800,
     rating: 4.7,
     category: 'ANIMAL_PRODUCTS',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.eggs,
   },
   {
     id: 'fresh-milk',
@@ -82,7 +82,7 @@ export const products: Product[] = [
     price: 6500,
     rating: 4.6,
     category: 'ANIMAL_PRODUCTS',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.freshMilk,
   },
   {
     id: 'bananas',
@@ -91,7 +91,7 @@ export const products: Product[] = [
     price: 7400,
     rating: 4.5,
     category: 'FRESH_FRUITS',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.bananas,
   },
   {
     id: 'rice',
@@ -100,7 +100,7 @@ export const products: Product[] = [
     price: 32000,
     rating: 4.8,
     category: 'OTHERS',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.rice,
   },
   {
     id: 'cooking-oil',
@@ -109,7 +109,7 @@ export const products: Product[] = [
     price: 41000,
     rating: 4.7,
     category: 'OTHERS',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.cookingOil,
   },
   {
     id: 'avocados',
@@ -119,6 +119,6 @@ export const products: Product[] = [
     wasPrice: 10400,
     rating: 4.6,
     category: 'DISCOUNTED',
-    image: PLACEHOLDER_IMAGE,
+    image: PRODUCT_IMAGES.avocados,
   },
 ];
