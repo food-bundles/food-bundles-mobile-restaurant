@@ -9,14 +9,14 @@ export default function Splash() {
   const t = useT();
 
   useEffect(() => {
-    const timer = setTimeout(() => router.replace('/(public)/landing'), 1700);
+    const timer = setTimeout(() => router.replace('/(public)/onboarding'), 1700);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <Pressable
       style={styles.container}
-      onPress={() => router.replace('/(public)/landing')}
+      onPress={() => router.replace('/(public)/onboarding')}
       accessibilityRole="button"
       accessibilityLabel={t('a11y_skipSplash')}
     >

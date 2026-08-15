@@ -24,7 +24,7 @@ export default function Login() {
   return (
     <ScreenScroll>
       <Pressable
-        onPress={() => router.push('/(public)/landing')}
+        onPress={() => router.push('/(public)/onboarding')}
         accessibilityRole="button"
         accessibilityLabel={t('auth_backToBrowsing')}
         style={styles.backButton}

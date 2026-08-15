@@ -4,7 +4,7 @@ import { useSessionStore } from '@/stores/sessionStore';
 export default function AppLayout() {
   const isAuthenticated = useSessionStore((s) => s.isAuthenticated);
 
-  if (!isAuthenticated) return <Redirect href="/(public)/landing" />;
+  if (!isAuthenticated) return <Redirect href="/(public)/onboarding" />;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>

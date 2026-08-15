@@ -103,13 +103,6 @@ export interface Affiliator {
   status: AffiliatorStatus;
 }
 
-export interface Farm {
-  id: string;
-  name: string;
-  category: ProductCategory;
-  image: ImageSourcePropType;
-}
-
 export interface Plan {
   id: Exclude<Tier, 'NONE'>;
   name: string;

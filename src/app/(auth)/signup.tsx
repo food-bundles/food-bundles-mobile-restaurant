@@ -37,7 +37,7 @@ export default function Signup() {
           <ChevronLeftIcon />
         </Pressable>
         <Pressable
-          onPress={() => router.push('/(public)/landing')}
+          onPress={() => router.push('/(public)/onboarding')}
           accessibilityRole="button"
           accessibilityLabel={t('auth_backToBrowsing')}
           style={styles.backButton}
