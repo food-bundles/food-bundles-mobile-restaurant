@@ -40,7 +40,7 @@ export default function Search() {
           <>
             <Text style={styles.sectionLabel}>{t('shop_results')}</Text>
             <View style={styles.gridGap}>
-              <ProductGrid products={results} />
+              <ProductGrid products={results} scrollEnabled={false} />
             </View>
           </>
         ) : (

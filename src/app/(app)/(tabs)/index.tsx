@@ -1,6 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
-import { ScreenScroll, SectionHeader } from '@/components/layout';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { SectionHeader } from '@/components/layout';
 import { CategoryChips, type CategoryOption } from '@/app/(public)/_components/CategoryChips';
 import { ShopHomeHeader } from '../shop/_components/ShopHomeHeader';
 import { SearchTrigger } from '../shop/_components/SearchTrigger';
@@ -10,7 +12,7 @@ import { ProductGrid } from '../shop/_components/ProductGrid';
 import { SeeAllLink } from '../shop/_components/SeeAllLink';
 import { products } from '@/mocks';
 import { useT } from '@/i18n';
-import { space } from '@/theme';
+import { color, space } from '@/theme';
 
 const CATEGORY_OPTIONS: CategoryOption[] = [
   { key: 'ALL', label: 'All' },
@@ -21,10 +23,12 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
 
 export default function ShopHome() {
   const t = useT();
+  const insets = useSafeAreaInsets();
+  const tabBarHeight = useBottomTabBarHeight();
 
   return (
     <View style={styles.container}>
-      <ScreenScroll contentInsetBottom={100}>
+      <View style={[styles.stickyHeader, { paddingTop: insets.top }]}>
         <ShopHomeHeader />
         <View style={styles.searchGap}>
           <SearchTrigger />
@@ -45,23 +49,28 @@ export default function ShopHome() {
             }
           />
         </View>
-        <View style={styles.sectionGap}>
-          <SectionHeader title={t('shop_popularWeek')} action={<SeeAllLink />} />
-        </View>
-        <View style={styles.gridGap}>
-          <ProductGrid products={products.slice(0, 4)} />
-        </View>
-      </ScreenScroll>
+      </View>
+      <ProductGrid
+        products={products.slice(0, 4)}
+        fill
+        contentContainerStyle={[styles.gridContent, { paddingBottom: tabBarHeight + space.xxl }]}
+        ListHeaderComponent={
+          <View style={styles.sectionGap}>
+            <SectionHeader title={t('shop_popularWeek')} action={<SeeAllLink />} />
+          </View>
+        }
+      />
       <SupportFab />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, backgroundColor: color.oat },
+  stickyHeader: { backgroundColor: color.oat },
   searchGap: { marginTop: space.md, paddingHorizontal: space.lg },
   carouselGap: { marginTop: space.md },
-  chipsGap: { marginTop: space.md, paddingHorizontal: space.lg },
-  sectionGap: { paddingHorizontal: space.lg },
-  gridGap: { paddingHorizontal: space.lg, marginTop: space.md },
+  chipsGap: { marginTop: space.md, paddingHorizontal: space.lg, paddingBottom: space.sm },
+  sectionGap: { paddingBottom: space.sm },
+  gridContent: { paddingHorizontal: space.lg },
 });

@@ -43,7 +43,7 @@ export default function Category() {
           <SortToggle sort={sort} onToggle={() => setSort((s) => (s === 'asc' ? 'desc' : 'asc'))} />
         </View>
         <View style={styles.gridGap}>
-          <ProductGrid products={sorted} />
+          <ProductGrid products={sorted} scrollEnabled={false} />
         </View>
       </ScreenScroll>
     </View>
