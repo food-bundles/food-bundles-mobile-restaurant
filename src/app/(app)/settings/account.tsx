@@ -37,17 +37,18 @@ export default function Account() {
     <View style={styles.container}>
       <ScreenHeader title={t('settings_account')} />
       <ScreenScroll contentInsetBottom={40}>
-        <View style={styles.profileCard}>
+        <View style={styles.hero}>
           <ProfileImagePicker
-            size={96}
+            size={120}
             imageUri={restaurantImageUri}
             initials="AU"
             accessibilityLabel={t('settings_changeProfilePhoto')}
             onPicked={setRestaurantImage}
           />
-          <View>
-            <Text style={styles.name}>{account.managerName}</Text>
-            <Text style={styles.role}>{t('more_managerLabel', { business: account.businessName })}</Text>
+          <Text style={styles.heroName}>{account.businessName}</Text>
+          <Text style={styles.heroRole}>{t('more_managerLabel', { business: account.businessName })}</Text>
+          <View style={styles.restaurantChip}>
+            <Text style={styles.restaurantChipLabel}>{t('settings_restaurantBadge')}</Text>
           </View>
         </View>
         <Text style={styles.sectionLabel}>{t('settings_account')}</Text>
@@ -82,20 +83,18 @@ export default function Account() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  profileCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.md,
-    backgroundColor: color.paper,
-    borderWidth: 1,
-    borderColor: color.hairline,
-    borderRadius: radius.lg,
-    padding: space.md,
-    marginTop: space.md,
+  hero: { alignItems: 'center', marginTop: space.lg, gap: space.xs },
+  heroName: { ...text.h1, color: color.ink, marginTop: space.md },
+  heroRole: { ...text.caption, color: color.secondary },
+  restaurantChip: {
+    backgroundColor: color.tintLeaf,
+    borderRadius: radius.pill,
+    paddingHorizontal: space.md,
+    paddingVertical: space.xs,
+    marginTop: space.xs,
   },
-  name: { ...text.h2, color: color.ink },
-  role: { ...text.caption, color: color.secondary, marginTop: 2 },
-  sectionLabel: { ...text.overline, color: color.secondary, marginTop: space.lg, marginBottom: space.sm },
+  restaurantChipLabel: { ...text.micro, color: color.leaf },
+  sectionLabel: { ...text.overline, color: color.secondary, marginTop: space.xl, marginBottom: space.sm },
   group: {
     backgroundColor: color.paper,
     borderWidth: 1,
