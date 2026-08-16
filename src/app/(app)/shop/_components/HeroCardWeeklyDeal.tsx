@@ -7,22 +7,41 @@ import { HeroCardLink } from './HeroCardLink';
 import { LANDING_IMAGES } from '@/mocks/landingImages';
 
 export interface HeroCardWeeklyDealProps {
+  phase: 1 | 2;
   overline: string;
   title: string;
   subtitle: string;
+  closesInLabel: string;
   linkLabel: string;
   onPress: () => void;
 }
 
-export function HeroCardWeeklyDeal({ overline, title, subtitle, linkLabel, onPress }: HeroCardWeeklyDealProps) {
+export function HeroCardWeeklyDeal({
+  phase,
+  overline,
+  title,
+  subtitle,
+  closesInLabel,
+  linkLabel,
+  onPress,
+}: HeroCardWeeklyDealProps) {
   const zoom = useSharedValue(1);
+  const subtitleFade = useSharedValue(1);
 
   useEffect(() => {
     zoom.value = 1;
     zoom.value = withTiming(1.13, { duration: signatureDuration.carouselKenBurns });
   }, [zoom]);
 
+  useEffect(() => {
+    subtitleFade.value = withTiming(0, { duration: signatureDuration.carouselPhaseFade / 2 }, () => {
+      subtitleFade.value = withTiming(1, { duration: signatureDuration.carouselPhaseFade / 2 });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
+
   const photoStyle = useAnimatedStyle(() => ({ transform: [{ scale: zoom.value }] }));
+  const subtitleStyle = useAnimatedStyle(() => ({ opacity: subtitleFade.value }));
 
   return (
     <HeroCardShell
@@ -40,7 +59,9 @@ export function HeroCardWeeklyDeal({ overline, title, subtitle, linkLabel, onPre
       <View />
       <View>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
+        <Animated.Text style={[styles.subtitle, subtitleStyle]}>
+          {phase === 1 ? subtitle : closesInLabel}
+        </Animated.Text>
         <View style={styles.linkGap}>
           <HeroCardLink label={linkLabel} />
         </View>

@@ -7,6 +7,28 @@ export const duration = {
   tint: 150,
 } as const;
 
+/**
+ * Bespoke timings for the app's few named "signature motion" moments
+ * (OrderStatusRail pulse, Skeleton sweep, confirmation check draw-in).
+ * Deliberately outside the generic duration set above — see the motion skill.
+ */
+export const signatureDuration = {
+  skeletonSweep: 1400,
+  railPulse: 2000,
+  confirmDiscDelay: 250,
+  confirmDiscPop: 400,
+  confirmFadeIn: 200,
+  confirmCheckDelay: 450,
+  confirmCheckDraw: 350,
+  carouselCardEntrance: 340,
+  carouselProgressWipe: 800,
+  carouselKenBurns: 9000,
+  carouselSunSpin: 9000,
+  carouselPhaseFade: 400,
+  carouselPulseScale: 260,
+  carouselShimmerSweep: 900,
+} as const;
+
 export const easing = {
   standard: Easing.bezier(0.33, 0.7, 0, 1),
   spring: Easing.bezier(0.34, 1.56, 0.64, 1),

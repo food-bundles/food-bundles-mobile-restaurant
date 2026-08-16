@@ -13,7 +13,8 @@ import { useSessionStore, useVouchersStore } from '@/stores';
 import { useT } from '@/i18n';
 import { account, orders } from '@/mocks';
 
-const ADVANCE_MS = 2500;
+const ADVANCE_MS = 10000;
+const PHASE_SWITCH_MS = 5000;
 const MARKET_ROWS = [
   { market: 'Kimironko', price: 8600 },
   { market: 'Nyabugogo', price: 8900 },
@@ -23,6 +24,7 @@ const MARKET_ROWS = [
 export function HeroCarousel() {
   const t = useT();
   const [index, setIndex] = useState(0);
+  const [phase, setPhase] = useState<1 | 2>(1);
   const [paused, setPaused] = useState(false);
   const subscribed = useSessionStore((s) => s.subscribed);
   const creditLimit = useVouchersStore((s) => s.creditLimit);
@@ -34,42 +36,52 @@ export function HeroCarousel() {
     <HeroCardActiveOrder
       key="active-order"
       order={activeOrder}
+      phase={phase}
       overline={t('hero_activeOrderTitle')}
       statusLabel={t('st_intransit')}
       arrivingLabel={t('hero_activeOrderSubtitle', { id: activeOrder.id })}
+      etaLabel={t('hero_activeOrderEta')}
       stepLabel={t('orders_stepOfTotal', { step: activeOrder.step, total: 6 })}
       linkLabel={t('checkout_trackOrder')}
       onPress={() => router.push({ pathname: '/(app)/orders/[id]', params: { id: activeOrder.id } })}
     />,
     <HeroCardWallet
       key="wallet"
+      phase={phase}
       overline={t('hero_walletTitle')}
       balance={account.walletBalance}
       subtitle={t('hero_walletSubtitle')}
+      lastTransactionLabel={t('hero_walletLastTransaction')}
       linkLabel={t('wallet_topUp')}
       onPress={() => router.push('/(app)/(tabs)/wallet')}
     />,
     <HeroCardVouchers
       key="vouchers"
+      phase={phase}
       overline={t('hero_vouchersTitle')}
       subscribed={subscribed}
       title={subscribed ? t('hero_vouchersTitle') : t('sub_unlockTitle')}
       subtitle={subscribed ? t('hero_vouchersSubtitleActive') : t('hero_vouchersSubtitleLocked')}
       usedFraction={creditLimit > 0 ? creditUsed / creditLimit : 0}
       available={creditLimit - creditUsed}
+      settlementLabel={t('hero_vouchersNextSettlement')}
+      unlockCta={t('hero_vouchersUnlockCta')}
       linkLabel={subscribed ? t('vouchers_useAtCheckout') : t('sub_seePlans')}
       onPress={() => router.push({ pathname: '/(app)/(tabs)/wallet', params: { tab: 'vouchers' } })}
     />,
     <HeroCardWeeklyDeal
       key="weekly-deal"
+      phase={phase}
       overline={t('shop_weeklyDeal')}
       title={t('shop_weeklyDeal')}
       subtitle={t('shop_orderByForNextDay')}
+      closesInLabel={t('hero_weeklyDealClosesIn')}
       linkLabel={t('hero_orderNow')}
       onPress={() => router.push('/(app)/shop/category')}
     />,
     <HeroCardMarketPrices
       key="market-prices"
+      phase={phase}
       overline={t('hero_marketPricesTitle')}
       badge={t('shop_premium')}
       commodity={t('hero_marketCommodity')}
@@ -79,6 +91,7 @@ export function HeroCarousel() {
     />,
     <HeroCardWeather
       key="weather"
+      phase={phase}
       overline={t('hero_weatherTitle')}
       title={t('hero_weatherSubtitle')}
       subtitle={t('hero_weatherLocation')}
@@ -96,6 +109,13 @@ export function HeroCarousel() {
   }, [paused, cards.length]);
 
   useEffect(() => {
+    if (paused) return;
+    const timer = setTimeout(() => setPhase(2), PHASE_SWITCH_MS);
+    return () => clearTimeout(timer);
+  }, [index, paused]);
+
+  useEffect(() => {
+    setPhase(1);
     entrance.value = 0;
     entrance.value = withTiming(1, { duration: signatureDuration.carouselCardEntrance });
     // eslint-disable-next-line react-hooks/exhaustive-deps

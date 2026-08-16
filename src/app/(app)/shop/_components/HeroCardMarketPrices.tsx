@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { color, space, text } from '@/theme';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { color, signatureDuration, space, text } from '@/theme';
 import { formatRwf } from '@/lib';
 import { HeroCardShell } from './HeroCardShell';
 import { HeroCardLink } from './HeroCardLink';
@@ -11,6 +13,7 @@ export interface MarketRow {
 }
 
 export interface HeroCardMarketPricesProps {
+  phase: 1 | 2;
   overline: string;
   badge: string;
   commodity: string;
@@ -20,6 +23,7 @@ export interface HeroCardMarketPricesProps {
 }
 
 export function HeroCardMarketPrices({
+  phase,
   overline,
   badge,
   commodity,
@@ -27,16 +31,40 @@ export function HeroCardMarketPrices({
   linkLabel,
   onPress,
 }: HeroCardMarketPricesProps) {
+  const highlight = useSharedValue(0);
+
+  useEffect(() => {
+    highlight.value = phase === 2 ? withTiming(1, { duration: signatureDuration.carouselPhaseFade }) : withTiming(0);
+  }, [highlight, phase]);
+
+  const highlightStyle = useAnimatedStyle(() => ({
+    borderLeftWidth: 2 + highlight.value * 2,
+    borderLeftColor: color.leaf,
+  }));
+
   return (
-    <HeroCardShell onPress={onPress} accessibilityLabel={`${overline}, ${commodity}`} tone="paper" overline={overline} badge={badge}>
+    <HeroCardShell
+      onPress={onPress}
+      accessibilityLabel={`${overline}, ${commodity}`}
+      tone="paper"
+      overline={overline}
+      badge={badge}
+    >
       <View>
         <Text style={styles.commodity}>{commodity}</Text>
-        {rows.map((row) => (
-          <View key={row.market} style={styles.row}>
-            <Text style={[styles.market, row.best && styles.marketBest]}>{row.market}</Text>
-            <Text style={[styles.price, row.best && styles.priceBest]}>{formatRwf(row.price)}</Text>
-          </View>
-        ))}
+        {rows.map((row) =>
+          row.best ? (
+            <Animated.View key={row.market} style={[styles.row, styles.bestRow, highlightStyle]}>
+              <Text style={styles.marketBest}>{row.market}</Text>
+              <Text style={styles.priceBest}>{formatRwf(row.price)}</Text>
+            </Animated.View>
+          ) : (
+            <View key={row.market} style={styles.row}>
+              <Text style={styles.market}>{row.market}</Text>
+              <Text style={styles.price}>{formatRwf(row.price)}</Text>
+            </View>
+          ),
+        )}
       </View>
       <HeroCardLink label={linkLabel} tone="leaf" />
     </HeroCardShell>
@@ -46,6 +74,7 @@ export function HeroCardMarketPrices({
 const styles = StyleSheet.create({
   commodity: { ...text.bodySemi, color: color.ink, marginBottom: space.xs },
   row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 1 },
+  bestRow: { paddingLeft: space.xs, borderLeftWidth: 2, borderLeftColor: 'transparent' },
   market: { ...text.caption, color: color.secondary },
   marketBest: { ...text.bodySemi, color: color.leaf },
   price: { ...text.caption, color: color.ink, fontVariant: ['tabular-nums'] },
