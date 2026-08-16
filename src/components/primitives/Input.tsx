@@ -1,6 +1,7 @@
 import { useId } from 'react';
 import { StyleSheet, Text, TextInput, View, type KeyboardTypeOptions } from 'react-native';
 import { color, hit, radius, space, text } from '@/theme';
+import { InfoCircleIcon } from '@/components/icons';
 
 export interface InputProps {
   label: string;
@@ -9,9 +10,12 @@ export interface InputProps {
   placeholder?: string;
   error?: string;
   helper?: string;
+  /** 'amber' pairs the helper with an info-circle icon for required-later style notices. */
+  helperTone?: 'muted' | 'amber';
   keyboardType?: KeyboardTypeOptions;
   secureTextEntry?: boolean;
   editable?: boolean;
+  maxLength?: number;
   rightSlot?: React.ReactNode;
 }
 
@@ -22,9 +26,11 @@ export function Input({
   placeholder,
   error,
   helper,
+  helperTone = 'muted',
   keyboardType,
   secureTextEntry,
   editable = true,
+  maxLength,
   rightSlot,
 }: InputProps) {
   const id = useId();
@@ -42,6 +48,7 @@ export function Input({
           keyboardType={keyboardType}
           secureTextEntry={secureTextEntry}
           editable={editable}
+          maxLength={maxLength}
           placeholderTextColor={color.muted}
           accessibilityLabel={label}
           accessibilityLabelledBy={id}
@@ -54,7 +61,10 @@ export function Input({
           {error}
         </Text>
       ) : helper ? (
-        <Text style={styles.helperText}>{helper}</Text>
+        <View style={styles.helperRow}>
+          {helperTone === 'amber' ? <InfoCircleIcon size={14} /> : null}
+          <Text style={[styles.helperText, helperTone === 'amber' && styles.helperTextAmber]}>{helper}</Text>
+        </View>
       ) : null}
     </View>
   );
@@ -77,5 +87,7 @@ const styles = StyleSheet.create({
   input: { ...text.body, color: color.ink, flex: 1, paddingVertical: space.sm },
   inputDisabled: { color: color.muted },
   errorText: { ...text.caption, color: color.chili, marginTop: space.xs },
-  helperText: { ...text.caption, color: color.muted, marginTop: space.xs },
+  helperRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.xs, marginTop: space.xs },
+  helperText: { ...text.caption, color: color.muted, flex: 1 },
+  helperTextAmber: { color: color.tintedAmberText },
 });

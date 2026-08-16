@@ -17,8 +17,9 @@ export const auth = {
   auth_restaurant: 'Restaurant',
   auth_hotel: 'Hotel',
   auth_phone: 'Phone',
-  auth_tin: 'TIN (optional)',
-  auth_tinHelper: 'Required for EBM-linked invoicing — you can add this later.',
+  auth_tin: 'TIN (Tax Identification Number)',
+  auth_tinHelper: 'Required for EBM-linked invoicing — you can add this later',
+  auth_tinError: 'Enter your 9-digit TIN',
   auth_createAccountBtn: 'Create account',
   auth_staffNote:
     "Staff (affiliators) are added later by your manager inside the app — there's no separate staff sign-up.",
