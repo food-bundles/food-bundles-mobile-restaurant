@@ -1,20 +1,37 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, hit, radius, space, text } from '@/theme';
 import { useT } from '@/i18n';
 import { account } from '@/mocks';
-import { useCartStore, useNotificationsStore } from '@/stores';
+import { useCartStore, useNotificationsStore, useSessionStore } from '@/stores';
 import { BellIcon, BasketIcon } from '@/components/icons';
+
+function initialsOf(name: string): string {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase();
+}
 
 export function ShopHomeHeader() {
   const t = useT();
   const itemCount = useCartStore((state) => state.itemCount());
   const unreadCount = useNotificationsStore((state) => state.unreadCount());
+  const restaurantImageUri = useSessionStore((state) => state.restaurantImageUri);
 
   return (
     <View style={styles.row}>
       <View style={styles.venueRow}>
-        <View style={styles.venueLogo} />
+        {restaurantImageUri ? (
+          <Image source={{ uri: restaurantImageUri }} accessible={false} style={styles.venueLogo} />
+        ) : (
+          <View style={styles.venueLogo}>
+            <Text style={styles.venueInitials}>{initialsOf(account.businessName)}</Text>
+          </View>
+        )}
         <View>
           <Text style={styles.orderingFor}>{t('shop_orderingFor')}</Text>
           <Text style={styles.venueName}>{account.businessName}</Text>
@@ -61,7 +78,16 @@ const styles = StyleSheet.create({
     paddingTop: space.sm,
   },
   venueRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  venueLogo: { width: 38, height: 38, borderRadius: radius.md, backgroundColor: color.tintLeaf },
+  venueLogo: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.md,
+    backgroundColor: color.tintLeaf,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  venueInitials: { ...text.label, color: color.leaf },
   orderingFor: { ...text.caption, color: color.secondary },
   venueName: { ...text.h2, color: color.ink },
   actions: { flexDirection: 'row', gap: space.sm },

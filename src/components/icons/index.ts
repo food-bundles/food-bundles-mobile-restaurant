@@ -18,3 +18,4 @@ export { CloseIcon } from './CloseIcon';
 export { LocationPinIcon } from './LocationPinIcon';
 export { SendIcon } from './SendIcon';
 export { InfoCircleIcon } from './InfoCircleIcon';
+export { SunIcon } from './SunIcon';

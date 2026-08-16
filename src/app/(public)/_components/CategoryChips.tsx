@@ -15,7 +15,11 @@ export interface CategoryChipsProps {
 
 export function CategoryChips({ options, selected, onSelect }: CategoryChipsProps) {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={[styles.row, styles.rowGrow]}
+    >
       {options.map((option) => {
         const active = option.key === selected;
         return (
@@ -37,17 +41,18 @@ export function CategoryChips({ options, selected, onSelect }: CategoryChipsProp
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: space.sm },
+  rowGrow: { flexGrow: 1 },
   chip: {
     minHeight: hit.min,
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
     backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
+    borderColor: color.leaf,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipActive: { backgroundColor: color.tintLeaf, borderColor: color.leaf },
-  label: { ...text.label, color: color.secondary },
-  labelActive: { color: color.leaf },
+  chipActive: { backgroundColor: color.leaf, borderColor: color.leaf },
+  label: { ...text.label, color: color.leaf },
+  labelActive: { color: color.paper },
 });
