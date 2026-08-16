@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, radius, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
 import { VoucherIcon } from '@/components/icons';
 import { useT } from '@/i18n';
 
@@ -11,38 +10,34 @@ export function VouchersLocked() {
   const t = useT();
 
   return (
-    <ScreenScroll>
-      <Text style={styles.title}>{t('vouchers_title')}</Text>
-      <View style={styles.center}>
-        <View style={styles.iconWrap}>
-          <VoucherIcon size={30} color={color.tintedAmberText} />
-        </View>
-        <Text style={styles.lockedTitle}>{t('vouchers_lockedTitle')}</Text>
-        <Text style={styles.lockedSub}>{t('vouchers_lockedSub')}</Text>
-        <View style={styles.featureCard}>
-          {FEATURES.map((feature) => (
-            <Text key={feature} style={styles.feature}>
-              {'✓ '}
-              {feature}
-            </Text>
-          ))}
-        </View>
-        <Pressable
-          onPress={() => router.push('/(app)/subscription/plans')}
-          accessibilityRole="button"
-          accessibilityLabel={t('vouchers_choosePlanCta')}
-          style={styles.ctaButton}
-        >
-          <Text style={styles.ctaLabel}>{t('vouchers_choosePlanCta')}</Text>
-        </Pressable>
+    <View style={styles.center}>
+      <View style={styles.iconWrap}>
+        <VoucherIcon size={30} color={color.tintedAmberText} />
       </View>
-    </ScreenScroll>
+      <Text style={styles.lockedTitle}>{t('vouchers_lockedTitle')}</Text>
+      <Text style={styles.lockedSub}>{t('vouchers_lockedSub')}</Text>
+      <View style={styles.featureCard}>
+        {FEATURES.map((feature) => (
+          <Text key={feature} style={styles.feature}>
+            {'✓ '}
+            {feature}
+          </Text>
+        ))}
+      </View>
+      <Pressable
+        onPress={() => router.push('/(app)/subscription/plans')}
+        accessibilityRole="button"
+        accessibilityLabel={t('vouchers_choosePlanCta')}
+        style={styles.ctaButton}
+      >
+        <Text style={styles.ctaLabel}>{t('vouchers_choosePlanCta')}</Text>
+      </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  title: { ...text.h1, color: color.ink },
-  center: { alignItems: 'center', marginTop: space.xxl },
+  center: { alignItems: 'center', marginTop: space.md },
   iconWrap: {
     width: 66,
     height: 66,

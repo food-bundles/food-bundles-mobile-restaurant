@@ -23,6 +23,7 @@ export const subscription = {
   vouchers_activeLabel: 'Active',
   vouchers_repaymentDueLabel: 'Repayment due',
   vouchers_usedOfLimit: '{{used}} / {{limit}} used',
+  vouchers_startUsing: 'Start using vouchers',
 
   terms_title: 'Terms & conditions',
   terms_intro: 'Before your first credit subscription, please read and accept the FoodBundles credit terms.',

@@ -25,6 +25,7 @@ export const subscription: Record<keyof typeof subscriptionEn, string> = {
   vouchers_activeLabel: 'Actif',
   vouchers_repaymentDueLabel: 'Remboursement dû',
   vouchers_usedOfLimit: '{{used}} / {{limit}} utilisés',
+  vouchers_startUsing: 'Commencer à utiliser les bons',
 
   terms_title: 'Conditions générales',
   terms_intro: 'Avant votre premier abonnement de crédit, veuillez lire et accepter les conditions de crédit FoodBundles.',

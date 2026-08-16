@@ -58,7 +58,7 @@ export function HeroCarousel() {
       usedFraction={creditLimit > 0 ? creditUsed / creditLimit : 0}
       available={creditLimit - creditUsed}
       linkLabel={subscribed ? t('vouchers_useAtCheckout') : t('sub_seePlans')}
-      onPress={() => router.push('/(app)/(tabs)/vouchers')}
+      onPress={() => router.push({ pathname: '/(app)/(tabs)/wallet', params: { tab: 'vouchers' } })}
     />,
     <HeroCardWeeklyDeal
       key="weekly-deal"

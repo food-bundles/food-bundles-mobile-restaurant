@@ -8,6 +8,7 @@ import { OtpBoxes } from './_components/OtpBoxes';
 import { sleep } from '@/lib';
 import { useT } from '@/i18n';
 import { useVouchersStore } from '@/stores';
+import { orders } from '@/mocks';
 import type { Href } from 'expo-router';
 
 const CODE_LENGTH = 6;
@@ -32,6 +33,8 @@ export default function Otp() {
   const t = useT();
   const { purpose } = useLocalSearchParams<{ purpose?: Purpose }>();
   const submitCreditRequest = useVouchersStore((state) => state.submitRequest);
+  const deductCredit = useVouchersStore((state) => state.deductCredit);
+  const activeOrder = orders.find((order) => order.id === 'FB-24815') ?? orders[0];
   const [code, setCode] = useState(MOCK_PREFILL);
   const [seconds, setSeconds] = useState(RESEND_SECONDS);
   const [verifying, setVerifying] = useState(false);
@@ -48,6 +51,9 @@ export default function Otp() {
       await submitCreditRequest();
     } else {
       await sleep(1300);
+      if (purpose === undefined || purpose === 'payment') {
+        deductCredit(activeOrder.total);
+      }
     }
     setVerifying(false);
     router.replace(DESTINATIONS[purpose ?? 'payment']);

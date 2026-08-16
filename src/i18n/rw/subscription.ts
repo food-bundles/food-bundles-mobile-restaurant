@@ -25,6 +25,7 @@ export const subscription: Record<keyof typeof subscriptionEn, string> = {
   vouchers_activeLabel: 'Bikora',
   vouchers_repaymentDueLabel: 'Ubwishyu busabwa',
   vouchers_usedOfLimit: '{{used}} / {{limit}} byakoreshejwe',
+  vouchers_startUsing: 'Tangira gukoresha inguzanyo',
 
   terms_title: 'Amabwiriza n’amasezerano',
   terms_intro: 'Mbere y’iyandikisha ryawe rya mbere ry’inguzanyo, soma kandi wemeze amabwiriza y’inguzanyo za FoodBundles.',

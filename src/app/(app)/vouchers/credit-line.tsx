@@ -7,6 +7,7 @@ import { CreditAmountPicker } from './_components/CreditAmountPicker';
 import { PriceText } from '@/components/product';
 import { useVouchersStore } from '@/stores';
 import { useT } from '@/i18n';
+import { formatRwf } from '@/lib';
 
 export default function CreditLine() {
   const t = useT();
@@ -24,15 +25,15 @@ export default function CreditLine() {
           </View>
           <Text style={styles.completedTitle}>{t('creditLine_approvedTitle')}</Text>
           <Text style={styles.completedSub}>
-            {t('creditLine_approvedSub', { amount: `${creditLimit.toLocaleString('en-US')} RWF` })}
+            {t('creditLine_approvedSub', { amount: formatRwf(creditLimit) })}
           </Text>
           <Pressable
-            onPress={() => router.replace('/(app)/(tabs)/vouchers')}
+            onPress={() => router.replace({ pathname: '/(app)/(tabs)/wallet', params: { tab: 'vouchers' } })}
             accessibilityRole="button"
-            accessibilityLabel={t('vouchers_title')}
+            accessibilityLabel={t('vouchers_startUsing')}
             style={styles.completedButton}
           >
-            <Text style={styles.completedButtonLabel}>{t('vouchers_title')}</Text>
+            <Text style={styles.completedButtonLabel}>{t('vouchers_startUsing')} →</Text>
           </Pressable>
         </View>
       </ScreenScroll>

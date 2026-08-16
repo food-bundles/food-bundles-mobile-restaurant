@@ -4,7 +4,6 @@ export const common: Record<keyof typeof commonEn, string> = {
   tab_shop: 'Kugura',
   tab_orders: 'Ibyatumijwe',
   tab_wallet: 'Ikofi',
-  tab_vouchers: 'Inguzanyo',
   tab_more: 'Ibindi',
 
   st_pending: 'Bitegereje',

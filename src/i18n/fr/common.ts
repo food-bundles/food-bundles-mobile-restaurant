@@ -4,7 +4,6 @@ export const common: Record<keyof typeof commonEn, string> = {
   tab_shop: 'Boutique',
   tab_orders: 'Commandes',
   tab_wallet: 'Portefeuille',
-  tab_vouchers: 'Bons',
   tab_more: 'Plus',
 
   st_pending: 'En attente',

@@ -30,7 +30,7 @@ export default function Underwriting() {
           <Text style={styles.completedTitle}>{t('underwriting_completedTitle')}</Text>
           <Text style={styles.completedSub}>{t('underwriting_completedSub')}</Text>
           <Pressable
-            onPress={() => router.replace('/(app)/(tabs)/vouchers')}
+            onPress={() => router.replace({ pathname: '/(app)/(tabs)/wallet', params: { tab: 'vouchers' } })}
             accessibilityRole="button"
             accessibilityLabel={t('vouchers_useAtCheckout')}
             style={styles.completedButton}

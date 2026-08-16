@@ -20,7 +20,11 @@ export default function Help() {
         <View style={styles.group}>
           <SettingsRow label={t('help_ordersDelivery')} onPress={() => router.push('/(app)/(tabs)')} />
           <SettingsRow label={t('help_walletPayments')} onPress={() => router.push('/(app)/(tabs)/wallet')} />
-          <SettingsRow label={t('help_vouchersCredit')} onPress={() => router.push('/(app)/(tabs)/vouchers')} isLast />
+          <SettingsRow
+            label={t('help_vouchersCredit')}
+            onPress={() => router.push({ pathname: '/(app)/(tabs)/wallet', params: { tab: 'vouchers' } })}
+            isLast
+          />
         </View>
         <View style={styles.contactCard}>
           <View style={styles.contactText}>

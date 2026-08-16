@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color, hit, radius, space, text } from '@/theme';
 import { useT } from '@/i18n';
-import { BasketIcon, OrdersIcon, WalletIcon, VoucherIcon, MoreIcon, type IconProps } from '@/components/icons';
+import { BasketIcon, OrdersIcon, WalletIcon, MoreIcon, type IconProps } from '@/components/icons';
 
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
   return <Text style={[styles.label, focused && styles.labelActive]}>{label}</Text>;
@@ -58,14 +58,6 @@ export default function TabsLayout() {
           title: t('tab_wallet'),
           tabBarLabel: ({ focused }) => <TabLabel label={t('tab_wallet')} focused={focused} />,
           tabBarIcon: ({ focused }) => <TabIconPill Icon={WalletIcon} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="vouchers"
-        options={{
-          title: t('tab_vouchers'),
-          tabBarLabel: ({ focused }) => <TabLabel label={t('tab_vouchers')} focused={focused} />,
-          tabBarIcon: ({ focused }) => <TabIconPill Icon={VoucherIcon} focused={focused} />,
         }}
       />
       <Tabs.Screen

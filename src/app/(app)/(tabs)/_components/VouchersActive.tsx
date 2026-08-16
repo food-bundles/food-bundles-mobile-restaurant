@@ -1,11 +1,10 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, radius, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
 import { CreditLineCard } from './CreditLineCard';
 import { useVouchersStore, useSessionStore } from '@/stores';
 import { useT } from '@/i18n';
-import { formatDate } from '@/lib';
+import { formatDate, formatRwf } from '@/lib';
 
 export function VouchersActive() {
   const t = useT();
@@ -16,7 +15,7 @@ export function VouchersActive() {
   const isRepaymentDue = creditUsed > 0;
 
   return (
-    <ScreenScroll>
+    <View>
       <View style={styles.header}>
         <Text style={styles.title}>{t('vouchers_title')}</Text>
         <View style={styles.planBadge}>
@@ -46,17 +45,17 @@ export function VouchersActive() {
       <View style={styles.repaymentCard}>
         <View>
           <Text style={styles.repaymentTitle}>{t('vouchers_nextSettlement')}</Text>
-          <Text style={styles.repaymentSub}>{t('vouchers_due', { amount: `${creditUsed.toLocaleString('en-US')} RWF` })}</Text>
+          <Text style={styles.repaymentSub}>{t('vouchers_due', { amount: formatRwf(creditUsed) })}</Text>
         </View>
         <Text style={styles.repaymentDate}>{formatDate(dueDate)}</Text>
       </View>
-    </ScreenScroll>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  title: { ...text.h1, color: color.ink },
+  title: { ...text.h2, color: color.ink },
   planBadge: { backgroundColor: color.tintLeaf, borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 3 },
   planLabel: { ...text.micro, color: color.pine },
   cardGap: { marginTop: space.md },

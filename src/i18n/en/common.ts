@@ -2,7 +2,6 @@ export const common = {
   tab_shop: 'Shop',
   tab_orders: 'Orders',
   tab_wallet: 'Wallet',
-  tab_vouchers: 'Vouchers',
   tab_more: 'More',
 
   st_pending: 'Pending',

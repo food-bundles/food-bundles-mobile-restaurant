@@ -15,6 +15,8 @@ interface VouchersState {
   submitting: boolean;
   adjustRequested: (delta: number) => void;
   submitRequest: () => Promise<void>;
+  /** Records a completed voucher payment against the credit line, raising creditUsed. */
+  deductCredit: (amount: number) => void;
 }
 
 export const useVouchersStore = create<VouchersState>((set, get) => ({
@@ -33,6 +35,8 @@ export const useVouchersStore = create<VouchersState>((set, get) => ({
     await sleep(1300);
     set({ submitting: false, approved: true, creditLimit: get().requestedAmount });
   },
+  deductCredit: (amount) =>
+    set((state) => ({ creditUsed: Math.min(state.creditLimit, state.creditUsed + amount) })),
 }));
 
 export const isVouchersUnlocked = (tier: Tier): boolean => tier !== 'NONE';
