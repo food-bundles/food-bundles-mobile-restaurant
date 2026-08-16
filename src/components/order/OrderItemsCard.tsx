@@ -9,14 +9,16 @@ export interface OrderItemsCardProps {
   lines: OrderLine[];
   title?: string;
   showCount?: boolean;
+  /** Drops the card border/background — used inside sheets that already provide a surface. */
+  bare?: boolean;
 }
 
-export function OrderItemsCard({ lines, title, showCount = true }: OrderItemsCardProps) {
+export function OrderItemsCard({ lines, title, showCount = true, bare = false }: OrderItemsCardProps) {
   const t = useT();
   const label = title ?? t('checkout_itemsInOrder');
 
   return (
-    <View style={styles.card}>
+    <View style={bare ? undefined : styles.card}>
       <View style={styles.headerRow}>
         <Text style={styles.label}>{label}</Text>
         {showCount ? <Text style={styles.count}>{t('checkout_itemsCount', { count: lines.length })}</Text> : null}
@@ -26,9 +28,12 @@ export function OrderItemsCard({ lines, title, showCount = true }: OrderItemsCar
         return (
           <View key={line.productId} style={styles.row}>
             {product ? <ProductLineImage source={product.image} label={line.name} /> : null}
-            <Text style={styles.name}>
-              {line.name} × {line.qty}
-            </Text>
+            <View style={styles.nameCol}>
+              <Text style={styles.name}>{line.name}</Text>
+              <Text style={styles.qty}>
+                {line.unit} × {line.qty}
+              </Text>
+            </View>
             <PriceText amount={line.each * line.qty} size="md" />
           </View>
         );
@@ -49,5 +54,7 @@ const styles = StyleSheet.create({
   label: { ...text.overline, color: color.secondary },
   count: { ...text.caption, color: color.secondary },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.xs },
-  name: { ...text.body, color: color.body, flex: 1 },
+  nameCol: { flex: 1 },
+  name: { ...text.bodySemi, color: color.ink },
+  qty: { ...text.caption, color: color.secondary, marginTop: 1 },
 });
