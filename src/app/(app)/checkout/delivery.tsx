@@ -23,8 +23,8 @@ export default function CheckoutDelivery() {
   return (
     <View style={styles.container}>
       <CheckoutStepHeader title={t('checkout_deliveryDetails')} step={1} />
-      <ScreenScroll contentInsetBottom={80}>
-        <View style={styles.mapGap}>
+      <ScreenScroll contentInsetBottom={80} applyTopInset={false}>
+        <View style={styles.mapBleed}>
           <DeliveryMap />
         </View>
         <Text style={styles.sectionLabel}>{t('checkout_deliverTo')}</Text>
@@ -73,7 +73,7 @@ export default function CheckoutDelivery() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: color.oat },
-  mapGap: { marginTop: space.md, borderRadius: radius.lg, overflow: 'hidden' },
+  mapBleed: { marginTop: space.md, marginHorizontal: -space.lg },
   sectionLabel: { ...text.overline, color: color.secondary, marginTop: space.md, marginBottom: space.sm },
   addressCard: {
     backgroundColor: color.paper,

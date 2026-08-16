@@ -16,7 +16,19 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "FoodBundles uses your location to set an accurate delivery pin."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "FoodBundles needs access to your photos to set your restaurant's profile picture."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
