@@ -43,4 +43,6 @@ export const settings = {
 
   a11y_addAddress: 'Add address',
   a11y_authenticatorQr: 'Authenticator QR code',
+  settings_changeProfilePhoto: 'Change restaurant profile photo',
+  settings_restaurantBadge: 'RESTAURANT',
 } as const;

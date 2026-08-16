@@ -19,3 +19,4 @@ export { LocationPinIcon } from './LocationPinIcon';
 export { SendIcon } from './SendIcon';
 export { InfoCircleIcon } from './InfoCircleIcon';
 export { SunIcon } from './SunIcon';
+export { CameraIcon } from './CameraIcon';

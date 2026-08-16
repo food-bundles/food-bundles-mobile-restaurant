@@ -45,4 +45,6 @@ export const settings: Record<keyof typeof settingsEn, string> = {
 
   a11y_addAddress: 'Ongeraho aderesi',
   a11y_authenticatorQr: 'Kode ya QR y’ikoreshwa ryo kwemeza',
+  settings_changeProfilePhoto: 'Hindura ifoto ya resitora',
+  settings_restaurantBadge: 'IRESITORA',
 };

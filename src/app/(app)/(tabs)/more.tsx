@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, radius, space, text } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
@@ -11,6 +11,7 @@ import { account, plans } from '@/mocks';
 export default function More() {
   const t = useT();
   const tier = useSessionStore((state) => state.tier);
+  const restaurantImageUri = useSessionStore((state) => state.restaurantImageUri);
   const unreadCount = useNotificationsStore((state) => state.unreadCount());
   const planLabel = plans.find((p) => p.id === tier)?.name ?? t('sub_noPlan');
 
@@ -23,9 +24,13 @@ export default function More() {
     <ScreenScroll>
       <Text style={styles.title}>{t('more_title')}</Text>
       <View style={styles.profileCard}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarLabel}>{initials}</Text>
-        </View>
+        {restaurantImageUri ? (
+          <Image source={{ uri: restaurantImageUri }} accessible={false} style={styles.avatar} />
+        ) : (
+          <View style={styles.avatar}>
+            <Text style={styles.avatarLabel}>{initials}</Text>
+          </View>
+        )}
         <View style={styles.profileText}>
           <Text style={styles.name}>{account.managerName}</Text>
           <Text style={styles.role}>{t('more_managerLabel', { business: account.businessName })}</Text>

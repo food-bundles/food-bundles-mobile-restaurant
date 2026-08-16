@@ -46,4 +46,6 @@ export const settings: Record<keyof typeof settingsEn, string> = {
 
   a11y_addAddress: 'Ajouter une adresse',
   a11y_authenticatorQr: 'Code QR d’authentification',
+  settings_changeProfilePhoto: 'Changer la photo du restaurant',
+  settings_restaurantBadge: 'RESTAURANT',
 };

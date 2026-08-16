@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { color, radius, space, text } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
+import { ProfileImagePicker } from '@/components/primitives';
 import { SettingsRow } from './_components/SettingsRow';
 import { useSessionStore } from '@/stores';
 import { useLanguage } from '@/stores';
@@ -18,6 +19,8 @@ const LANGUAGES: { code: Language; label: string }[] = [
 export default function Account() {
   const t = useT();
   const logout = useSessionStore((state) => state.logout);
+  const restaurantImageUri = useSessionStore((state) => state.restaurantImageUri);
+  const setRestaurantImage = useSessionStore((state) => state.setRestaurantImage);
   const [language, setLanguage] = useLanguage();
 
   const onLogout = () => {
@@ -35,9 +38,13 @@ export default function Account() {
       <ScreenHeader title={t('settings_account')} />
       <ScreenScroll contentInsetBottom={40}>
         <View style={styles.profileCard}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarLabel}>AU</Text>
-          </View>
+          <ProfileImagePicker
+            size={96}
+            imageUri={restaurantImageUri}
+            initials="AU"
+            accessibilityLabel={t('settings_changeProfilePhoto')}
+            onPicked={setRestaurantImage}
+          />
           <View>
             <Text style={styles.name}>{account.managerName}</Text>
             <Text style={styles.role}>{t('more_managerLabel', { business: account.businessName })}</Text>
@@ -86,8 +93,6 @@ const styles = StyleSheet.create({
     padding: space.md,
     marginTop: space.md,
   },
-  avatar: { width: 52, height: 52, borderRadius: 26, backgroundColor: color.tintLeaf, alignItems: 'center', justifyContent: 'center' },
-  avatarLabel: { ...text.h2, color: color.pine },
   name: { ...text.h2, color: color.ink },
   role: { ...text.caption, color: color.secondary, marginTop: 2 },
   sectionLabel: { ...text.overline, color: color.secondary, marginTop: space.lg, marginBottom: space.sm },
