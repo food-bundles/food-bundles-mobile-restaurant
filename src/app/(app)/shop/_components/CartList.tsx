@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { color, space, text } from '@/theme';
 import { SwipeRow } from '@/components/layout';
-import { QuantityStepper, PriceText } from '@/components/product';
+import { QuantityStepper, PriceText, ProductLineImage } from '@/components/product';
 import { useCartStore } from '@/stores';
 import { products } from '@/mocks';
 
@@ -23,6 +23,7 @@ export function CartList() {
             deleteLabel={`Remove ${product.name} from cart`}
           >
             <View style={styles.row}>
+              <ProductLineImage source={product.image} label={product.name} />
               <View style={styles.textCol}>
                 <Text style={styles.name}>{product.name}</Text>
                 <Text style={styles.unit}>{product.unit}</Text>

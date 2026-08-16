@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { color, radius, space, text } from '@/theme';
-import { PriceText } from '@/components/product';
+import { PriceText, ProductLineImage } from '@/components/product';
 import { useT } from '@/i18n';
+import { products } from '@/mocks';
 import type { OrderLine } from '@/mocks/types';
 
 export interface OrderItemsCardProps {
@@ -20,14 +21,18 @@ export function OrderItemsCard({ lines, title, showCount = true }: OrderItemsCar
         <Text style={styles.label}>{label}</Text>
         {showCount ? <Text style={styles.count}>{t('checkout_itemsCount', { count: lines.length })}</Text> : null}
       </View>
-      {lines.map((line) => (
-        <View key={line.productId} style={styles.row}>
-          <Text style={styles.name}>
-            {line.name} × {line.qty}
-          </Text>
-          <PriceText amount={line.each * line.qty} size="md" />
-        </View>
-      ))}
+      {lines.map((line) => {
+        const product = products.find((p) => p.id === line.productId);
+        return (
+          <View key={line.productId} style={styles.row}>
+            {product ? <ProductLineImage source={product.image} label={line.name} /> : null}
+            <Text style={styles.name}>
+              {line.name} × {line.qty}
+            </Text>
+            <PriceText amount={line.each * line.qty} size="md" />
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -43,6 +48,6 @@ const styles = StyleSheet.create({
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: space.xs },
   label: { ...text.overline, color: color.secondary },
   count: { ...text.caption, color: color.secondary },
-  row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: space.xs },
+  row: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.xs },
   name: { ...text.body, color: color.body, flex: 1 },
 });
