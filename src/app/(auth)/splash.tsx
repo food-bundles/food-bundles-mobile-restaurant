@@ -21,7 +21,7 @@ export default function Splash() {
       accessibilityLabel={t('a11y_skipSplash')}
     >
       <View style={styles.center}>
-        <LogoMark size={78} />
+        <LogoMark size={80} />
         <View style={styles.textCol}>
           <Text style={styles.title}>FoodBundles</Text>
           <Text style={styles.subtitle}>Fresh produce, sourced right.</Text>
