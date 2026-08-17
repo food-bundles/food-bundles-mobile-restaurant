@@ -7,6 +7,7 @@ export interface OtpBoxesProps {
   length?: number;
 }
 
+/** Six-box one-time-code display driven by a hidden TextInput elsewhere in the screen. */
 export function OtpBoxes({ value, length = 6 }: OtpBoxesProps) {
   const t = useT();
   const digits = Array.from({ length }, (_, index) => value[index]);

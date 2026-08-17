@@ -8,15 +8,23 @@ export const settings: Record<keyof typeof settingsEn, string> = {
   settings_messagesSupport: 'Messages et assistance IA',
   settings_twoFactor: 'Authentification à deux facteurs',
   settings_twoFactorOn: 'Activée',
+  settings_twoFactorOff: 'Désactivée',
   settings_language: 'Langue',
   settings_logOut: 'Se déconnecter',
   settings_twoFactorSetupTitle: 'Authentification à deux facteurs',
   settings_twoFactorIntro:
     'Scannez ceci avec votre application d’authentification. Vous utiliserez le code à 6 chiffres pour approuver les paiements par bon.',
-  settings_secretKey: 'K5D2 · 9F3A · 7C1B',
   settings_copy: 'Copier',
   settings_enterCode: 'Saisir le code',
   settings_enable2fa: 'Activer la 2FA',
+  settings_twoFactorInvalidCode: 'Ce code ne correspond pas — vérifiez votre application et réessayez.',
+  settings_twoFactorEnabledTitle: '2FA activée',
+  settings_twoFactorEnabledSub: 'L’authentification à deux facteurs protège désormais vos paiements par bon.',
+  settings_devFillCode: 'Remplir le code attendu (dev uniquement)',
+  settings_loginTwoFactorSub:
+    'Ouvrez votre application d’authentification et saisissez le code à 6 chiffres pour FoodBundles.',
+  settings_scanWithApp: 'Scannez avec votre application d’authentification',
+  settings_cantScan: 'Impossible de scanner ?',
   help_title: 'Centre d’aide',
   help_search: 'Rechercher des articles d’aide',
   help_topics: 'Sujets',
@@ -56,7 +64,6 @@ export const settings: Record<keyof typeof settingsEn, string> = {
   ebm_downloadedToast: 'Facture EBM téléchargée',
 
   a11y_addAddress: 'Ajouter une adresse',
-  a11y_authenticatorQr: 'Code QR d’authentification',
   settings_changeProfilePhoto: 'Changer la photo du restaurant',
   settings_restaurantBadge: 'RESTAURANT',
 };

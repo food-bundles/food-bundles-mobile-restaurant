@@ -4,7 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { color, hit, radius, space, text } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { ChevronLeftIcon, VoucherIcon } from '@/components/icons';
-import { OtpBoxes } from './_components/OtpBoxes';
+import { OtpBoxes } from '@/components/checkout';
 import { sleep } from '@/lib';
 import { useT } from '@/i18n';
 import { useVouchersStore } from '@/stores';

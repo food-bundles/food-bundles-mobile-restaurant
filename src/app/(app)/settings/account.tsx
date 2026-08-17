@@ -21,6 +21,7 @@ export default function Account() {
   const logout = useSessionStore((state) => state.logout);
   const restaurantImageUri = useSessionStore((state) => state.restaurantImageUri);
   const setRestaurantImage = useSessionStore((state) => state.setRestaurantImage);
+  const twoFactorEnabled = useSessionStore((state) => state.twoFactorEnabled);
   const [language, setLanguage] = useLanguage();
 
   const onLogout = () => {
@@ -60,8 +61,10 @@ export default function Account() {
           <SettingsRow
             label={t('settings_twoFactor')}
             trailing={
-              <View style={styles.onBadge}>
-                <Text style={styles.onBadgeLabel}>{t('settings_twoFactorOn')}</Text>
+              <View style={[styles.onBadge, !twoFactorEnabled && styles.offBadge]}>
+                <Text style={[styles.onBadgeLabel, !twoFactorEnabled && styles.offBadgeLabel]}>
+                  {twoFactorEnabled ? t('settings_twoFactorOn') : t('settings_twoFactorOff')}
+                </Text>
               </View>
             }
             onPress={() => router.push('/(app)/settings/two-factor')}
@@ -105,5 +108,7 @@ const styles = StyleSheet.create({
   },
   onBadge: { backgroundColor: color.tintRipe, borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 3 },
   onBadgeLabel: { ...text.micro, color: color.tintedGreenText },
+  offBadge: { backgroundColor: color.neutral },
+  offBadgeLabel: { color: color.secondary },
   langValue: { ...text.caption, color: color.secondary },
 });
