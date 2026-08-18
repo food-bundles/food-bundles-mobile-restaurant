@@ -4,6 +4,7 @@ export const more = {
   more_subscription: 'Subscription',
   more_affiliators: 'Affiliators',
   more_notifications: 'Notifications',
+  more_marketPrices: 'Market prices',
   more_accountSettings: 'Account & settings',
   more_help: 'Help',
 } as const;

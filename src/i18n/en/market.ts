@@ -1,0 +1,33 @@
+export const market = {
+  market_title: 'Market Prices',
+  market_subtitle: 'Live Kigali produce markets',
+  market_updatedAgo: 'Updated {{minutes}} min ago',
+  a11y_refreshPrices: 'Refresh market prices',
+
+  market_comparisonTitle: 'Market comparison',
+  market_bestPrice: 'BEST PRICE',
+  market_stockHigh: 'High stock',
+  market_stockMedium: 'Medium stock',
+  market_stockLow: 'Low stock',
+  market_expandMarket: 'Show 7-day chart for {{market}}',
+
+  market_weeklyAvgTitle: 'Weekly avg',
+  market_vsLastWeek: '{{sign}}{{percent}}% vs last week',
+  market_bestTimeTitle: 'Best time to buy',
+  market_cheapestDay: 'Cheapest on {{day}}',
+  market_volatilityTitle: 'Volatility',
+  market_volatilityLow: 'Low',
+  market_volatilityMedium: 'Medium',
+  market_volatilityHigh: 'High',
+  market_volatilityLowDesc: 'Prices have been stable this week.',
+  market_volatilityMediumDesc: 'Prices moved moderately this week.',
+  market_volatilityHighDesc: 'Prices swung sharply this week.',
+  market_volumeTrendTitle: 'Volume trend',
+
+  market_trackToggleTitle: 'Track this market',
+  market_trackToggleSub: "You'll be notified when {{commodity}} drops below {{price}}",
+  a11y_trackMarketToggle: 'Track this market for price-drop alerts',
+  market_upgradeTitle: 'Track markets with Premium',
+  market_upgradeSub: 'Get notified the moment a commodity you follow drops in price.',
+  market_upgradeCta: 'See Premium plans',
+} as const;

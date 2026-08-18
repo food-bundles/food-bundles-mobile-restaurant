@@ -87,7 +87,7 @@ export function HeroCarousel() {
       commodity={t('hero_marketCommodity')}
       rows={MARKET_ROWS}
       linkLabel={t('hero_compareMarkets')}
-      onPress={() => router.push('/(app)/shop/category')}
+      onPress={() => router.push('/(app)/market/market-prices')}
     />,
     <HeroCardWeather
       key="weather"

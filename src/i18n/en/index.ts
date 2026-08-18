@@ -11,6 +11,7 @@ import { more } from './more';
 import { affiliators } from './affiliators';
 import { settings } from './settings';
 import { notifications } from './notifications';
+import { market } from './market';
 
 export const en = {
   ...common,
@@ -26,6 +27,7 @@ export const en = {
   ...affiliators,
   ...settings,
   ...notifications,
+  ...market,
 } as const;
 
 export type TranslationKey = keyof typeof en;

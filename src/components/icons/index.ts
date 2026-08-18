@@ -20,3 +20,5 @@ export { SendIcon } from './SendIcon';
 export { InfoCircleIcon } from './InfoCircleIcon';
 export { SunIcon } from './SunIcon';
 export { CameraIcon } from './CameraIcon';
+export { RefreshIcon } from './RefreshIcon';
+export { TrendingUpIcon } from './TrendingUpIcon';

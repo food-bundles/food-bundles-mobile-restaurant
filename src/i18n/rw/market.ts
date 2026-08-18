@@ -1,0 +1,35 @@
+import type { market as marketEn } from '../en/market';
+
+export const market: Record<keyof typeof marketEn, string> = {
+  market_title: 'Ibiciro by’Isoko',
+  market_subtitle: 'Amasoko y’ibiribwa muri Kigali ako kanya',
+  market_updatedAgo: 'Byavuguruwe iminota {{minutes}} ishize',
+  a11y_refreshPrices: 'Vugurura ibiciro by’isoko',
+
+  market_comparisonTitle: 'Ugereranya amasoko',
+  market_bestPrice: 'IGICIRO CYIZA',
+  market_stockHigh: 'Ibirimo byinshi',
+  market_stockMedium: 'Ibirimo bito',
+  market_stockLow: 'Ibirimo bike',
+  market_expandMarket: 'Erekana igishushanyo cy’iminsi 7 kuri {{market}}',
+
+  market_weeklyAvgTitle: 'Impuzandengo y’icyumweru',
+  market_vsLastWeek: '{{sign}}{{percent}}% ugereranyije n’icyumweru gishize',
+  market_bestTimeTitle: 'Igihe cyiza cyo kugura',
+  market_cheapestDay: 'Igiciro gito ku wa {{day}}',
+  market_volatilityTitle: 'Impinduka z’igiciro',
+  market_volatilityLow: 'Nkeya',
+  market_volatilityMedium: 'Hagati',
+  market_volatilityHigh: 'Nyinshi',
+  market_volatilityLowDesc: 'Ibiciro byaguma bihamye iki cyumweru.',
+  market_volatilityMediumDesc: 'Ibiciro byahindutse gato iki cyumweru.',
+  market_volatilityHighDesc: 'Ibiciro byahindutse cyane iki cyumweru.',
+  market_volumeTrendTitle: 'Uko itumiza ryagenze',
+
+  market_trackToggleTitle: 'Kurikirana iri soko',
+  market_trackToggleSub: 'Uzamenyeshwa igihe {{commodity}} igabanutseho munsi ya {{price}}',
+  a11y_trackMarketToggle: 'Kurikirana iri soko kugira ngo umenyeshwe igihe igiciro kigabanutse',
+  market_upgradeTitle: 'Kurikirana amasoko na Premium',
+  market_upgradeSub: 'Menyeshwa ako kanya igihe igicuruzwa ukurikirana kigabanutseho igiciro.',
+  market_upgradeCta: 'Reba gahunda za Premium',
+};

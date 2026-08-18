@@ -11,6 +11,7 @@ import { more } from './more';
 import { affiliators } from './affiliators';
 import { settings } from './settings';
 import { notifications } from './notifications';
+import { market } from './market';
 
 export const rw = {
   ...common,
@@ -26,4 +27,5 @@ export const rw = {
   ...affiliators,
   ...settings,
   ...notifications,
+  ...market,
 };

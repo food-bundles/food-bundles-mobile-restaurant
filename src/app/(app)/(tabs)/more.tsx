@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { color, radius, space, text } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { MoreMenuRow } from './_components/MoreMenuRow';
-import { PersonIcon, HelpIcon, WalletIcon, BellIcon } from '@/components/icons';
+import { PersonIcon, HelpIcon, WalletIcon, BellIcon, TrendingUpIcon } from '@/components/icons';
 import { useT } from '@/i18n';
 import { useNotificationsStore, useSessionStore } from '@/stores';
 import { account, plans } from '@/mocks';
@@ -54,6 +54,11 @@ export default function More() {
           label={t('more_notifications')}
           trailing={unreadCount > 0 ? <View style={styles.dot} /> : null}
           onPress={() => router.push('/(app)/notifications')}
+        />
+        <MoreMenuRow
+          icon={<TrendingUpIcon size={18} color={color.leaf} />}
+          label={t('more_marketPrices')}
+          onPress={() => router.push('/(app)/market/market-prices')}
           isLast
         />
       </View>

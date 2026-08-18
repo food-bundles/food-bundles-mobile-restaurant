@@ -6,6 +6,7 @@ export const more: Record<keyof typeof moreEn, string> = {
   more_subscription: 'Abonnement',
   more_affiliators: 'Affiliés',
   more_notifications: 'Notifications',
+  more_marketPrices: 'Prix du marché',
   more_accountSettings: 'Compte et paramètres',
   more_help: 'Aide',
 };
