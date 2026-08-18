@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { VoucherIcon } from '@/components/icons';
 import { useT } from '@/i18n';
 
@@ -8,17 +8,18 @@ const FEATURES = ['Buy now, settle later', 'Credit line up to your limit', 'One 
 
 export function VouchersLocked() {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <View style={styles.center}>
-      <View style={styles.iconWrap}>
-        <VoucherIcon size={30} color={color.tintedAmberText} />
+      <View style={[styles.iconWrap, { backgroundColor: colors.tintMarigold }]}>
+        <VoucherIcon size={30} color={colors.tintedAmberText} />
       </View>
-      <Text style={styles.lockedTitle}>{t('vouchers_lockedTitle')}</Text>
-      <Text style={styles.lockedSub}>{t('vouchers_lockedSub')}</Text>
-      <View style={styles.featureCard}>
+      <Text style={[styles.lockedTitle, { color: colors.ink }]}>{t('vouchers_lockedTitle')}</Text>
+      <Text style={[styles.lockedSub, { color: colors.secondary }]}>{t('vouchers_lockedSub')}</Text>
+      <View style={[styles.featureCard, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
         {FEATURES.map((feature) => (
-          <Text key={feature} style={styles.feature}>
+          <Text key={feature} style={[styles.feature, { color: colors.body }]}>
             {'✓ '}
             {feature}
           </Text>
@@ -28,9 +29,9 @@ export function VouchersLocked() {
         onPress={() => router.push('/(app)/subscription/plans')}
         accessibilityRole="button"
         accessibilityLabel={t('vouchers_choosePlanCta')}
-        style={styles.ctaButton}
+        style={[styles.ctaButton, { backgroundColor: colors.marigold }]}
       >
-        <Text style={styles.ctaLabel}>{t('vouchers_choosePlanCta')}</Text>
+        <Text style={[styles.ctaLabel, { color: colors.pine }]}>{t('vouchers_choosePlanCta')}</Text>
       </Pressable>
     </View>
   );
@@ -42,30 +43,26 @@ const styles = StyleSheet.create({
     width: 66,
     height: 66,
     borderRadius: radius.lg,
-    backgroundColor: color.tintMarigold,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  lockedTitle: { ...text.h2, color: color.ink, marginTop: space.md, textAlign: 'center' },
-  lockedSub: { ...text.caption, color: color.secondary, marginTop: space.xs, textAlign: 'center' },
+  lockedTitle: { ...text.h2, marginTop: space.md, textAlign: 'center' },
+  lockedSub: { ...text.caption, marginTop: space.xs, textAlign: 'center' },
   featureCard: {
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     borderRadius: radius.lg,
     padding: space.md,
     marginTop: space.lg,
     width: '100%',
   },
-  feature: { ...text.body, color: color.body, marginBottom: space.xs },
+  feature: { ...text.body, marginBottom: space.xs },
   ctaButton: {
     minHeight: 48,
-    backgroundColor: color.marigold,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: space.md,
     width: '100%',
   },
-  ctaLabel: { ...text.bodySemi, color: color.pine },
+  ctaLabel: { ...text.bodySemi },
 });

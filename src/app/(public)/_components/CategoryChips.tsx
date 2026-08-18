@@ -1,5 +1,5 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import type { ProductCategory } from '@/mocks/types';
 
 export interface CategoryOption {
@@ -14,6 +14,8 @@ export interface CategoryChipsProps {
 }
 
 export function CategoryChips({ options, selected, onSelect }: CategoryChipsProps) {
+  const { colors } = useTheme();
+
   return (
     <ScrollView
       horizontal
@@ -29,9 +31,15 @@ export function CategoryChips({ options, selected, onSelect }: CategoryChipsProp
             accessibilityRole="button"
             accessibilityLabel={option.label}
             accessibilityState={{ selected: active }}
-            style={[styles.chip, active && styles.chipActive]}
+            style={[
+              styles.chip,
+              { backgroundColor: colors.paper, borderColor: colors.leaf },
+              active && { backgroundColor: colors.leaf, borderColor: colors.leaf },
+            ]}
           >
-            <Text style={[styles.label, active && styles.labelActive]}>{option.label}</Text>
+            <Text style={[styles.label, { color: colors.leaf }, active && { color: colors.paper }]}>
+              {option.label}
+            </Text>
           </Pressable>
         );
       })}
@@ -46,13 +54,9 @@ const styles = StyleSheet.create({
     minHeight: hit.min,
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.leaf,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipActive: { backgroundColor: color.leaf, borderColor: color.leaf },
-  label: { ...text.label, color: color.leaf },
-  labelActive: { color: color.paper },
+  label: { ...text.label },
 });

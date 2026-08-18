@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { ChevronLeftIcon, SendIcon } from '@/components/icons';
 import { ChatBubble } from './_components/ChatBubble';
@@ -25,6 +25,7 @@ const ANSWERS: Record<string, string> = {
 
 export default function Chat() {
   const t = useT();
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState('');
@@ -36,8 +37,8 @@ export default function Chat() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
+      <View style={[styles.header, { paddingTop: insets.top + space.sm, borderBottomColor: colors.hairline }]}>
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
@@ -46,10 +47,10 @@ export default function Chat() {
         >
           <ChevronLeftIcon />
         </Pressable>
-        <View style={styles.avatar} />
+        <View style={[styles.avatar, { backgroundColor: colors.tintLeaf }]} />
         <View>
-          <Text style={styles.title}>{t('chat_title')}</Text>
-          <Text style={styles.status}>● {t('chat_onlineNow')}</Text>
+          <Text style={[styles.title, { color: colors.ink }]}>{t('chat_title')}</Text>
+          <Text style={[styles.status, { color: colors.ripe }]}>● {t('chat_onlineNow')}</Text>
         </View>
       </View>
       <ScreenScroll contentInsetBottom={0}>
@@ -57,7 +58,7 @@ export default function Chat() {
           <ChatBubble key={index} text={message.text} fromUser={message.fromUser} />
         ))}
       </ScreenScroll>
-      <View style={styles.composer}>
+      <View style={[styles.composer, { borderTopColor: colors.hairline, backgroundColor: colors.paper }]}>
         <SuggestionChips
           suggestions={[t('chat_suggestion1'), t('chat_suggestion2'), t('chat_suggestion3')]}
           onSelect={ask}
@@ -67,15 +68,18 @@ export default function Chat() {
             value={draft}
             onChangeText={setDraft}
             placeholder={t('chat_typeMessage')}
-            placeholderTextColor={color.muted}
+            placeholderTextColor={colors.muted}
             accessibilityLabel={t('chat_typeMessage')}
-            style={styles.input}
+            style={[
+              styles.input,
+              { color: colors.ink, backgroundColor: colors.oat, borderColor: colors.hairline },
+            ]}
           />
           <Pressable
             onPress={() => draft.trim() && ask(draft.trim())}
             accessibilityRole="button"
             accessibilityLabel={t('chat_send')}
-            style={styles.sendButton}
+            style={[styles.sendButton, { backgroundColor: colors.leaf }]}
           >
             <SendIcon />
           </Pressable>
@@ -86,7 +90,7 @@ export default function Chat() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -94,16 +98,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     paddingBottom: space.md,
     borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
   },
   backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  avatar: { width: 34, height: 34, borderRadius: 17, backgroundColor: color.tintLeaf },
-  title: { ...text.h2, color: color.ink },
-  status: { ...text.caption, color: color.ripe, marginTop: 2 },
+  avatar: { width: 34, height: 34, borderRadius: 17 },
+  title: { ...text.h2 },
+  status: { ...text.caption, marginTop: 2 },
   composer: {
     borderTopWidth: 1,
-    borderTopColor: color.hairline,
-    backgroundColor: color.paper,
     paddingHorizontal: space.md,
     paddingTop: space.sm,
     paddingBottom: space.md,
@@ -112,10 +113,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     ...text.body,
-    color: color.ink,
-    backgroundColor: color.oat,
     borderWidth: 1.5,
-    borderColor: color.hairline,
     borderRadius: radius.pill,
     paddingHorizontal: space.md,
     minHeight: hit.min,
@@ -124,7 +122,6 @@ const styles = StyleSheet.create({
     width: hit.min,
     height: hit.min,
     borderRadius: hit.min / 2,
-    backgroundColor: color.leaf,
     alignItems: 'center',
     justifyContent: 'center',
   },

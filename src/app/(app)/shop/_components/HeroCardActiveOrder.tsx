@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
-import { color, signatureDuration, space, text } from '@/theme';
+import { signatureDuration, space, text, useTheme } from '@/theme';
 import { HeroCardShell } from './HeroCardShell';
 import { HeroCardLink } from './HeroCardLink';
 import { ORDER_STEPS } from '@/mocks/types';
@@ -30,6 +30,7 @@ export function HeroCardActiveOrder({
   linkLabel,
   onPress,
 }: HeroCardActiveOrderProps) {
+  const { colors } = useTheme();
   const progress = useSharedValue(0);
   const metaOpacity = useSharedValue(1);
   const pulseScale = useSharedValue(1);
@@ -68,13 +69,15 @@ export function HeroCardActiveOrder({
       badge={statusLabel}
     >
       <View>
-        <Text style={styles.orderId}>{order.id}</Text>
-        <Animated.Text style={[styles.meta, metaStyle]}>{phase === 1 ? arrivingLabel : etaLabel}</Animated.Text>
-        <View style={styles.track}>
+        <Text style={[styles.orderId, { color: colors.paper }]}>{order.id}</Text>
+        <Animated.Text style={[styles.meta, { color: colors.onPineSoft }, metaStyle]}>
+          {phase === 1 ? arrivingLabel : etaLabel}
+        </Animated.Text>
+        <View style={[styles.track, { backgroundColor: colors.onPineSoft }]}>
           {ORDER_STEPS.map((_, index) => (
             <View key={index} style={styles.segment} />
           ))}
-          <Animated.View style={[styles.fill, fillStyle]} />
+          <Animated.View style={[styles.fill, { backgroundColor: colors.marigold }, fillStyle]} />
         </View>
       </View>
       <HeroCardLink label={linkLabel} />
@@ -83,16 +86,15 @@ export function HeroCardActiveOrder({
 }
 
 const styles = StyleSheet.create({
-  orderId: { ...text.h2, color: color.paper },
-  meta: { ...text.caption, color: color.onPineSoft, marginTop: 2 },
+  orderId: { ...text.h2 },
+  meta: { ...text.caption, marginTop: 2 },
   track: {
     flexDirection: 'row',
     height: 6,
     borderRadius: 3,
-    backgroundColor: color.onPineSoft,
     overflow: 'hidden',
     marginTop: space.sm,
   },
   segment: { flex: 1 },
-  fill: { position: 'absolute', top: 0, left: 0, bottom: 0, backgroundColor: color.marigold, borderRadius: 3 },
+  fill: { position: 'absolute', top: 0, left: 0, bottom: 0, borderRadius: 3 },
 });

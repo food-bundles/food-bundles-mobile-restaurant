@@ -1,5 +1,5 @@
 import { Text, type TextStyle } from 'react-native';
-import { color, text } from '@/theme';
+import { text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
 
 export type PriceSize = 'hero' | 'lg' | 'md';
@@ -18,11 +18,13 @@ const SIZE_STYLE: Record<PriceSize, TextStyle> = {
 };
 
 export function PriceText({ amount, size = 'md', suffix, colorOverride }: PriceTextProps) {
+  const { colors } = useTheme();
+
   return (
     <Text
       style={[
         SIZE_STYLE[size],
-        { color: colorOverride ?? color.ink, fontVariant: ['tabular-nums'] },
+        { color: colorOverride ?? colors.ink, fontVariant: ['tabular-nums'] },
       ]}
     >
       {formatRwf(amount)}

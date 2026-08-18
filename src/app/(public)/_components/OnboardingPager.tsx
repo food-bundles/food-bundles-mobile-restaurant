@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { color, duration, space } from '@/theme';
+import { duration, space, useTheme } from '@/theme';
 
 export interface OnboardingPagerProps {
   count: number;
@@ -12,9 +12,10 @@ interface DotProps {
 }
 
 function Dot({ active }: DotProps) {
+  const { colors } = useTheme();
   const style = useAnimatedStyle(() => ({
     width: withTiming(active ? 18 : 6, { duration: duration.tint }),
-    backgroundColor: withTiming(active ? color.leaf : color.disabledLine, { duration: duration.tint }),
+    backgroundColor: withTiming(active ? colors.leaf : colors.disabledLine, { duration: duration.tint }),
   }));
 
   return <Animated.View style={[styles.dot, style]} />;

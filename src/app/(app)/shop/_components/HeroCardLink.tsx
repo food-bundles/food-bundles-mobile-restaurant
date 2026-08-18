@@ -1,19 +1,20 @@
 import { StyleSheet, Text } from 'react-native';
-import { color, text } from '@/theme';
+import { text, useTheme, type ColorPalette } from '@/theme';
 
 export interface HeroCardLinkProps {
   label: string;
   tone?: 'marigold' | 'leaf' | 'onPine';
 }
 
-const TONE_COLOR: Record<NonNullable<HeroCardLinkProps['tone']>, string> = {
-  marigold: color.marigold,
-  leaf: color.leaf,
-  onPine: color.onPineBright,
-};
+const toneColor = (colors: ColorPalette): Record<NonNullable<HeroCardLinkProps['tone']>, string> => ({
+  marigold: colors.marigold,
+  leaf: colors.leaf,
+  onPine: colors.onPineBright,
+});
 
 export function HeroCardLink({ label, tone = 'marigold' }: HeroCardLinkProps) {
-  return <Text style={[styles.link, { color: TONE_COLOR[tone] }]}>{label} →</Text>;
+  const { colors } = useTheme();
+  return <Text style={[styles.link, { color: toneColor(colors)[tone] }]}>{label} →</Text>;
 }
 
 const styles = StyleSheet.create({

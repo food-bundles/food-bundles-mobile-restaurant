@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 import { Button } from './Button';
 
@@ -11,12 +11,13 @@ export interface ErrorStateProps {
 
 export function ErrorState({ title, message, onRetry }: ErrorStateProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <View style={styles.container}>
-      <View style={styles.iconWrap} />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.message}>{message}</Text>
+      <View style={[styles.iconWrap, { backgroundColor: colors.tintChili }]} />
+      <Text style={[styles.title, { color: colors.ink }]}>{title}</Text>
+      <Text style={[styles.message, { color: colors.muted }]}>{message}</Text>
       <View style={styles.action}>
         <Button variant="secondary" size="sm" onPress={onRetry}>
           {t('action_retry')}
@@ -32,9 +33,8 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: radius.lg,
-    backgroundColor: color.tintChili,
   },
-  title: { ...text.h2, color: color.ink, marginTop: space.md, textAlign: 'center' },
-  message: { ...text.caption, color: color.muted, marginTop: space.xs, textAlign: 'center' },
+  title: { ...text.h2, marginTop: space.md, textAlign: 'center' },
+  message: { ...text.caption, marginTop: space.xs, textAlign: 'center' },
   action: { marginTop: space.lg },
 });

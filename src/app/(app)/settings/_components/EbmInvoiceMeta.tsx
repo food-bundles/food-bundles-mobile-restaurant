@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, space, text } from '@/theme';
+import { space, text, useTheme } from '@/theme';
 import { formatDate, formatTime } from '@/lib';
 import { useT } from '@/i18n';
 import { account } from '@/mocks';
@@ -11,6 +11,7 @@ export interface EbmInvoiceMetaProps {
 
 export function EbmInvoiceMeta({ order }: EbmInvoiceMetaProps) {
   const t = useT();
+  const { colors } = useTheme();
   const invoiceNo = `EBM-${order.id.replace('FB-', '')}-01`;
 
   const rows: [string, string][] = [
@@ -25,8 +26,16 @@ export function EbmInvoiceMeta({ order }: EbmInvoiceMetaProps) {
     <View style={styles.card}>
       {rows.map(([label, value], index) => (
         <View key={label} style={styles.row}>
-          <Text style={styles.label}>{label}</Text>
-          <Text style={[styles.value, index === 0 && styles.valueAccent]}>{value}</Text>
+          <Text style={[styles.label, { color: colors.secondary }]}>{label}</Text>
+          <Text
+            style={[
+              styles.value,
+              { color: colors.ink },
+              index === 0 && [styles.valueAccent, { color: colors.leaf }],
+            ]}
+          >
+            {value}
+          </Text>
         </View>
       ))}
     </View>
@@ -36,7 +45,7 @@ export function EbmInvoiceMeta({ order }: EbmInvoiceMetaProps) {
 const styles = StyleSheet.create({
   card: { marginTop: space.md },
   row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 },
-  label: { ...text.caption, color: color.secondary },
-  value: { ...text.caption, color: color.ink },
-  valueAccent: { ...text.bodySemi, color: color.leaf },
+  label: { ...text.caption },
+  value: { ...text.caption },
+  valueAccent: { ...text.bodySemi },
 });

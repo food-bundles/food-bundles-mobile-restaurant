@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, space, text } from '@/theme';
+import { space, text, useTheme } from '@/theme';
 import { ORDER_STEPS } from '@/mocks/types';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
@@ -19,6 +19,7 @@ export interface OrderProgressTrackProps {
 
 export function OrderProgressTrack({ step }: OrderProgressTrackProps) {
   const t = useT();
+  const { colors } = useTheme();
   const isDelivered = step >= ORDER_STEPS.length;
   const currentLabel = t(STEP_KEY[ORDER_STEPS[Math.min(step, ORDER_STEPS.length) - 1] ?? 'PENDING']);
 
@@ -29,15 +30,15 @@ export function OrderProgressTrack({ step }: OrderProgressTrackProps) {
           const segmentNumber = index + 1;
           const done = segmentNumber < step || isDelivered;
           const current = segmentNumber === step && !isDelivered;
-          const backgroundColor = done ? color.leaf : current ? color.marigold : color.hairline;
+          const backgroundColor = done ? colors.leaf : current ? colors.marigold : colors.hairline;
           return <View key={segmentNumber} style={[styles.segment, { backgroundColor }]} />;
         })}
       </View>
       <View style={styles.labelRow}>
-        <Text style={styles.stepLabel}>
-          Step {Math.min(step, ORDER_STEPS.length)} of {ORDER_STEPS.length}
+        <Text style={[styles.stepLabel, { color: colors.secondary }]}>
+          {t('orders_stepOfTotal', { step: Math.min(step, ORDER_STEPS.length), total: ORDER_STEPS.length })}
         </Text>
-        <Text style={[styles.currentLabel, isDelivered && styles.deliveredLabel]}>
+        <Text style={[styles.currentLabel, { color: isDelivered ? colors.tintedGreenText : colors.tintedAmberText }]}>
           {isDelivered ? t('st_delivered') : currentLabel}
         </Text>
       </View>
@@ -53,7 +54,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: space.sm,
   },
-  stepLabel: { ...text.caption, color: color.secondary },
-  currentLabel: { ...text.label, color: color.tintedAmberText },
-  deliveredLabel: { color: color.tintedGreenText },
+  stepLabel: { ...text.caption },
+  currentLabel: { ...text.label },
 });

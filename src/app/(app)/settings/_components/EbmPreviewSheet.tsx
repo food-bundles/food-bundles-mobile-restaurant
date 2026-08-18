@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { OrderItemsCard } from '@/components/order';
 import { Toast } from '@/components/primitives';
 import { EbmInvoiceHeader } from './EbmInvoiceHeader';
@@ -16,6 +16,7 @@ export interface EbmPreviewSheetProps {
 
 export function EbmPreviewSheet({ order, onClose }: EbmPreviewSheetProps) {
   const t = useT();
+  const { colors } = useTheme();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const onDownload = () => setToastMessage(t('ebm_downloadedToast'));
@@ -29,12 +30,12 @@ export function EbmPreviewSheet({ order, onClose }: EbmPreviewSheetProps) {
           accessibilityLabel={t('action_close')}
           style={styles.scrimTouchable}
         >
-          <View style={styles.scrim} />
+          <View style={[styles.scrim, { backgroundColor: colors.ink }]} />
         </Pressable>
         {order ? (
-          <View style={styles.sheet}>
-            <View style={styles.grabber} />
-            <Text style={styles.title}>{t('ebm_invoicePreview')}</Text>
+          <View style={[styles.sheet, { backgroundColor: colors.paper }]}>
+            <View style={[styles.grabber, { backgroundColor: colors.hairline }]} />
+            <Text style={[styles.title, { color: colors.ink }]}>{t('ebm_invoicePreview')}</Text>
             <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
               <EbmInvoiceHeader />
               <EbmInvoiceMeta order={order} />
@@ -48,17 +49,17 @@ export function EbmPreviewSheet({ order, onClose }: EbmPreviewSheetProps) {
                 onPress={onClose}
                 accessibilityRole="button"
                 accessibilityLabel={t('action_close')}
-                style={styles.closeButton}
+                style={[styles.closeButton, { borderColor: colors.hairline }]}
               >
-                <Text style={styles.closeLabel}>{t('action_close')}</Text>
+                <Text style={[styles.closeLabel, { color: colors.ink }]}>{t('action_close')}</Text>
               </Pressable>
               <Pressable
                 onPress={onDownload}
                 accessibilityRole="button"
                 accessibilityLabel={t('ebm_downloadPdf')}
-                style={styles.downloadButton}
+                style={[styles.downloadButton, { backgroundColor: colors.leaf }]}
               >
-                <Text style={styles.downloadLabel}>{t('ebm_downloadPdfLong')}</Text>
+                <Text style={[styles.downloadLabel, { color: colors.paper }]}>{t('ebm_downloadPdfLong')}</Text>
               </Pressable>
             </View>
           </View>
@@ -72,10 +73,9 @@ export function EbmPreviewSheet({ order, onClose }: EbmPreviewSheetProps) {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'flex-end' },
   scrimTouchable: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
-  scrim: { flex: 1, backgroundColor: color.ink, opacity: 0.4 },
+  scrim: { flex: 1, opacity: 0.4 },
   sheet: {
     maxHeight: '85%',
-    backgroundColor: color.paper,
     borderTopLeftRadius: radius.lg,
     borderTopRightRadius: radius.lg,
     paddingHorizontal: space.lg,
@@ -87,30 +87,27 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: color.hairline,
     alignSelf: 'center',
     marginBottom: space.sm,
   },
-  title: { ...text.h2, color: color.ink, marginBottom: space.md },
+  title: { ...text.h2, marginBottom: space.md },
   itemsGap: { marginTop: space.md },
   footerRow: { flexDirection: 'row', gap: space.sm, marginTop: space.lg },
   closeButton: {
     flex: 1,
     minHeight: hit.min,
     borderWidth: 1.5,
-    borderColor: color.hairline,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  closeLabel: { ...text.bodySemi, color: color.ink },
+  closeLabel: { ...text.bodySemi },
   downloadButton: {
     flex: 1,
     minHeight: hit.min,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  downloadLabel: { ...text.bodySemi, color: color.paper },
+  downloadLabel: { ...text.bodySemi },
 });

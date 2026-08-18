@@ -1,5 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
+import { useT } from '@/i18n';
 import type { OrdersDemoState } from '@/stores';
 
 const STATES: OrdersDemoState[] = ['live', 'loading', 'empty', 'error'];
@@ -10,6 +11,9 @@ export interface DemoStateToggleProps {
 }
 
 export function DemoStateToggle({ selected, onSelect }: DemoStateToggleProps) {
+  const t = useT();
+  const { colors } = useTheme();
+
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
       {STATES.map((state) => {
@@ -19,11 +23,14 @@ export function DemoStateToggle({ selected, onSelect }: DemoStateToggleProps) {
             key={state}
             onPress={() => onSelect(state)}
             accessibilityRole="button"
-            accessibilityLabel={`Demo state: ${state}`}
+            accessibilityLabel={t('a11y_demoState', { state })}
             accessibilityState={{ selected: active }}
-            style={[styles.chip, active && styles.chipActive]}
+            style={[
+              styles.chip,
+              { backgroundColor: active ? colors.pine : colors.neutral },
+            ]}
           >
-            <Text style={[styles.label, active && styles.labelActive]}>{state}</Text>
+            <Text style={[styles.label, { color: active ? colors.paper : colors.secondary }]}>{state}</Text>
           </Pressable>
         );
       })}
@@ -37,11 +44,8 @@ const styles = StyleSheet.create({
     minHeight: hit.min,
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
-    backgroundColor: color.neutral,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipActive: { backgroundColor: color.pine },
-  label: { ...text.micro, color: color.secondary, textTransform: 'uppercase' },
-  labelActive: { color: color.paper },
+  label: { ...text.micro, textTransform: 'uppercase' },
 });

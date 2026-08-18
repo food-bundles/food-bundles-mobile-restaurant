@@ -23,7 +23,12 @@ export const orders: Record<keyof typeof ordersEn, string> = {
   orders_reorderFrom: 'kuva kuri {{orderId}}',
   orders_addItemsToCart: 'Ongeraho ibintu {{count}} mu gikapu',
   orders_outOfStock: 'Ntibiboneka',
+  orders_stepOfTotal: 'Intambwe ya {{step}} kuri {{total}}',
 
   a11y_previewEbm: 'Reba mbere fagitire ya EBM',
   a11y_paymentHistory: 'Reba amateka y’ubwishyu bw’iri tumiza',
+  a11y_orderStatusStep: 'Uko itumiza rihagaze: intambwe ya {{step}} kuri {{total}}',
+  a11y_demoState: 'Uburyo bwerekana: {{state}}',
+  a11y_orderCard: 'Itumiza {{orderId}}, {{status}}',
+  a11y_activeOrderCard: 'Itumiza rikorwaho {{orderId}}, {{status}}',
 };

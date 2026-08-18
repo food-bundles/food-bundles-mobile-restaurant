@@ -10,6 +10,10 @@ export const settings: Record<keyof typeof settingsEn, string> = {
   settings_twoFactorOn: 'Activée',
   settings_twoFactorOff: 'Désactivée',
   settings_language: 'Langue',
+  settings_appearance: 'Apparence',
+  settings_appearanceLight: 'Clair',
+  settings_appearanceDark: 'Sombre',
+  settings_appearanceSystem: 'Système',
   settings_logOut: 'Se déconnecter',
   settings_twoFactorSetupTitle: 'Authentification à deux facteurs',
   settings_twoFactorIntro:

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { color, radius, shadow, space } from '@/theme';
+import { radius, shadow, space, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { useSessionStore } from '@/stores';
 import {
@@ -25,6 +25,7 @@ import { weeklyAverage } from './_components/marketAnalytics';
 const UPDATED_MINUTES_AGO = 3;
 
 export default function MarketPrices() {
+  const { colors } = useTheme();
   const subscribed = useSessionStore((state) => state.subscribed);
   const [commodityId, setCommodityId] = useState<CommodityId>('irishPotatoes');
   const [range, setRange] = useState<TimeRange>('7D');
@@ -38,7 +39,7 @@ export default function MarketPrices() {
   const alertPrice = Math.round(latestPrice * 0.95);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenScroll contentInsetBottom={space.xl}>
         <MarketScreenHeader
           minutesAgo={UPDATED_MINUTES_AGO}
@@ -50,7 +51,7 @@ export default function MarketPrices() {
           <CommodityChips options={COMMODITIES} selected={commodityId} onSelect={setCommodityId} />
         </View>
 
-        <View style={[styles.section, styles.card]}>
+        <View style={[styles.section, styles.card, { backgroundColor: colors.paper }]}>
           <PriceAreaChart
             key={`${commodityId}-${range}-${refreshKey}`}
             values={series.values}
@@ -69,7 +70,7 @@ export default function MarketPrices() {
           <AnalyticsCards priceHistory={weeklyValues} volumeHistory={VOLUME_TREND[commodityId]} />
         </View>
 
-        <View style={[styles.section, styles.card]}>
+        <View style={[styles.section, styles.card, { backgroundColor: colors.paper }]}>
           <TrackMarketToggle subscribed={subscribed} commodity={commodity.name} alertPrice={alertPrice} />
         </View>
       </ScreenScroll>
@@ -78,10 +79,9 @@ export default function MarketPrices() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   section: { marginTop: space.lg },
   card: {
-    backgroundColor: color.paper,
     borderRadius: radius.lg,
     padding: space.lg,
     ...shadow.card,

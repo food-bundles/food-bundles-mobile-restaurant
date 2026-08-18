@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color, space, text } from '@/theme';
+import { space, text, useTheme } from '@/theme';
 import { EmptyState, ErrorState } from '@/components/primitives';
 import { DemoStateToggle } from '../orders/_components/DemoStateToggle';
 import { ActiveOrderCard } from '../orders/_components/ActiveOrderCard';
@@ -16,6 +16,7 @@ import { OrdersIcon } from '@/components/icons';
 
 export default function OrdersList() {
   const t = useT();
+  const { colors } = useTheme();
   const demoState = useUiStore((state) => state.ordersDemoState);
   const setDemoState = useUiStore((state) => state.setOrdersDemoState);
   const insets = useSafeAreaInsets();
@@ -42,9 +43,9 @@ export default function OrdersList() {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
-        <Text style={styles.title}>{t('orders_title')}</Text>
+        <Text style={[styles.title, { color: colors.ink }]}>{t('orders_title')}</Text>
         <DemoStateToggle selected={demoState} onSelect={setDemoState} />
       </View>
       {demoState === 'loading' ? (
@@ -56,7 +57,7 @@ export default function OrdersList() {
       ) : demoState === 'empty' ? (
         <View style={styles.centerContent}>
           <EmptyState
-            icon={<OrdersIcon size={22} color={color.leaf} />}
+            icon={<OrdersIcon size={22} color={colors.leaf} />}
             title={t('orders_emptyTitle')}
             message={t('orders_emptySub')}
             action={{ label: t('orders_browseProduce'), onPress: () => router.push('/(app)/(tabs)') }}
@@ -73,7 +74,7 @@ export default function OrdersList() {
       ) : (
         <ScrollView
           contentContainerStyle={styles.listContent}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={color.leaf} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.leaf} />}
         >
           {activeOrder ? (
             <View style={styles.activeGap}>
@@ -93,9 +94,9 @@ export default function OrdersList() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   header: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
-  title: { ...text.h1, color: color.ink, marginBottom: space.sm },
+  title: { ...text.h1, marginBottom: space.sm },
   listContent: { paddingHorizontal: space.lg, paddingBottom: space.xl },
   centerContent: { flex: 1, justifyContent: 'center' },
   activeGap: { marginBottom: space.sm },

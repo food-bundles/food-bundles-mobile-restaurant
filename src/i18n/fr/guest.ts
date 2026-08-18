@@ -30,4 +30,5 @@ export const guest: Record<keyof typeof guestEn, string> = {
   guest_convertPrompt: 'Créez un compte pour suivre cette commande et commander à nouveau en un geste.',
   guest_emptyBasketTitle: 'Votre panier est vide',
   guest_emptyBasketMessage: 'Parcourez les produits et ajoutez des articles pour les voir ici.',
+  a11y_openGuestBasket: 'Ouvrir le panier invité, {{count}} articles',
 };

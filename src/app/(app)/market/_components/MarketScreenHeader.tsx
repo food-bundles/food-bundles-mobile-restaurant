@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, hit, space, text } from '@/theme';
+import { hit, space, text, useTheme } from '@/theme';
 import { ScreenHeader } from '@/components/layout';
 import { RefreshIcon } from '@/components/icons';
 import { Badge } from '@/components/primitives';
@@ -14,6 +14,7 @@ export interface MarketScreenHeaderProps {
 /** Screen title/back row plus a freshness indicator, refresh action, and price-change badge. */
 export function MarketScreenHeader({ minutesAgo, onRefresh, changePct }: MarketScreenHeaderProps) {
   const t = useT();
+  const { colors } = useTheme();
   const isUp = changePct >= 0;
 
   return (
@@ -35,7 +36,7 @@ export function MarketScreenHeader({ minutesAgo, onRefresh, changePct }: MarketS
         style={styles.updatedRow}
       >
         <RefreshIcon size={14} />
-        <Text style={styles.updatedText}>{t('market_updatedAgo', { minutes: minutesAgo })}</Text>
+        <Text style={[styles.updatedText, { color: colors.leaf }]}>{t('market_updatedAgo', { minutes: minutesAgo })}</Text>
       </Pressable>
     </View>
   );
@@ -50,5 +51,5 @@ const styles = StyleSheet.create({
     marginTop: space.xs,
     paddingHorizontal: space.md,
   },
-  updatedText: { ...text.caption, color: color.leaf },
+  updatedText: { ...text.caption },
 });

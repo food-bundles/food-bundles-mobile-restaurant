@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { ChevronLeftIcon, VoucherIcon } from '@/components/icons';
 import { OtpBoxes } from '@/components/checkout';
@@ -31,6 +31,7 @@ const DESTINATIONS: Record<Purpose, Href> = {
 
 export default function Otp() {
   const t = useT();
+  const { colors } = useTheme();
   const { purpose } = useLocalSearchParams<{ purpose?: Purpose }>();
   const submitCreditRequest = useVouchersStore((state) => state.submitRequest);
   const deductCredit = useVouchersStore((state) => state.deductCredit);
@@ -69,11 +70,11 @@ export default function Otp() {
       >
         <ChevronLeftIcon />
       </Pressable>
-      <View style={styles.iconWrap}>
-        <VoucherIcon size={26} color={color.leaf} />
+      <View style={[styles.iconWrap, { backgroundColor: colors.tintLeaf }]}>
+        <VoucherIcon size={26} color={colors.leaf} />
       </View>
-      <Text style={styles.title}>{t('checkout_verifyTitle')}</Text>
-      <Text style={styles.subtitle}>
+      <Text style={[styles.title, { color: colors.ink }]}>{t('checkout_verifyTitle')}</Text>
+      <Text style={[styles.subtitle, { color: colors.secondary }]}>
         {purpose === 'underwriting' ? t('checkout_otpSubGeneric') : t('checkout_otpSub')}
       </Text>
       <View style={styles.boxesWrap}>
@@ -90,7 +91,9 @@ export default function Otp() {
         </View>
       </View>
       {seconds > 0 ? (
-        <Text style={styles.resendText}>{t('checkout_resendIn', { time: formatCountdown(seconds) })}</Text>
+        <Text style={[styles.resendText, { color: colors.secondary }]}>
+          {t('checkout_resendIn', { time: formatCountdown(seconds) })}
+        </Text>
       ) : (
         <Pressable
           onPress={() => setSeconds(RESEND_SECONDS)}
@@ -98,7 +101,7 @@ export default function Otp() {
           accessibilityLabel={t('checkout_resendNow')}
           style={styles.resendButton}
         >
-          <Text style={styles.resendLabel}>{t('checkout_resendNow')}</Text>
+          <Text style={[styles.resendLabel, { color: colors.leaf }]}>{t('checkout_resendNow')}</Text>
         </Pressable>
       )}
       <Pressable
@@ -106,9 +109,9 @@ export default function Otp() {
         disabled={verifying}
         accessibilityRole="button"
         accessibilityLabel={t('checkout_verifyPay')}
-        style={styles.verifyButton}
+        style={[styles.verifyButton, { backgroundColor: colors.leaf }]}
       >
-        <Text style={styles.verifyLabel}>{t('checkout_verifyPay')}</Text>
+        <Text style={[styles.verifyLabel, { color: colors.paper }]}>{t('checkout_verifyPay')}</Text>
       </Pressable>
     </ScreenScroll>
   );
@@ -120,25 +123,23 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: radius.lg,
-    backgroundColor: color.tintLeaf,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: space.lg,
   },
-  title: { ...text.h1, color: color.ink, marginTop: space.md },
-  subtitle: { ...text.body, color: color.secondary, marginTop: space.xs, marginBottom: space.lg },
+  title: { ...text.h1, marginTop: space.md },
+  subtitle: { ...text.body, marginTop: space.xs, marginBottom: space.lg },
   boxesWrap: { position: 'relative', height: 56 },
   boxesVisual: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   hiddenInput: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0 },
-  resendText: { ...text.caption, color: color.secondary, textAlign: 'center', marginTop: space.md },
+  resendText: { ...text.caption, textAlign: 'center', marginTop: space.md },
   resendButton: { minHeight: hit.min, alignItems: 'center', justifyContent: 'center', marginTop: space.md },
-  resendLabel: { ...text.label, color: color.leaf },
+  resendLabel: { ...text.label },
   verifyButton: {
     minHeight: hit.min,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  verifyLabel: { ...text.bodySemi, color: color.paper },
+  verifyLabel: { ...text.bodySemi },
 });

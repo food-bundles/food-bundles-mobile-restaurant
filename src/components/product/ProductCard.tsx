@@ -1,7 +1,8 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, hit, radius, shadow, space, text } from '@/theme';
+import { hit, radius, shadow, space, text, useTheme } from '@/theme';
 import type { Product } from '@/mocks/types';
 import { useT } from '@/i18n';
+import { formatRwf } from '@/lib';
 import { PriceText } from './PriceText';
 import { QuantityStepper } from './QuantityStepper';
 
@@ -16,30 +17,31 @@ export interface ProductCardProps {
 
 export function ProductCard({ product, onPress, onAdd, qty = 0, onInc, onDec }: ProductCardProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`${product.name}, ${product.unit}`}
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.paper }]}
     >
-      <Image source={product.image} accessible={false} style={styles.image} />
+      <Image source={product.image} accessible={false} style={[styles.image, { backgroundColor: colors.neutral }]} />
       {product.wasPrice ? (
-        <View style={styles.discountBadge}>
-          <Text style={styles.discountLabel}>{t('shop_sale')}</Text>
+        <View style={[styles.discountBadge, { backgroundColor: colors.chili }]}>
+          <Text style={[styles.discountLabel, { color: colors.paper }]}>{t('shop_sale')}</Text>
         </View>
       ) : null}
       <View style={styles.body}>
-        <Text style={styles.name} numberOfLines={1}>
+        <Text style={[styles.name, { color: colors.ink }]} numberOfLines={1}>
           {product.name}
         </Text>
-        <Text style={styles.unit}>{product.unit}</Text>
+        <Text style={[styles.unit, { color: colors.muted }]}>{product.unit}</Text>
         <View style={styles.priceRow}>
           <PriceText amount={product.price} size="md" />
           {product.wasPrice ? (
-            <Text style={styles.wasPrice}>
-              {t('shop_wasPrice', { amount: product.wasPrice.toLocaleString('en-US') })}
+            <Text style={[styles.wasPrice, { color: colors.muted }]}>
+              {t('shop_wasPrice', { amount: formatRwf(product.wasPrice) })}
             </Text>
           ) : null}
         </View>
@@ -53,9 +55,9 @@ export function ProductCard({ product, onPress, onAdd, qty = 0, onInc, onDec }: 
           onPress={onAdd}
           accessibilityRole="button"
           accessibilityLabel={t('shop_addToCartFor', { name: product.name })}
-          style={styles.addButton}
+          style={[styles.addButton, { backgroundColor: colors.leaf }]}
         >
-          <Text style={styles.addLabel}>{t('shop_add')}</Text>
+          <Text style={[styles.addLabel, { color: colors.paper }]}>{t('shop_add')}</Text>
         </Pressable>
       )}
     </Pressable>
@@ -65,37 +67,34 @@ export function ProductCard({ product, onPress, onAdd, qty = 0, onInc, onDec }: 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.paper,
     borderRadius: radius.lg,
     overflow: 'hidden',
     ...shadow.card,
   },
-  image: { width: '100%', height: 96, backgroundColor: color.neutral },
+  image: { width: '100%', height: 96 },
   discountBadge: {
     position: 'absolute',
     top: space.sm,
     left: space.sm,
-    backgroundColor: color.chili,
     borderRadius: radius.sm,
     paddingHorizontal: space.xs,
     paddingVertical: 2,
   },
-  discountLabel: { ...text.micro, color: color.paper },
+  discountLabel: { ...text.micro },
   body: { padding: space.md, gap: 2 },
-  name: { ...text.bodySemi, color: color.ink },
-  unit: { ...text.caption, color: color.muted },
+  name: { ...text.bodySemi },
+  unit: { ...text.caption },
   priceRow: { flexDirection: 'row', alignItems: 'baseline', gap: space.xs, marginTop: 2 },
-  wasPrice: { ...text.caption, color: color.muted, textDecorationLine: 'line-through' },
+  wasPrice: { ...text.caption, textDecorationLine: 'line-through' },
   addButton: {
     minHeight: hit.min,
     marginHorizontal: space.md,
     marginBottom: space.md,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  addLabel: { ...text.bodySemi, color: color.paper },
+  addLabel: { ...text.bodySemi },
   stepperWrap: {
     marginHorizontal: space.md,
     marginBottom: space.md,

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, space, text } from '@/theme';
+import { space, text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
 import { useT } from '@/i18n';
 import type { Order } from '@/mocks/types';
@@ -12,36 +12,37 @@ export interface EbmInvoiceTotalsProps {
 
 export function EbmInvoiceTotals({ order }: EbmInvoiceTotalsProps) {
   const t = useT();
+  const { colors } = useTheme();
   const vatIncluded = Math.round((order.subtotal * VAT_RATE) / (1 + VAT_RATE));
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { borderTopColor: colors.hairline }]}>
       <View style={styles.row}>
-        <Text style={styles.label}>{t('shop_subtotal')}</Text>
-        <Text style={styles.value}>{formatRwf(order.subtotal)}</Text>
+        <Text style={[styles.label, { color: colors.secondary }]}>{t('shop_subtotal')}</Text>
+        <Text style={[styles.value, { color: colors.ink }]}>{formatRwf(order.subtotal)}</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.label}>{t('shop_delivery')}</Text>
-        <Text style={styles.value}>{formatRwf(order.deliveryFee)}</Text>
+        <Text style={[styles.label, { color: colors.secondary }]}>{t('shop_delivery')}</Text>
+        <Text style={[styles.value, { color: colors.ink }]}>{formatRwf(order.deliveryFee)}</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.label}>{t('ebm_vatIncluded')}</Text>
-        <Text style={styles.value}>{formatRwf(vatIncluded)}</Text>
+        <Text style={[styles.label, { color: colors.secondary }]}>{t('ebm_vatIncluded')}</Text>
+        <Text style={[styles.value, { color: colors.ink }]}>{formatRwf(vatIncluded)}</Text>
       </View>
       <View style={[styles.row, styles.totalRow]}>
-        <Text style={styles.totalLabel}>{t('shop_total')}</Text>
-        <Text style={styles.totalValue}>{formatRwf(order.total)}</Text>
+        <Text style={[styles.totalLabel, { color: colors.ink }]}>{t('shop_total')}</Text>
+        <Text style={[styles.totalValue, { color: colors.ink }]}>{formatRwf(order.total)}</Text>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { marginTop: space.md, borderTopWidth: 1, borderTopColor: color.hairline, paddingTop: space.sm },
+  card: { marginTop: space.md, borderTopWidth: 1, paddingTop: space.sm },
   row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 2 },
-  label: { ...text.caption, color: color.secondary },
-  value: { ...text.caption, color: color.ink, fontVariant: ['tabular-nums'] },
+  label: { ...text.caption },
+  value: { ...text.caption, fontVariant: ['tabular-nums'] },
   totalRow: { marginTop: space.xs },
-  totalLabel: { ...text.bodySemi, color: color.ink },
-  totalValue: { ...text.bodySemi, color: color.ink, fontVariant: ['tabular-nums'] },
+  totalLabel: { ...text.bodySemi },
+  totalValue: { ...text.bodySemi, fontVariant: ['tabular-nums'] },
 });

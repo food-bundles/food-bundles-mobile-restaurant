@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
 import {
@@ -13,10 +14,12 @@ import {
 } from '@expo-google-fonts/ibm-plex-sans';
 import * as SplashScreen from 'expo-splash-screen';
 import { hydrateLanguage } from '@/i18n';
+import { hydrateTheme, useTheme } from '@/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 export default function RootLayout() {
+  const { isDark } = useTheme();
   const [fontsLoaded] = useFonts({
     SpaceGrotesk_600SemiBold,
     SpaceGrotesk_700Bold,
@@ -27,6 +30,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     hydrateLanguage();
+    hydrateTheme();
   }, []);
 
   useEffect(() => {
@@ -37,6 +41,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(public)" />
         <Stack.Screen name="(auth)" />

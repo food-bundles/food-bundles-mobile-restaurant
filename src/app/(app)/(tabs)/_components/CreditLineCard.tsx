@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { PriceText } from '@/components/product';
 import { useT } from '@/i18n';
+import { formatRwf } from '@/lib';
 
 export interface CreditLineCardProps {
   limit: number;
@@ -11,24 +12,30 @@ export interface CreditLineCardProps {
 
 export function CreditLineCard({ limit, used, isRepaymentDue }: CreditLineCardProps) {
   const t = useT();
+  const { colors } = useTheme();
   const available = limit - used;
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: colors.pine }]}>
       <View style={styles.topRow}>
-        <Text style={styles.label}>{t('vouchers_title')}</Text>
-        <View style={[styles.statusBadge, isRepaymentDue && styles.statusBadgeDue]}>
-          <Text style={styles.statusLabel}>
+        <Text style={[styles.label, { color: colors.onPine }]}>{t('vouchers_title')}</Text>
+        <View
+          style={[
+            styles.statusBadge,
+            { backgroundColor: isRepaymentDue ? colors.marigold : colors.onPineSoft },
+          ]}
+        >
+          <Text style={[styles.statusLabel, { color: colors.pine }]}>
             {isRepaymentDue ? t('vouchers_repaymentDueLabel') : t('vouchers_activeLabel')}
           </Text>
         </View>
       </View>
-      <PriceText amount={available} size="hero" colorOverride={color.paper} />
+      <PriceText amount={available} size="hero" colorOverride={colors.paper} />
       <View style={styles.usedRow}>
-        <Text style={styles.usedLabel}>
+        <Text style={[styles.usedLabel, { color: colors.onPineSoft }]}>
           {t('vouchers_usedOfLimit', {
-            used: `${used.toLocaleString('en-US')} RWF`,
-            limit: `${limit.toLocaleString('en-US')} RWF`,
+            used: formatRwf(used),
+            limit: formatRwf(limit),
           })}
         </Text>
       </View>
@@ -37,12 +44,11 @@ export function CreditLineCard({ limit, used, isRepaymentDue }: CreditLineCardPr
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: color.pine, borderRadius: radius.lg, padding: space.lg },
+  card: { borderRadius: radius.lg, padding: space.lg },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: space.sm },
-  label: { ...text.overline, color: color.onPine },
-  statusBadge: { backgroundColor: color.onPineSoft, borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 3 },
-  statusBadgeDue: { backgroundColor: color.marigold },
-  statusLabel: { ...text.micro, color: color.pine },
+  label: { ...text.overline },
+  statusBadge: { borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 3 },
+  statusLabel: { ...text.micro },
   usedRow: { marginTop: space.sm },
-  usedLabel: { ...text.caption, color: color.onPineSoft, fontVariant: ['tabular-nums'] },
+  usedLabel: { ...text.caption, fontVariant: ['tabular-nums'] },
 });

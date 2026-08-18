@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { MinusIcon, PlusIcon } from '@/components/icons';
 import { useT } from '@/i18n';
 
@@ -11,6 +11,7 @@ export interface QuantityStepperProps {
 
 export function QuantityStepper({ qty, onInc, onDec }: QuantityStepperProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <View style={styles.container}>
@@ -21,11 +22,11 @@ export function QuantityStepper({ qty, onInc, onDec }: QuantityStepperProps) {
         hitSlop={8}
         style={styles.hitArea}
       >
-        <View style={styles.visualButton}>
-          <MinusIcon size={14} color={color.leaf} />
+        <View style={[styles.visualButton, { backgroundColor: colors.tintLeaf }]}>
+          <MinusIcon size={14} color={colors.leaf} />
         </View>
       </Pressable>
-      <Text style={styles.qty}>{qty}</Text>
+      <Text style={[styles.qty, { color: colors.ink }]}>{qty}</Text>
       <Pressable
         onPress={onInc}
         accessibilityRole="button"
@@ -33,8 +34,8 @@ export function QuantityStepper({ qty, onInc, onDec }: QuantityStepperProps) {
         hitSlop={8}
         style={styles.hitArea}
       >
-        <View style={styles.visualButton}>
-          <PlusIcon size={14} color={color.leaf} />
+        <View style={[styles.visualButton, { backgroundColor: colors.tintLeaf }]}>
+          <PlusIcon size={14} color={colors.leaf} />
         </View>
       </Pressable>
     </View>
@@ -48,9 +49,8 @@ const styles = StyleSheet.create({
     width: 27,
     height: 27,
     borderRadius: radius.pill,
-    backgroundColor: color.tintLeaf,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  qty: { ...text.bodySemi, color: color.ink, minWidth: 20, textAlign: 'center' },
+  qty: { ...text.bodySemi, minWidth: 20, textAlign: 'center' },
 });

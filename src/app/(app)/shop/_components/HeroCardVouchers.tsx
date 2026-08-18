@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { color, radius, signatureDuration, space, text } from '@/theme';
+import { radius, signatureDuration, space, text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
 import { HeroCardShell } from './HeroCardShell';
 import { HeroCardLink } from './HeroCardLink';
@@ -33,6 +33,7 @@ export function HeroCardVouchers({
   unlockCta,
   onPress,
 }: HeroCardVouchersProps) {
+  const { colors } = useTheme();
   const fade = useSharedValue(0);
   const shimmer = useSharedValue(0);
 
@@ -55,21 +56,25 @@ export function HeroCardVouchers({
     <HeroCardShell onPress={onPress} accessibilityLabel={`${overline}, ${title}`} tone="dark" overline={overline}>
       <View>
         {subscribed ? (
-          <View style={styles.creditBar}>
-            <View style={[styles.creditFill, { width: `${Math.round(usedFraction * 100)}%` }]} />
+          <View style={[styles.creditBar, { backgroundColor: colors.onPineSoft }]}>
+            <View
+              style={[styles.creditFill, { width: `${Math.round(usedFraction * 100)}%`, backgroundColor: colors.marigold }]}
+            />
           </View>
         ) : null}
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
-        {subscribed ? <Text style={styles.available}>{formatRwf(available)}</Text> : null}
+        <Text style={[styles.title, { color: colors.paper }]}>{title}</Text>
+        <Text style={[styles.subtitle, { color: colors.onPineSoft }]}>{subtitle}</Text>
+        {subscribed ? <Text style={[styles.available, { color: colors.paper }]}>{formatRwf(available)}</Text> : null}
         {phase === 2 && subscribed ? (
-          <Animated.Text style={[styles.settlement, fadeStyle]}>{settlementLabel}</Animated.Text>
+          <Animated.Text style={[styles.settlement, { color: colors.onPine }, fadeStyle]}>
+            {settlementLabel}
+          </Animated.Text>
         ) : null}
         {phase === 2 && !subscribed ? (
           <Animated.View style={[styles.unlockRow, fadeStyle]}>
             <View style={styles.unlockWrap}>
-              <Text style={styles.unlockLabel}>{unlockCta} →</Text>
-              <Animated.View style={[styles.shimmer, shimmerStyle]} />
+              <Text style={[styles.unlockLabel, { color: colors.marigold }]}>{unlockCta} →</Text>
+              <Animated.View style={[styles.shimmer, { backgroundColor: colors.paper }, shimmerStyle]} />
             </View>
           </Animated.View>
         ) : null}
@@ -83,17 +88,16 @@ const styles = StyleSheet.create({
   creditBar: {
     height: 6,
     borderRadius: 3,
-    backgroundColor: color.onPineSoft,
     overflow: 'hidden',
     marginBottom: space.sm,
   },
-  creditFill: { height: '100%', backgroundColor: color.marigold, borderRadius: radius.sm },
-  title: { ...text.h2, color: color.paper },
-  subtitle: { ...text.caption, color: color.onPineSoft, marginTop: 2 },
-  available: { ...text.priceLg, color: color.paper, marginTop: space.xs },
-  settlement: { ...text.caption, color: color.onPine, marginTop: 4 },
+  creditFill: { height: '100%', borderRadius: radius.sm },
+  title: { ...text.h2 },
+  subtitle: { ...text.caption, marginTop: 2 },
+  available: { ...text.priceLg, marginTop: space.xs },
+  settlement: { ...text.caption, marginTop: 4 },
   unlockRow: { marginTop: space.xs },
   unlockWrap: { position: 'relative', overflow: 'hidden', alignSelf: 'flex-start' },
-  unlockLabel: { ...text.label, color: color.marigold },
-  shimmer: { position: 'absolute', top: 0, bottom: 0, width: 40, backgroundColor: color.paper },
+  unlockLabel: { ...text.label },
+  shimmer: { position: 'absolute', top: 0, bottom: 0, width: 40 },
 });

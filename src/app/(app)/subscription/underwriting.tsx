@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { CheckIcon } from '@/components/icons';
 import { Input } from '@/components/primitives';
@@ -14,6 +14,7 @@ type Duration = '30' | '60' | '90';
 
 export default function Underwriting() {
   const t = useT();
+  const { colors } = useTheme();
   const { completed } = useLocalSearchParams<{ completed?: string }>();
   const [reason, setReason] = useState('Stock produce between supplier payouts');
   const [firstTime, setFirstTime] = useState(true);
@@ -24,18 +25,18 @@ export default function Underwriting() {
     return (
       <ScreenScroll>
         <View style={styles.completedWrap}>
-          <View style={styles.completedIcon}>
-            <CheckIcon size={24} color={color.paper} />
+          <View style={[styles.completedIcon, { backgroundColor: colors.ripe }]}>
+            <CheckIcon size={24} color={colors.paper} />
           </View>
-          <Text style={styles.completedTitle}>{t('underwriting_completedTitle')}</Text>
-          <Text style={styles.completedSub}>{t('underwriting_completedSub')}</Text>
+          <Text style={[styles.completedTitle, { color: colors.ink }]}>{t('underwriting_completedTitle')}</Text>
+          <Text style={[styles.completedSub, { color: colors.secondary }]}>{t('underwriting_completedSub')}</Text>
           <Pressable
             onPress={() => router.replace({ pathname: '/(app)/(tabs)/wallet', params: { tab: 'vouchers' } })}
             accessibilityRole="button"
             accessibilityLabel={t('vouchers_useAtCheckout')}
-            style={styles.completedButton}
+            style={[styles.completedButton, { backgroundColor: colors.leaf }]}
           >
-            <Text style={styles.completedButtonLabel}>{t('vouchers_title')}</Text>
+            <Text style={[styles.completedButtonLabel, { color: colors.paper }]}>{t('vouchers_title')}</Text>
           </Pressable>
         </View>
       </ScreenScroll>
@@ -43,14 +44,14 @@ export default function Underwriting() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={t('underwriting_title')} />
       <ScreenScroll contentInsetBottom={80}>
         <View style={styles.fields}>
           <Input label={t('underwriting_tin')} value={account.tin} onChangeText={() => undefined} editable={false} />
           <Input label={t('underwriting_reason')} value={reason} onChangeText={setReason} />
           <View>
-            <Text style={styles.label}>{t('underwriting_firstTime')}</Text>
+            <Text style={[styles.label, { color: colors.ink }]}>{t('underwriting_firstTime')}</Text>
             <OptionRow
               options={[
                 { value: 'yes', label: t('underwriting_yes') },
@@ -61,7 +62,7 @@ export default function Underwriting() {
             />
           </View>
           <View>
-            <Text style={styles.label}>{t('underwriting_frequency')}</Text>
+            <Text style={[styles.label, { color: colors.ink }]}>{t('underwriting_frequency')}</Text>
             <OptionRow
               options={[
                 { value: 'RARELY', label: t('underwriting_rarely') },
@@ -73,7 +74,7 @@ export default function Underwriting() {
             />
           </View>
           <View>
-            <Text style={styles.label}>{t('underwriting_repaymentDuration')}</Text>
+            <Text style={[styles.label, { color: colors.ink }]}>{t('underwriting_repaymentDuration')}</Text>
             <OptionRow
               options={[
                 { value: '30', label: t('underwriting_days30') },
@@ -91,9 +92,9 @@ export default function Underwriting() {
           onPress={() => router.push({ pathname: '/(app)/checkout/otp', params: { purpose: 'underwriting' } })}
           accessibilityRole="button"
           accessibilityLabel={t('underwriting_continueVerification')}
-          style={styles.button}
+          style={[styles.button, { backgroundColor: colors.leaf }]}
         >
-          <Text style={styles.buttonLabel}>{t('underwriting_continueVerification')}</Text>
+          <Text style={[styles.buttonLabel, { color: colors.paper }]}>{t('underwriting_continueVerification')}</Text>
         </Pressable>
       </StickyFooter>
     </View>
@@ -101,36 +102,33 @@ export default function Underwriting() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   fields: { gap: space.lg, marginTop: space.md },
-  label: { ...text.label, color: color.ink, marginBottom: space.sm },
+  label: { ...text.label, marginBottom: space.sm },
   button: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonLabel: { ...text.bodySemi, color: color.paper },
+  buttonLabel: { ...text.bodySemi },
   completedWrap: { alignItems: 'center', marginTop: space.xxl, gap: space.sm },
   completedIcon: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: color.ripe,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  completedTitle: { ...text.h1, color: color.ink },
-  completedSub: { ...text.body, color: color.secondary, textAlign: 'center' },
+  completedTitle: { ...text.h1 },
+  completedSub: { ...text.body, textAlign: 'center' },
   completedButton: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     paddingHorizontal: space.xl,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: space.md,
   },
-  completedButtonLabel: { ...text.bodySemi, color: color.paper },
+  completedButtonLabel: { ...text.bodySemi },
 });

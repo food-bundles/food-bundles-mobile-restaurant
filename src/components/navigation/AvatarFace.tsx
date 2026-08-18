@@ -12,7 +12,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import Svg, { Circle, Ellipse, Path } from 'react-native-svg';
-import { color, signatureDuration } from '@/theme';
+import { signatureDuration, useTheme } from '@/theme';
 
 export interface AvatarFaceProps {
   /** Overall diameter of the face artwork in px. */
@@ -28,6 +28,7 @@ const AnimatedEllipse = Animated.createAnimatedComponent(Ellipse);
 
 /** FoodBundles AI assistant face: blinking eyes, an idle bob, and a thinking-dots cue. */
 export function AvatarFace({ size = 32, animated = true }: AvatarFaceProps) {
+  const { colors } = useTheme();
   const eyeScaleY = useSharedValue(1);
   const eyeShiftX = useSharedValue(0);
   const dot1 = useSharedValue(0);
@@ -103,12 +104,12 @@ export function AvatarFace({ size = 32, animated = true }: AvatarFaceProps) {
   return (
     <Animated.View style={[{ width: size, height: size }, bodyStyle]}>
       <Svg width={size} height={size} viewBox="0 0 32 32">
-        <AnimatedCircle cx={11} cy={7} r={1.1} fill={color.paper} animatedProps={dot1Props} />
-        <AnimatedCircle cx={16} cy={6} r={1.1} fill={color.paper} animatedProps={dot2Props} />
-        <AnimatedCircle cx={21} cy={7} r={1.1} fill={color.paper} animatedProps={dot3Props} />
-        <AnimatedEllipse cy={14} rx={EYE_RY} ry={EYE_RY} fill={color.paper} animatedProps={leftEyeProps} />
-        <AnimatedEllipse cy={14} rx={EYE_RY} ry={EYE_RY} fill={color.paper} animatedProps={rightEyeProps} />
-        <Path d="M12 21 Q16 24 20 21" stroke={color.paper} strokeWidth={1.8} strokeLinecap="round" fill="none" />
+        <AnimatedCircle cx={11} cy={7} r={1.1} fill={colors.paper} animatedProps={dot1Props} />
+        <AnimatedCircle cx={16} cy={6} r={1.1} fill={colors.paper} animatedProps={dot2Props} />
+        <AnimatedCircle cx={21} cy={7} r={1.1} fill={colors.paper} animatedProps={dot3Props} />
+        <AnimatedEllipse cy={14} rx={EYE_RY} ry={EYE_RY} fill={colors.paper} animatedProps={leftEyeProps} />
+        <AnimatedEllipse cy={14} rx={EYE_RY} ry={EYE_RY} fill={colors.paper} animatedProps={rightEyeProps} />
+        <Path d="M12 21 Q16 24 20 21" stroke={colors.paper} strokeWidth={1.8} strokeLinecap="round" fill="none" />
       </Svg>
     </Animated.View>
   );

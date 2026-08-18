@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { color, duration, radius, space, text } from '@/theme';
+import { duration, radius, space, text, useTheme } from '@/theme';
 
 export interface ToastProps {
   message: string | null;
@@ -11,6 +11,7 @@ export interface ToastProps {
 const VISIBLE_MS = 2000;
 
 export function Toast({ message, onHide }: ToastProps) {
+  const { colors } = useTheme();
   const opacity = useSharedValue(0);
 
   useEffect(() => {
@@ -32,9 +33,9 @@ export function Toast({ message, onHide }: ToastProps) {
     <Animated.View
       accessibilityLiveRegion="polite"
       pointerEvents="none"
-      style={[styles.toast, animatedStyle]}
+      style={[styles.toast, { backgroundColor: colors.ink }, animatedStyle]}
     >
-      <Text style={styles.label}>{message}</Text>
+      <Text style={[styles.label, { color: colors.paper }]}>{message}</Text>
     </Animated.View>
   );
 }
@@ -45,11 +46,10 @@ const styles = StyleSheet.create({
     left: space.lg,
     right: space.lg,
     bottom: space.xl,
-    backgroundColor: color.ink,
     borderRadius: radius.md,
     paddingVertical: space.sm,
     paddingHorizontal: space.md,
     alignItems: 'center',
   },
-  label: { ...text.bodySemi, color: color.paper },
+  label: { ...text.bodySemi },
 });

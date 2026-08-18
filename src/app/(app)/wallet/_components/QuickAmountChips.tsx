@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
 
 const AMOUNTS = [50000, 100000, 200000, 500000];
@@ -10,6 +10,8 @@ export interface QuickAmountChipsProps {
 }
 
 export function QuickAmountChips({ selected, onSelect }: QuickAmountChipsProps) {
+  const { colors } = useTheme();
+
   return (
     <View style={styles.row}>
       {AMOUNTS.map((amount) => {
@@ -21,9 +23,15 @@ export function QuickAmountChips({ selected, onSelect }: QuickAmountChipsProps) 
             accessibilityRole="button"
             accessibilityLabel={formatRwf(amount)}
             accessibilityState={{ selected: active }}
-            style={[styles.chip, active && styles.chipActive]}
+            style={[
+              styles.chip,
+              { backgroundColor: colors.paper, borderColor: colors.hairline },
+              active && { backgroundColor: colors.tintLeaf, borderColor: colors.leaf },
+            ]}
           >
-            <Text style={[styles.label, active && styles.labelActive]}>{formatRwf(amount)}</Text>
+            <Text style={[styles.label, { color: colors.secondary }, active && { color: colors.leaf }]}>
+              {formatRwf(amount)}
+            </Text>
           </Pressable>
         );
       })}
@@ -37,13 +45,9 @@ const styles = StyleSheet.create({
     minHeight: hit.min,
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipActive: { backgroundColor: color.tintLeaf, borderColor: color.leaf },
-  label: { ...text.label, color: color.secondary, fontVariant: ['tabular-nums'] },
-  labelActive: { color: color.leaf },
+  label: { ...text.label, fontVariant: ['tabular-nums'] },
 });

@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius } from '@/theme';
+import { hit, radius, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { PlusIcon } from '@/components/icons';
 import { AddressRow } from './_components/AddressRow';
@@ -9,9 +9,10 @@ import { useT } from '@/i18n';
 
 export default function Addresses() {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader
         title={t('addresses_title')}
         trailing={
@@ -19,9 +20,9 @@ export default function Addresses() {
             onPress={() => router.push({ pathname: '/(app)/settings/address/[id]', params: { id: 'new' } })}
             accessibilityRole="button"
             accessibilityLabel={t('a11y_addAddress')}
-            style={styles.addButton}
+            style={[styles.addButton, { backgroundColor: colors.leaf }]}
           >
-            <PlusIcon color={color.paper} />
+            <PlusIcon color={colors.paper} />
           </Pressable>
         }
       />
@@ -35,12 +36,11 @@ export default function Addresses() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   addButton: {
     width: hit.min,
     height: hit.min,
     borderRadius: radius.md,
-    backgroundColor: color.leaf,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,5 +1,5 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
 
@@ -19,6 +19,7 @@ export interface TransactionFilterChipsProps {
 
 export function TransactionFilterChips({ selected, onSelect }: TransactionFilterChipsProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
@@ -31,9 +32,17 @@ export function TransactionFilterChips({ selected, onSelect }: TransactionFilter
             accessibilityRole="button"
             accessibilityLabel={t(FILTER_KEY[filter])}
             accessibilityState={{ selected: active }}
-            style={[styles.chip, active && styles.chipActive]}
+            style={[
+              styles.chip,
+              { backgroundColor: colors.paper, borderColor: colors.hairline },
+              active && { backgroundColor: colors.leaf, borderColor: colors.leaf },
+            ]}
           >
-            <Text style={[styles.label, active && styles.labelActive]}>{t(FILTER_KEY[filter])}</Text>
+            <Text
+              style={[styles.label, { color: colors.secondary }, active && { color: colors.paper }]}
+            >
+              {t(FILTER_KEY[filter])}
+            </Text>
           </Pressable>
         );
       })}
@@ -47,13 +56,9 @@ const styles = StyleSheet.create({
     minHeight: hit.min,
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipActive: { backgroundColor: color.leaf, borderColor: color.leaf },
-  label: { ...text.label, color: color.secondary },
-  labelActive: { color: color.paper },
+  label: { ...text.label },
 });

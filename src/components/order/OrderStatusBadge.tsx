@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
+import type { ColorPalette } from '@/theme';
 import type { OrderStatus } from '@/mocks/types';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
@@ -15,27 +16,27 @@ const STATUS_KEY: Record<OrderStatus, TranslationKey> = {
   REFUNDED: 'st_refunded',
 };
 
-const STATUS_BG: Record<OrderStatus, string> = {
-  PENDING: color.neutral,
-  CONFIRMED: color.tintLeaf,
-  PREPARING: color.tintLeaf,
-  READY: color.tintLeaf,
-  IN_TRANSIT: color.tintMarigold,
-  DELIVERED: color.tintRipe,
-  CANCELLED: color.tintChili,
-  REFUNDED: color.neutral,
-};
+const STATUS_BG = (colors: ColorPalette): Record<OrderStatus, string> => ({
+  PENDING: colors.neutral,
+  CONFIRMED: colors.tintLeaf,
+  PREPARING: colors.tintLeaf,
+  READY: colors.tintLeaf,
+  IN_TRANSIT: colors.tintMarigold,
+  DELIVERED: colors.tintRipe,
+  CANCELLED: colors.tintChili,
+  REFUNDED: colors.neutral,
+});
 
-const STATUS_TEXT: Record<OrderStatus, string> = {
-  PENDING: color.secondary,
-  CONFIRMED: color.pine,
-  PREPARING: color.pine,
-  READY: color.pine,
-  IN_TRANSIT: color.tintedAmberText,
-  DELIVERED: color.tintedGreenText,
-  CANCELLED: color.tintedRedText,
-  REFUNDED: color.tintedRedText,
-};
+const STATUS_TEXT = (colors: ColorPalette): Record<OrderStatus, string> => ({
+  PENDING: colors.secondary,
+  CONFIRMED: colors.pine,
+  PREPARING: colors.pine,
+  READY: colors.pine,
+  IN_TRANSIT: colors.tintedAmberText,
+  DELIVERED: colors.tintedGreenText,
+  CANCELLED: colors.tintedRedText,
+  REFUNDED: colors.tintedRedText,
+});
 
 export interface OrderStatusBadgeProps {
   status: OrderStatus;
@@ -43,16 +44,17 @@ export interface OrderStatusBadgeProps {
 
 export function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <View
       style={[
         styles.base,
-        { backgroundColor: STATUS_BG[status] },
-        status === 'REFUNDED' && styles.dashed,
+        { backgroundColor: STATUS_BG(colors)[status] },
+        status === 'REFUNDED' && [styles.dashed, { borderColor: colors.refundedDashed }],
       ]}
     >
-      <Text style={[styles.label, { color: STATUS_TEXT[status] }]}>{t(STATUS_KEY[status])}</Text>
+      <Text style={[styles.label, { color: STATUS_TEXT(colors)[status] }]}>{t(STATUS_KEY[status])}</Text>
     </View>
   );
 }
@@ -64,6 +66,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md - 1,
     paddingVertical: space.xs + 1,
   },
-  dashed: { borderWidth: 1, borderStyle: 'dashed', borderColor: color.refundedDashed },
+  dashed: { borderWidth: 1, borderStyle: 'dashed' },
   label: { ...text.overline },
 });

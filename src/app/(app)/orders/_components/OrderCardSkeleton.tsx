@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { color, radius, space } from '@/theme';
+import { radius, space, useTheme } from '@/theme';
 import { Skeleton } from '@/components/primitives';
 
 export interface OrderCardSkeletonProps {
@@ -7,8 +7,16 @@ export interface OrderCardSkeletonProps {
 }
 
 export function OrderCardSkeleton({ faded }: OrderCardSkeletonProps) {
+  const { colors } = useTheme();
+
   return (
-    <View style={[styles.card, faded && styles.faded]}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: colors.paper, borderColor: colors.hairline },
+        faded && styles.faded,
+      ]}
+    >
       <View style={styles.topRow}>
         <Skeleton width="34%" height={14} />
         <Skeleton width="24%" height={18} radius={radius.pill} />
@@ -23,9 +31,7 @@ export function OrderCardSkeleton({ faded }: OrderCardSkeletonProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     borderRadius: radius.lg,
     padding: space.md,
     marginBottom: space.sm,

@@ -8,7 +8,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { color, signatureDuration, space, text } from '@/theme';
+import { signatureDuration, space, text, useTheme } from '@/theme';
 import { SunIcon } from '@/components/icons';
 import { HeroCardShell } from './HeroCardShell';
 import { HeroCardLink } from './HeroCardLink';
@@ -32,6 +32,7 @@ export function HeroCardWeather({
   linkLabel,
   onPress,
 }: HeroCardWeatherProps) {
+  const { colors } = useTheme();
   const rotation = useSharedValue(0);
   const promptFade = useSharedValue(0);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -69,12 +70,14 @@ export function HeroCardWeather({
           <SunIcon size={28} />
         </Animated.View>
         <View style={styles.textCol}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
+          <Text style={[styles.title, { color: colors.ink }]}>{title}</Text>
+          <Text style={[styles.subtitle, { color: colors.secondary }]}>{subtitle}</Text>
         </View>
       </View>
       <View>
-        {phase === 2 ? <Animated.Text style={[styles.prompt, promptStyle]}>{restockPrompt}</Animated.Text> : null}
+        {phase === 2 ? (
+          <Animated.Text style={[styles.prompt, { color: colors.body }, promptStyle]}>{restockPrompt}</Animated.Text>
+        ) : null}
         <View style={styles.linkGap}>
           <HeroCardLink label={linkLabel} />
         </View>
@@ -86,8 +89,8 @@ export function HeroCardWeather({
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   textCol: { flex: 1 },
-  title: { ...text.h2, color: color.ink },
-  subtitle: { ...text.caption, color: color.secondary, marginTop: 2 },
-  prompt: { ...text.caption, color: color.body },
+  title: { ...text.h2 },
+  subtitle: { ...text.caption, marginTop: 2 },
+  prompt: { ...text.caption },
   linkGap: { marginTop: space.xs },
 });

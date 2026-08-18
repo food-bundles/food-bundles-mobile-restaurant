@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, View } from 'react-native';
-import { color, hit, radius } from '@/theme';
+import { hit, radius, useTheme } from '@/theme';
 import { PriceText } from '@/components/product';
 import { MinusIcon, PlusIcon } from '@/components/icons';
 import { useT } from '@/i18n';
@@ -13,9 +13,10 @@ export interface CreditAmountPickerProps {
 
 export function CreditAmountPicker({ amount, onAdjust }: CreditAmountPickerProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
       <Pressable
         onPress={() => onAdjust(-STEP)}
         accessibilityRole="button"
@@ -23,8 +24,8 @@ export function CreditAmountPicker({ amount, onAdjust }: CreditAmountPickerProps
         hitSlop={8}
         style={styles.hitArea}
       >
-        <View style={styles.visualButton}>
-          <MinusIcon size={14} color={color.leaf} />
+        <View style={[styles.visualButton, { backgroundColor: colors.tintLeaf }]}>
+          <MinusIcon size={14} color={colors.leaf} />
         </View>
       </Pressable>
       <PriceText amount={amount} size="hero" />
@@ -35,8 +36,8 @@ export function CreditAmountPicker({ amount, onAdjust }: CreditAmountPickerProps
         hitSlop={8}
         style={styles.hitArea}
       >
-        <View style={[styles.visualButton, styles.visualButtonActive]}>
-          <PlusIcon size={14} color={color.paper} />
+        <View style={[styles.visualButton, { backgroundColor: colors.leaf }]}>
+          <PlusIcon size={14} color={colors.paper} />
         </View>
       </Pressable>
     </View>
@@ -49,9 +50,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 14,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     borderRadius: radius.pill,
     paddingVertical: 8,
   },
@@ -60,9 +59,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: color.tintLeaf,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  visualButtonActive: { backgroundColor: color.leaf },
 });

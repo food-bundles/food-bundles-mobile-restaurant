@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme, type ColorPalette } from '@/theme';
 
 export type HeroCardTone = 'dark' | 'photo' | 'paper' | 'cream';
 
@@ -13,19 +13,19 @@ export interface HeroCardShellProps {
   background?: React.ReactNode;
 }
 
-const TONE_BG: Record<HeroCardTone, string> = {
-  dark: color.pine,
-  photo: color.pine,
-  paper: color.paper,
-  cream: color.tintMarigoldSoft,
-};
+const toneBg = (colors: ColorPalette): Record<HeroCardTone, string> => ({
+  dark: colors.pine,
+  photo: colors.pine,
+  paper: colors.paper,
+  cream: colors.tintMarigoldSoft,
+});
 
-const TONE_OVERLINE: Record<HeroCardTone, string> = {
-  dark: color.onPine,
-  photo: color.onPine,
-  paper: color.secondary,
-  cream: color.tintedAmberText,
-};
+const toneOverline = (colors: ColorPalette): Record<HeroCardTone, string> => ({
+  dark: colors.onPine,
+  photo: colors.onPine,
+  paper: colors.secondary,
+  cream: colors.tintedAmberText,
+});
 
 export function HeroCardShell({
   onPress,
@@ -36,19 +36,21 @@ export function HeroCardShell({
   children,
   background,
 }: HeroCardShellProps) {
+  const { colors } = useTheme();
+
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      style={[styles.card, { backgroundColor: TONE_BG[tone] }]}
+      style={[styles.card, { backgroundColor: toneBg(colors)[tone] }]}
     >
       {background}
       <View style={styles.headerRow}>
-        <Text style={[styles.overline, { color: TONE_OVERLINE[tone] }]}>{overline}</Text>
+        <Text style={[styles.overline, { color: toneOverline(colors)[tone] }]}>{overline}</Text>
         {badge ? (
-          <View style={styles.badge}>
-            <Text style={styles.badgeLabel}>{badge}</Text>
+          <View style={[styles.badge, { backgroundColor: colors.marigold }]}>
+            <Text style={[styles.badgeLabel, { color: colors.pine }]}>{badge}</Text>
           </View>
         ) : null}
       </View>
@@ -68,10 +70,9 @@ const styles = StyleSheet.create({
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   overline: { ...text.overline },
   badge: {
-    backgroundColor: color.marigold,
     borderRadius: radius.pill,
     paddingHorizontal: space.sm,
     paddingVertical: 2,
   },
-  badgeLabel: { ...text.micro, color: color.pine },
+  badgeLabel: { ...text.micro },
 });

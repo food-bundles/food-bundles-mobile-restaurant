@@ -11,7 +11,7 @@ import { ProductGrid } from '../shop/_components/ProductGrid';
 import { SeeAllLink } from '../shop/_components/SeeAllLink';
 import { products } from '@/mocks';
 import { useT } from '@/i18n';
-import { color, space } from '@/theme';
+import { space, useTheme } from '@/theme';
 
 const CATEGORY_OPTIONS: CategoryOption[] = [
   { key: 'ALL', label: 'All' },
@@ -22,12 +22,13 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
 
 export default function ShopHome() {
   const t = useT();
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.stickyHeader, { paddingTop: insets.top }]}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
+      <View style={[styles.stickyHeader, { backgroundColor: colors.oat, paddingTop: insets.top }]}>
         <ShopHomeHeader />
         <View style={styles.searchGap}>
           <SearchTrigger />
@@ -64,8 +65,8 @@ export default function ShopHome() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
-  stickyHeader: { backgroundColor: color.oat },
+  container: { flex: 1 },
+  stickyHeader: {},
   searchGap: { marginTop: space.md, paddingHorizontal: space.lg },
   carouselGap: { marginTop: space.md },
   chipsGap: { marginTop: space.md, paddingHorizontal: space.lg, paddingBottom: space.sm },

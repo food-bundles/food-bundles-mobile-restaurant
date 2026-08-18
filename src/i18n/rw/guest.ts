@@ -30,4 +30,5 @@ export const guest: Record<keyof typeof guestEn, string> = {
   guest_convertPrompt: 'Iyandikishe kugira ngo ukurikirane iri tumiza kandi wongere gutumiza vuba.',
   guest_emptyBasketTitle: 'Igikapu cyawe kirimo ubusa',
   guest_emptyBasketMessage: 'Reba ibiribwa hanyuma wongeremo ibintu kugira ngo ubibone hano.',
+  a11y_openGuestBasket: 'Fungura igikapu cy’umushyitsi, ibintu {{count}}',
 };

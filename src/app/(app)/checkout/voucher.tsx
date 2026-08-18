@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { CheckoutStepHeader } from '@/components/checkout';
 import { PriceText } from '@/components/product';
@@ -10,6 +10,7 @@ import { orders } from '@/mocks';
 
 export default function VoucherStep() {
   const t = useT();
+  const { colors } = useTheme();
   const creditLimit = useVouchersStore((state) => state.creditLimit);
   const creditUsed = useVouchersStore((state) => state.creditUsed);
   const activeOrder = orders.find((order) => order.id === 'FB-24815') ?? orders[0];
@@ -17,26 +18,26 @@ export default function VoucherStep() {
   const remainingAfter = creditAvailable - activeOrder.total;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <CheckoutStepHeader title={t('checkout_payWithVoucher')} step={2} />
       <ScreenScroll contentInsetBottom={80}>
-        <View style={styles.card}>
+        <View style={[styles.card, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
           <View style={styles.row}>
-            <Text style={styles.label}>{t('checkout_orderTotal')}</Text>
+            <Text style={[styles.label, { color: colors.secondary }]}>{t('checkout_orderTotal')}</Text>
             <PriceText amount={activeOrder.total} size="md" />
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>{t('checkout_creditAvailable')}</Text>
+            <Text style={[styles.label, { color: colors.secondary }]}>{t('checkout_creditAvailable')}</Text>
             <PriceText amount={creditAvailable} size="md" />
           </View>
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: colors.hairline }]} />
           <View style={styles.row}>
-            <Text style={styles.label}>{t('checkout_remainingAfter')}</Text>
-            <PriceText amount={remainingAfter} size="md" colorOverride={color.leaf} />
+            <Text style={[styles.label, { color: colors.secondary }]}>{t('checkout_remainingAfter')}</Text>
+            <PriceText amount={remainingAfter} size="md" colorOverride={colors.leaf} />
           </View>
         </View>
-        <View style={styles.notice}>
-          <Text style={styles.noticeText}>{t('checkout_voucherNote')}</Text>
+        <View style={[styles.notice, { backgroundColor: colors.tintMarigold }]}>
+          <Text style={[styles.noticeText, { color: colors.tintedAmberText }]}>{t('checkout_voucherNote')}</Text>
         </View>
       </ScreenScroll>
       <StickyFooter>
@@ -44,9 +45,9 @@ export default function VoucherStep() {
           onPress={() => router.push('/(app)/checkout/otp')}
           accessibilityRole="button"
           accessibilityLabel={t('checkout_voucherContinueBtn')}
-          style={styles.button}
+          style={[styles.button, { backgroundColor: colors.marigold }]}
         >
-          <Text style={styles.buttonLabel}>{t('checkout_voucherContinueBtn')}</Text>
+          <Text style={[styles.buttonLabel, { color: colors.pine }]}>{t('checkout_voucherContinueBtn')}</Text>
         </Pressable>
       </StickyFooter>
     </View>
@@ -54,33 +55,29 @@ export default function VoucherStep() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   card: {
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     borderRadius: radius.lg,
     padding: space.lg,
     marginTop: space.md,
     gap: space.sm,
   },
   row: { flexDirection: 'row', justifyContent: 'space-between' },
-  label: { ...text.body, color: color.secondary },
-  divider: { height: 1, backgroundColor: color.hairline, marginVertical: space.xs },
+  label: { ...text.body },
+  divider: { height: 1, marginVertical: space.xs },
   notice: {
     flexDirection: 'row',
-    backgroundColor: color.tintMarigold,
     borderRadius: radius.md,
     padding: space.md,
     marginTop: space.md,
   },
-  noticeText: { ...text.caption, color: color.tintedAmberText, flex: 1 },
+  noticeText: { ...text.caption, flex: 1 },
   button: {
     minHeight: 48,
-    backgroundColor: color.marigold,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonLabel: { ...text.bodySemi, color: color.pine },
+  buttonLabel: { ...text.bodySemi },
 });

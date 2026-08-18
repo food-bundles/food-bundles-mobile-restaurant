@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { color, signatureDuration, space, text } from '@/theme';
+import { signatureDuration, space, text, useTheme } from '@/theme';
 import { HeroCardShell } from './HeroCardShell';
 import { HeroCardLink } from './HeroCardLink';
 import { LANDING_IMAGES } from '@/mocks/landingImages';
@@ -25,6 +25,7 @@ export function HeroCardWeeklyDeal({
   linkLabel,
   onPress,
 }: HeroCardWeeklyDealProps) {
+  const { colors } = useTheme();
   const zoom = useSharedValue(1);
   const subtitleFade = useSharedValue(1);
 
@@ -52,14 +53,14 @@ export function HeroCardWeeklyDeal({
       background={
         <>
           <Animated.Image source={LANDING_IMAGES.weeklyDealCrate} style={[styles.photo, photoStyle]} />
-          <View style={styles.scrim} />
+          <View style={[styles.scrim, { backgroundColor: colors.pine }]} />
         </>
       }
     >
       <View />
       <View>
-        <Text style={styles.title}>{title}</Text>
-        <Animated.Text style={[styles.subtitle, subtitleStyle]}>
+        <Text style={[styles.title, { color: colors.paper }]}>{title}</Text>
+        <Animated.Text style={[styles.subtitle, { color: colors.onPineSoft }, subtitleStyle]}>
           {phase === 1 ? subtitle : closesInLabel}
         </Animated.Text>
         <View style={styles.linkGap}>
@@ -78,10 +79,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: color.pine,
     opacity: 0.55,
   },
-  title: { ...text.h2, color: color.paper },
-  subtitle: { ...text.caption, color: color.onPineSoft, marginTop: 2 },
+  title: { ...text.h2 },
+  subtitle: { ...text.caption, marginTop: 2 },
   linkGap: { marginTop: space.xs },
 });

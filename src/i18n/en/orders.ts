@@ -21,7 +21,12 @@ export const orders = {
   orders_reorderFrom: 'from {{orderId}}',
   orders_addItemsToCart: 'Add {{count}} items to cart',
   orders_outOfStock: 'Out of stock',
+  orders_stepOfTotal: 'Step {{step}} of {{total}}',
 
   a11y_previewEbm: 'Preview EBM invoice',
   a11y_paymentHistory: 'View payment history for this order',
+  a11y_orderStatusStep: 'Order status: step {{step}} of {{total}}',
+  a11y_demoState: 'Demo state: {{state}}',
+  a11y_orderCard: 'Order {{orderId}}, {{status}}',
+  a11y_activeOrderCard: 'Active order {{orderId}}, {{status}}',
 } as const;

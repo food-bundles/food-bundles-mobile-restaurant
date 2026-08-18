@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { SearchField } from './_components/SearchField';
 import { ProductGrid } from './_components/ProductGrid';
@@ -13,6 +13,7 @@ const RECENT_SEARCHES = ['Onions', 'Eggs', 'Cabbage'];
 
 export default function Search() {
   const t = useT();
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
 
@@ -23,8 +24,8 @@ export default function Search() {
   }, [query]);
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
+      <View style={[styles.header, { paddingTop: insets.top + space.sm, borderBottomColor: colors.hairline }]}>
         <SearchField value={query} onChangeText={setQuery} placeholder={t('shop_searchProduce')} />
         <Pressable
           onPress={() => router.back()}
@@ -32,20 +33,20 @@ export default function Search() {
           accessibilityLabel={t('shop_cancel')}
           style={styles.cancelButton}
         >
-          <Text style={styles.cancelLabel}>{t('shop_cancel')}</Text>
+          <Text style={[styles.cancelLabel, { color: colors.leaf }]}>{t('shop_cancel')}</Text>
         </Pressable>
       </View>
       <ScreenScroll contentInsetBottom={40}>
         {query.trim() ? (
           <>
-            <Text style={styles.sectionLabel}>{t('shop_results')}</Text>
+            <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('shop_results')}</Text>
             <View style={styles.gridGap}>
               <ProductGrid products={results} scrollEnabled={false} />
             </View>
           </>
         ) : (
           <>
-            <Text style={styles.sectionLabel}>{t('shop_recent')}</Text>
+            <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('shop_recent')}</Text>
             <View style={styles.chips}>
               {RECENT_SEARCHES.map((term) => (
                 <Pressable
@@ -53,9 +54,9 @@ export default function Search() {
                   onPress={() => setQuery(term)}
                   accessibilityRole="button"
                   accessibilityLabel={term}
-                  style={styles.chip}
+                  style={[styles.chip, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
                 >
-                  <Text style={styles.chipLabel}>{term}</Text>
+                  <Text style={[styles.chipLabel, { color: colors.secondary }]}>{term}</Text>
                 </Pressable>
               ))}
             </View>
@@ -67,7 +68,7 @@ export default function Search() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -75,22 +76,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     paddingBottom: space.sm,
     borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
   },
   cancelButton: { minHeight: hit.min, paddingHorizontal: space.xs, alignItems: 'center', justifyContent: 'center' },
-  cancelLabel: { ...text.label, color: color.leaf },
-  sectionLabel: { ...text.overline, color: color.secondary, marginTop: space.md },
+  cancelLabel: { ...text.label },
+  sectionLabel: { ...text.overline, marginTop: space.md },
   gridGap: { marginTop: space.sm },
   chips: { flexDirection: 'row', gap: space.sm, marginTop: space.sm, flexWrap: 'wrap' },
   chip: {
     minHeight: hit.min,
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipLabel: { ...text.label, color: color.secondary },
+  chipLabel: { ...text.label },
 });

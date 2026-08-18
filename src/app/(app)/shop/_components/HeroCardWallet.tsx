@@ -4,7 +4,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import { PriceText } from '@/components/product';
 import { HeroCardShell } from './HeroCardShell';
 import { HeroCardLink } from './HeroCardLink';
-import { color, signatureDuration, text } from '@/theme';
+import { signatureDuration, text, useTheme } from '@/theme';
 
 export interface HeroCardWalletProps {
   phase: 1 | 2;
@@ -25,6 +25,7 @@ export function HeroCardWallet({
   linkLabel,
   onPress,
 }: HeroCardWalletProps) {
+  const { colors } = useTheme();
   const fade = useSharedValue(0);
 
   useEffect(() => {
@@ -36,10 +37,12 @@ export function HeroCardWallet({
   return (
     <HeroCardShell onPress={onPress} accessibilityLabel={`${overline}, ${subtitle}`} tone="dark" overline={overline}>
       <View>
-        <PriceText amount={balance} size="hero" colorOverride={color.paper} />
-        <Text style={styles.subtitle}>{subtitle}</Text>
+        <PriceText amount={balance} size="hero" colorOverride={colors.paper} />
+        <Text style={[styles.subtitle, { color: colors.onPineSoft }]}>{subtitle}</Text>
         {phase === 2 ? (
-          <Animated.Text style={[styles.transaction, fadeStyle]}>{lastTransactionLabel}</Animated.Text>
+          <Animated.Text style={[styles.transaction, { color: colors.onPine }, fadeStyle]}>
+            {lastTransactionLabel}
+          </Animated.Text>
         ) : null}
       </View>
       <HeroCardLink label={linkLabel} />
@@ -48,6 +51,6 @@ export function HeroCardWallet({
 }
 
 const styles = StyleSheet.create({
-  subtitle: { ...text.caption, color: color.onPineSoft, marginTop: 2 },
-  transaction: { ...text.caption, color: color.onPine, marginTop: 4 },
+  subtitle: { ...text.caption, marginTop: 2 },
+  transaction: { ...text.caption, marginTop: 4 },
 });

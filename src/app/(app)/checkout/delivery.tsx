@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { PlusIcon } from '@/components/icons';
 import { Input } from '@/components/primitives';
@@ -13,6 +13,7 @@ import { account } from '@/mocks';
 
 export default function CheckoutDelivery() {
   const t = useT();
+  const { colors } = useTheme();
   const address = useCheckoutStore((state) => state.address);
   const windowIndex = useCheckoutStore((state) => state.windowIndex);
   const setWindowIndex = useCheckoutStore((state) => state.setWindowIndex);
@@ -21,24 +22,24 @@ export default function CheckoutDelivery() {
   const [landmark, setLandmark] = useState('');
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <CheckoutStepHeader title={t('checkout_deliveryDetails')} step={1} />
       <ScreenScroll contentInsetBottom={80} applyTopInset={false}>
         <View style={styles.mapBleed}>
           <DeliveryMap />
         </View>
-        <Text style={styles.sectionLabel}>{t('checkout_deliverTo')}</Text>
-        <View style={styles.addressCard}>
-          <Text style={styles.addressTitle}>{account.businessName}</Text>
-          <Text style={styles.addressLine}>{address}</Text>
+        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('checkout_deliverTo')}</Text>
+        <View style={[styles.addressCard, { backgroundColor: colors.paper, borderColor: colors.leaf }]}>
+          <Text style={[styles.addressTitle, { color: colors.ink }]}>{account.businessName}</Text>
+          <Text style={[styles.addressLine, { color: colors.secondary }]}>{address}</Text>
         </View>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('checkout_addAddress')}
           style={styles.linkRow}
         >
-          <PlusIcon size={18} color={color.leaf} />
-          <Text style={styles.linkLabel}>{t('checkout_addAddress')}</Text>
+          <PlusIcon size={18} color={colors.leaf} />
+          <Text style={[styles.linkLabel, { color: colors.leaf }]}>{t('checkout_addAddress')}</Text>
         </Pressable>
         <Pressable
           onPress={() => setManual((prev) => !prev)}
@@ -46,7 +47,7 @@ export default function CheckoutDelivery() {
           accessibilityLabel={t('checkout_enterManually')}
           style={styles.linkRow}
         >
-          <Text style={styles.linkLabelMuted}>{t('checkout_enterManually')}</Text>
+          <Text style={[styles.linkLabelMuted, { color: colors.secondary }]}>{t('checkout_enterManually')}</Text>
         </Pressable>
         {manual ? (
           <View style={styles.manualFields}>
@@ -54,7 +55,7 @@ export default function CheckoutDelivery() {
             <Input label={t('checkout_landmarkOptional')} value={landmark} onChangeText={setLandmark} />
           </View>
         ) : null}
-        <Text style={styles.sectionLabel}>{t('checkout_deliveryWindow')}</Text>
+        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('checkout_deliveryWindow')}</Text>
         <DeliveryWindowPicker selected={windowIndex} onSelect={setWindowIndex} />
       </ScreenScroll>
       <StickyFooter>
@@ -62,9 +63,9 @@ export default function CheckoutDelivery() {
           onPress={() => router.push('/(app)/checkout/payment')}
           accessibilityRole="button"
           accessibilityLabel={t('checkout_continuePayment')}
-          style={styles.button}
+          style={[styles.button, { backgroundColor: colors.leaf }]}
         >
-          <Text style={styles.buttonLabel}>{t('checkout_continuePayment')}</Text>
+          <Text style={[styles.buttonLabel, { color: colors.paper }]}>{t('checkout_continuePayment')}</Text>
         </Pressable>
       </StickyFooter>
     </View>
@@ -72,18 +73,16 @@ export default function CheckoutDelivery() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   mapBleed: { marginTop: space.md, marginHorizontal: -space.lg },
-  sectionLabel: { ...text.overline, color: color.secondary, marginTop: space.md, marginBottom: space.sm },
+  sectionLabel: { ...text.overline, marginTop: space.md, marginBottom: space.sm },
   addressCard: {
-    backgroundColor: color.paper,
     borderWidth: 1.5,
-    borderColor: color.leaf,
     borderRadius: radius.lg,
     padding: space.md,
   },
-  addressTitle: { ...text.bodySemi, color: color.ink },
-  addressLine: { ...text.caption, color: color.secondary, marginTop: 2 },
+  addressTitle: { ...text.bodySemi },
+  addressLine: { ...text.caption, marginTop: 2 },
   linkRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -91,15 +90,14 @@ const styles = StyleSheet.create({
     minHeight: hit.min,
     paddingVertical: space.xs,
   },
-  linkLabel: { ...text.bodySemi, color: color.leaf },
-  linkLabelMuted: { ...text.bodySemi, color: color.secondary },
+  linkLabel: { ...text.bodySemi },
+  linkLabelMuted: { ...text.bodySemi },
   manualFields: { gap: space.sm, marginBottom: space.sm },
   button: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonLabel: { ...text.bodySemi, color: color.paper },
+  buttonLabel: { ...text.bodySemi },
 });

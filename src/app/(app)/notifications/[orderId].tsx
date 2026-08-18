@@ -1,16 +1,17 @@
 import { StyleSheet, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { color } from '@/theme';
+import { useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { FeedTimelineItem } from './_components/FeedTimelineItem';
 import { useT } from '@/i18n';
 
 export default function OrderFeed() {
   const t = useT();
+  const { colors } = useTheme();
   const { orderId } = useLocalSearchParams<{ orderId: string }>();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader
         title={t('notif_orderFeedTitle', { orderId })}
         subtitle={`${t('st_intransit')} · ${t('notif_arrivingAround', { time: '10:30' })}`}
@@ -34,5 +35,5 @@ export default function OrderFeed() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
 });

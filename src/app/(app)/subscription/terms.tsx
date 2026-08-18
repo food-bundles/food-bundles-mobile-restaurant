@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { CheckIcon } from '@/components/icons';
 import { useSessionStore } from '@/stores';
@@ -10,6 +10,7 @@ import type { Tier } from '@/mocks/types';
 
 export default function Terms() {
   const t = useT();
+  const { colors } = useTheme();
   const { tier } = useLocalSearchParams<{ tier?: Exclude<Tier, 'NONE'> }>();
   const acceptTerms = useSessionStore((state) => state.acceptTerms);
   const setTier = useSessionStore((state) => state.setTier);
@@ -22,17 +23,17 @@ export default function Terms() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={t('terms_title')} />
       <ScreenScroll contentInsetBottom={100}>
-        <Text style={styles.intro}>{t('terms_intro')}</Text>
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>{t('terms_section1Title')}</Text>
-          <Text style={styles.body}>{t('terms_section1Body')}</Text>
-          <Text style={styles.sectionTitle}>{t('terms_section2Title')}</Text>
-          <Text style={styles.body}>{t('terms_section2Body')}</Text>
-          <Text style={styles.sectionTitle}>{t('terms_section3Title')}</Text>
-          <Text style={styles.body}>{t('terms_section3Body')}</Text>
+        <Text style={[styles.intro, { color: colors.body }]}>{t('terms_intro')}</Text>
+        <View style={[styles.card, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
+          <Text style={[styles.sectionTitle, { color: colors.ink }]}>{t('terms_section1Title')}</Text>
+          <Text style={[styles.body, { color: colors.body }]}>{t('terms_section1Body')}</Text>
+          <Text style={[styles.sectionTitle, { color: colors.ink }]}>{t('terms_section2Title')}</Text>
+          <Text style={[styles.body, { color: colors.body }]}>{t('terms_section2Body')}</Text>
+          <Text style={[styles.sectionTitle, { color: colors.ink }]}>{t('terms_section3Title')}</Text>
+          <Text style={[styles.body, { color: colors.body }]}>{t('terms_section3Body')}</Text>
         </View>
       </ScreenScroll>
       <StickyFooter>
@@ -43,19 +44,25 @@ export default function Terms() {
           accessibilityLabel={t('terms_acceptCheckbox')}
           style={styles.checkboxRow}
         >
-          <View style={[styles.checkbox, checked && styles.checkboxChecked]}>
+          <View
+            style={[
+              styles.checkbox,
+              { borderColor: colors.disabledLine },
+              checked && { backgroundColor: colors.leaf, borderColor: colors.leaf },
+            ]}
+          >
             {checked ? <CheckIcon size={12} /> : null}
           </View>
-          <Text style={styles.checkboxLabel}>{t('terms_acceptCheckbox')}</Text>
+          <Text style={[styles.checkboxLabel, { color: colors.body }]}>{t('terms_acceptCheckbox')}</Text>
         </Pressable>
         <Pressable
           onPress={onAccept}
           disabled={!checked}
           accessibilityRole="button"
           accessibilityLabel={t('terms_acceptContinue')}
-          style={[styles.acceptButton, !checked && styles.acceptDisabled]}
+          style={[styles.acceptButton, { backgroundColor: colors.leaf }, !checked && styles.acceptDisabled]}
         >
-          <Text style={styles.acceptLabel}>{t('terms_acceptContinue')}</Text>
+          <Text style={[styles.acceptLabel, { color: colors.paper }]}>{t('terms_acceptContinue')}</Text>
         </Pressable>
       </StickyFooter>
     </View>
@@ -63,37 +70,32 @@ export default function Terms() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
-  intro: { ...text.body, color: color.body, marginTop: space.md },
+  container: { flex: 1 },
+  intro: { ...text.body, marginTop: space.md },
   card: {
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     borderRadius: radius.lg,
     padding: space.lg,
     marginTop: space.md,
   },
-  sectionTitle: { ...text.h2, color: color.ink, marginTop: space.sm },
-  body: { ...text.body, color: color.body, marginTop: space.xs },
+  sectionTitle: { ...text.h2, marginTop: space.sm },
+  body: { ...text.body, marginTop: space.xs },
   checkboxRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginBottom: space.md },
   checkbox: {
     width: 20,
     height: 20,
     borderRadius: 6,
     borderWidth: 1.5,
-    borderColor: color.disabledLine,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkboxChecked: { backgroundColor: color.leaf, borderColor: color.leaf },
-  checkboxLabel: { ...text.caption, color: color.body, flex: 1 },
+  checkboxLabel: { ...text.caption, flex: 1 },
   acceptButton: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
   acceptDisabled: { opacity: 0.5 },
-  acceptLabel: { ...text.bodySemi, color: color.paper },
+  acceptLabel: { ...text.bodySemi },
 });

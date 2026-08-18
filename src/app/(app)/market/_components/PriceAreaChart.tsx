@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Animated, { useAnimatedProps, useSharedValue, withTiming } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
-import { color, radius, signatureDuration, space, text } from '@/theme';
+import { radius, signatureDuration, space, text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
@@ -50,6 +50,7 @@ function estimatePathLength(values: number[], chartWidth: number): number {
 
 /** Seven-point area chart with a left-to-right draw-in on data change. */
 export function PriceAreaChart({ values, dayLabels }: PriceAreaChartProps) {
+  const { colors } = useTheme();
   const { width: windowWidth } = useWindowDimensions();
   const chartWidth = windowWidth - space.lg * 2 - space.lg * 2;
   const { linePath, areaPath, lastPoint } = buildPaths(values, chartWidth);
@@ -67,10 +68,10 @@ export function PriceAreaChart({ values, dayLabels }: PriceAreaChartProps) {
   return (
     <View style={styles.wrap}>
       <Svg width={chartWidth} height={CHART_HEIGHT} viewBox={`0 0 ${chartWidth} ${CHART_HEIGHT}`}>
-        <Path d={areaPath} fill={color.leaf} opacity={0.15} />
+        <Path d={areaPath} fill={colors.leaf} opacity={0.15} />
         <AnimatedPath
           d={linePath}
-          stroke={color.leaf}
+          stroke={colors.leaf}
           strokeWidth={2.5}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -79,12 +80,12 @@ export function PriceAreaChart({ values, dayLabels }: PriceAreaChartProps) {
           animatedProps={lineProps}
         />
       </Svg>
-      <View style={[styles.priceBadge, { left: Math.min(lastPoint.x - 28, chartWidth - 76) }]}>
-        <Text style={styles.priceBadgeLabel}>{formatRwf(values[values.length - 1])}</Text>
+      <View style={[styles.priceBadge, { backgroundColor: colors.leaf, left: Math.min(lastPoint.x - 28, chartWidth - 76) }]}>
+        <Text style={[styles.priceBadgeLabel, { color: colors.paper }]}>{formatRwf(values[values.length - 1])}</Text>
       </View>
       <View style={[styles.axisRow, { width: chartWidth }]}>
         {dayLabels.map((label) => (
-          <Text key={label} style={styles.axisLabel}>
+          <Text key={label} style={[styles.axisLabel, { color: colors.muted }]}>
             {label}
           </Text>
         ))}
@@ -98,12 +99,11 @@ const styles = StyleSheet.create({
   priceBadge: {
     position: 'absolute',
     top: 4,
-    backgroundColor: color.leaf,
     borderRadius: radius.sm,
     paddingHorizontal: space.xs,
     paddingVertical: 2,
   },
-  priceBadgeLabel: { ...text.micro, color: color.paper },
+  priceBadgeLabel: { ...text.micro },
   axisRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: space.xs },
-  axisLabel: { ...text.micro, color: color.muted },
+  axisLabel: { ...text.micro },
 });

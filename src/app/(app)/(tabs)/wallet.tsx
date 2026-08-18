@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, SectionHeader } from '@/components/layout';
 import { PriceText } from '@/components/product';
 import { TransactionRow } from '../wallet/_components/TransactionRow';
@@ -13,6 +13,7 @@ import { useT } from '@/i18n';
 
 export default function WalletBalance() {
   const t = useT();
+  const { colors } = useTheme();
   const { tab } = useLocalSearchParams<{ tab?: WalletPane }>();
   const [pane, setPane] = useState<WalletPane>(tab === 'vouchers' ? 'vouchers' : 'topup');
   const balance = useWalletStore((state) => state.balance);
@@ -32,23 +33,23 @@ export default function WalletBalance() {
 
   return (
     <ScreenScroll>
-      <Text style={styles.title}>{t('wallet_title')}</Text>
+      <Text style={[styles.title, { color: colors.ink }]}>{t('wallet_title')}</Text>
       <View style={styles.switchGap}>
         <WalletTabSwitch active={pane} onSelect={setPane} />
       </View>
       {pane === 'topup' ? (
         <View style={styles.paneGap}>
-          <View style={styles.balanceCard}>
-            <Text style={styles.balanceLabel}>{t('wallet_availableBalance')}</Text>
-            <PriceText amount={balance} size="hero" colorOverride={color.paper} />
+          <View style={[styles.balanceCard, { backgroundColor: colors.pine }]}>
+            <Text style={[styles.balanceLabel, { color: colors.onPine }]}>{t('wallet_availableBalance')}</Text>
+            <PriceText amount={balance} size="hero" colorOverride={colors.paper} />
             <View style={styles.actionRow}>
               <Pressable
                 onPress={() => router.push('/(app)/wallet/top-up')}
                 accessibilityRole="button"
                 accessibilityLabel={t('wallet_topUp')}
-                style={styles.topUpButton}
+                style={[styles.topUpButton, { backgroundColor: colors.marigold }]}
               >
-                <Text style={styles.topUpLabel}>{t('wallet_topUp')}</Text>
+                <Text style={[styles.topUpLabel, { color: colors.pine }]}>{t('wallet_topUp')}</Text>
               </Pressable>
               <Pressable
                 onPress={() => router.push('/(app)/wallet/transactions')}
@@ -56,8 +57,8 @@ export default function WalletBalance() {
                 accessibilityLabel={t('wallet_history')}
                 style={styles.historyButton}
               >
-                <View style={styles.historyBackdrop} />
-                <Text style={styles.historyLabel}>{t('wallet_history')}</Text>
+                <View style={[styles.historyBackdrop, { backgroundColor: colors.paper }]} />
+                <Text style={[styles.historyLabel, { color: colors.paper }]}>{t('wallet_history')}</Text>
               </Pressable>
             </View>
           </View>
@@ -70,7 +71,7 @@ export default function WalletBalance() {
                 accessibilityLabel={t('wallet_seeAll')}
                 style={styles.seeAllButton}
               >
-                <Text style={styles.seeAllLabel}>{t('wallet_seeAll')}</Text>
+                <Text style={[styles.seeAllLabel, { color: colors.leaf }]}>{t('wallet_seeAll')}</Text>
               </Pressable>
             }
           />
@@ -88,25 +89,23 @@ export default function WalletBalance() {
 }
 
 const styles = StyleSheet.create({
-  title: { ...text.h1, color: color.ink, marginTop: space.sm },
+  title: { ...text.h1, marginTop: space.sm },
   switchGap: { marginTop: space.md },
   paneGap: { marginTop: space.md },
   balanceCard: {
-    backgroundColor: color.pine,
     borderRadius: radius.lg,
     padding: space.lg,
   },
-  balanceLabel: { ...text.caption, color: color.onPine },
+  balanceLabel: { ...text.caption },
   actionRow: { flexDirection: 'row', gap: space.sm, marginTop: space.lg },
   topUpButton: {
     flex: 1,
     minHeight: 44,
-    backgroundColor: color.marigold,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  topUpLabel: { ...text.bodySemi, color: color.pine },
+  topUpLabel: { ...text.bodySemi },
   historyButton: {
     flex: 1,
     minHeight: 44,
@@ -121,11 +120,10 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: color.paper,
     opacity: 0.12,
   },
-  historyLabel: { ...text.bodySemi, color: color.paper },
+  historyLabel: { ...text.bodySemi },
   seeAllButton: { minHeight: 44, alignItems: 'center', justifyContent: 'center' },
-  seeAllLabel: { ...text.label, color: color.leaf },
+  seeAllLabel: { ...text.label },
   listGap: { marginTop: space.sm },
 });

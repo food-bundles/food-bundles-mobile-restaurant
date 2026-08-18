@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { Input } from '@/components/primitives';
 import { addresses } from '@/mocks';
@@ -9,6 +9,7 @@ import { useT } from '@/i18n';
 
 export default function EditAddress() {
   const t = useT();
+  const { colors } = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
   const existing = useMemo(() => addresses.find((address) => address.id === id), [id]);
 
@@ -18,7 +19,7 @@ export default function EditAddress() {
   const [phone, setPhone] = useState(existing?.phone ?? '');
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={t('addressEdit_title')} />
       <ScreenScroll contentInsetBottom={80}>
         <View style={styles.fields}>
@@ -33,9 +34,9 @@ export default function EditAddress() {
           onPress={() => router.back()}
           accessibilityRole="button"
           accessibilityLabel={t('addressEdit_save')}
-          style={styles.saveButton}
+          style={[styles.saveButton, { backgroundColor: colors.leaf }]}
         >
-          <Text style={styles.saveLabel}>{t('addressEdit_save')}</Text>
+          <Text style={[styles.saveLabel, { color: colors.paper }]}>{t('addressEdit_save')}</Text>
         </Pressable>
       </StickyFooter>
     </View>
@@ -43,14 +44,13 @@ export default function EditAddress() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   fields: { gap: space.md, marginTop: space.md },
   saveButton: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  saveLabel: { ...text.bodySemi, color: color.paper },
+  saveLabel: { ...text.bodySemi },
 });

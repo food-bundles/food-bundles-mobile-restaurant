@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { Input } from '@/components/primitives';
 import { ChevronLeftIcon } from '@/components/icons';
@@ -13,6 +13,7 @@ import type { Role } from '@/mocks/types';
 
 export default function Signup() {
   const t = useT();
+  const { colors } = useTheme();
   const login = useSessionStore((s) => s.login);
   const setRole = useSessionStore((s) => s.setRole);
   const [businessName, setBusinessName] = useState(account.businessName);
@@ -40,16 +41,16 @@ export default function Signup() {
           onPress={() => router.push('/(auth)/login')}
           accessibilityRole="button"
           accessibilityLabel={t('auth_backToLogin')}
-          style={styles.backButton}
+          style={[styles.backButton, { backgroundColor: colors.paper }]}
         >
           <ChevronLeftIcon />
         </Pressable>
-        <Text style={styles.title}>{t('auth_createAccountTitle')}</Text>
-        <Text style={styles.subtitle}>{t('auth_forRestaurants')}</Text>
+        <Text style={[styles.title, { color: colors.ink }]}>{t('auth_createAccountTitle')}</Text>
+        <Text style={[styles.subtitle, { color: colors.secondary }]}>{t('auth_forRestaurants')}</Text>
         <View style={styles.fields}>
           <Input label={t('auth_businessName')} value={businessName} onChangeText={setBusinessName} />
           <View>
-            <Text style={styles.typeLabel}>{t('auth_businessType')}</Text>
+            <Text style={[styles.typeLabel, { color: colors.ink }]}>{t('auth_businessType')}</Text>
             <View style={styles.typeRow}>
               {(['RESTAURANT', 'HOTEL'] as const).map((type) => {
                 const active = type === businessType;
@@ -60,9 +61,19 @@ export default function Signup() {
                     accessibilityRole="radio"
                     accessibilityState={{ selected: active }}
                     accessibilityLabel={type === 'RESTAURANT' ? t('auth_restaurant') : t('auth_hotel')}
-                    style={[styles.typeOption, active && styles.typeOptionActive]}
+                    style={[
+                      styles.typeOption,
+                      { borderColor: colors.hairline },
+                      active && { backgroundColor: colors.leaf, borderColor: colors.leaf },
+                    ]}
                   >
-                    <Text style={[styles.typeLabelText, active && styles.typeLabelTextActive]}>
+                    <Text
+                      style={[
+                        styles.typeLabelText,
+                        { color: colors.secondary },
+                        active && { color: colors.paper },
+                      ]}
+                    >
                       {type === 'RESTAURANT' ? t('auth_restaurant') : t('auth_hotel')}
                     </Text>
                   </Pressable>
@@ -88,11 +99,11 @@ export default function Signup() {
           onPress={onSubmit}
           accessibilityRole="button"
           accessibilityLabel={t('auth_createAccountBtn')}
-          style={styles.submitButton}
+          style={[styles.submitButton, { backgroundColor: colors.leaf }]}
         >
-          <Text style={styles.submitLabel}>{t('auth_createAccountBtn')}</Text>
+          <Text style={[styles.submitLabel, { color: colors.paper }]}>{t('auth_createAccountBtn')}</Text>
         </Pressable>
-        <Text style={styles.staffNote}>{t('auth_staffNote')}</Text>
+        <Text style={[styles.staffNote, { color: colors.muted }]}>{t('auth_staffNote')}</Text>
       </View>
     </ScreenScroll>
   );
@@ -106,32 +117,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radius.md,
-    backgroundColor: color.paper,
   },
-  title: { ...text.h1, color: color.ink, marginTop: space.lg },
-  subtitle: { ...text.caption, color: color.secondary, marginTop: space.xs, marginBottom: space.lg },
+  title: { ...text.h1, marginTop: space.lg },
+  subtitle: { ...text.caption, marginTop: space.xs, marginBottom: space.lg },
   fields: { gap: space.md },
-  typeLabel: { ...text.label, color: color.ink, marginBottom: space.xs },
+  typeLabel: { ...text.label, marginBottom: space.xs },
   typeRow: { flexDirection: 'row', gap: space.sm },
   typeOption: {
     flex: 1,
     minHeight: hit.min,
     borderRadius: radius.md,
     borderWidth: 1.5,
-    borderColor: color.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  typeOptionActive: { backgroundColor: color.leaf, borderColor: color.leaf },
-  typeLabelText: { ...text.bodySemi, color: color.secondary },
-  typeLabelTextActive: { color: color.paper },
+  typeLabelText: { ...text.bodySemi },
   submitButton: {
     minHeight: hit.min,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  submitLabel: { ...text.bodySemi, color: color.paper },
-  staffNote: { ...text.caption, color: color.muted, marginTop: space.md },
+  submitLabel: { ...text.bodySemi },
+  staffNote: { ...text.caption, marginTop: space.md },
 });

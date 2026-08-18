@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import type { TimeRange } from '@/mocks';
 
 export interface TimeRangeTabsProps {
@@ -10,8 +10,10 @@ export interface TimeRangeTabsProps {
 
 /** Compact segmented control for the chart's history window. */
 export function TimeRangeTabs({ options, selected, onSelect }: TimeRangeTabsProps) {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, { backgroundColor: colors.neutral }]}>
       {options.map((option) => {
         const active = option === selected;
         return (
@@ -21,9 +23,11 @@ export function TimeRangeTabs({ options, selected, onSelect }: TimeRangeTabsProp
             accessibilityRole="button"
             accessibilityLabel={option}
             accessibilityState={{ selected: active }}
-            style={[styles.tab, active && styles.tabActive]}
+            style={[styles.tab, active && { backgroundColor: colors.paper }]}
           >
-            <Text style={[styles.label, active && styles.labelActive]}>{option}</Text>
+            <Text style={[styles.label, { color: colors.secondary }, active && { color: colors.leaf }]}>
+              {option}
+            </Text>
           </Pressable>
         );
       })}
@@ -34,7 +38,6 @@ export function TimeRangeTabs({ options, selected, onSelect }: TimeRangeTabsProp
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    backgroundColor: color.neutral,
     borderRadius: radius.pill,
     padding: 2,
   },
@@ -46,7 +49,5 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     paddingHorizontal: space.xs,
   },
-  tabActive: { backgroundColor: color.paper },
-  label: { ...text.label, color: color.secondary },
-  labelActive: { color: color.leaf },
+  label: { ...text.label },
 });

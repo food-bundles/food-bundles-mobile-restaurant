@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme, type ColorPalette } from '@/theme';
 
 export type BadgeTone = 'neutral' | 'leaf' | 'ripe' | 'marigold' | 'chili';
 
@@ -9,32 +9,34 @@ export interface BadgeProps {
   dashed?: boolean;
 }
 
-const TONE_BG: Record<BadgeTone, string> = {
-  neutral: color.neutral,
-  leaf: color.tintLeaf,
-  ripe: color.tintRipe,
-  marigold: color.tintMarigold,
-  chili: color.tintChili,
+const TONE_BG: Record<BadgeTone, keyof ColorPalette> = {
+  neutral: 'neutral',
+  leaf: 'tintLeaf',
+  ripe: 'tintRipe',
+  marigold: 'tintMarigold',
+  chili: 'tintChili',
 };
 
-const TONE_TEXT: Record<BadgeTone, string> = {
-  neutral: color.secondary,
-  leaf: color.pine,
-  ripe: color.tintedGreenText,
-  marigold: color.tintedAmberText,
-  chili: color.tintedRedText,
+const TONE_TEXT: Record<BadgeTone, keyof ColorPalette> = {
+  neutral: 'secondary',
+  leaf: 'pine',
+  ripe: 'tintedGreenText',
+  marigold: 'tintedAmberText',
+  chili: 'tintedRedText',
 };
 
 export function Badge({ tone, label, dashed = false }: BadgeProps) {
+  const { colors } = useTheme();
+
   return (
     <View
       style={[
         styles.base,
-        { backgroundColor: TONE_BG[tone] },
-        dashed && styles.dashed,
+        { backgroundColor: colors[TONE_BG[tone]] },
+        dashed && [styles.dashed, { borderColor: colors.refundedDashed }],
       ]}
     >
-      <Text style={[styles.label, { color: TONE_TEXT[tone] }]}>{label}</Text>
+      <Text style={[styles.label, { color: colors[TONE_TEXT[tone]] }]}>{label}</Text>
     </View>
   );
 }
@@ -46,6 +48,6 @@ const styles = StyleSheet.create({
     paddingVertical: space.xs + 1,
     alignSelf: 'flex-start',
   },
-  dashed: { borderWidth: 1, borderStyle: 'dashed', borderColor: color.refundedDashed },
+  dashed: { borderWidth: 1, borderStyle: 'dashed' },
   label: { ...text.overline },
 });

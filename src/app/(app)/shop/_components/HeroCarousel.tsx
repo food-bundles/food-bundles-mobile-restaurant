@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { router } from 'expo-router';
-import { color, hit, signatureDuration, space } from '@/theme';
+import { hit, signatureDuration, space, useTheme } from '@/theme';
 import { HeroCardActiveOrder } from './HeroCardActiveOrder';
 import { HeroCardWallet } from './HeroCardWallet';
 import { HeroCardVouchers } from './HeroCardVouchers';
@@ -23,6 +23,7 @@ const MARKET_ROWS = [
 
 export function HeroCarousel() {
   const t = useT();
+  const { colors } = useTheme();
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<1 | 2>(1);
   const [paused, setPaused] = useState(false);
@@ -141,7 +142,13 @@ export function HeroCarousel() {
             accessibilityLabel={t('a11y_showCarouselCard', { position: cardIndex + 1 })}
             style={styles.dotHit}
           >
-            <View style={[styles.dot, cardIndex === index && styles.dotActive]} />
+            <View
+              style={[
+                styles.dot,
+                { backgroundColor: colors.disabledLine },
+                cardIndex === index && { backgroundColor: colors.leaf, width: 20 },
+              ]}
+            />
           </Pressable>
         ))}
       </View>
@@ -153,6 +160,5 @@ const styles = StyleSheet.create({
   row: { paddingHorizontal: space.lg },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: space.xs, marginTop: space.sm },
   dotHit: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  dot: { width: 7, height: 7, borderRadius: 4, backgroundColor: color.disabledLine },
-  dotActive: { backgroundColor: color.leaf, width: 20 },
+  dot: { width: 7, height: 7, borderRadius: 4 },
 });

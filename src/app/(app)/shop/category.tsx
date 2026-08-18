@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { color, space, text } from '@/theme';
+import { space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { ProductGrid } from './_components/ProductGrid';
 import { SortToggle, type SortOrder } from './_components/SortToggle';
@@ -19,6 +19,7 @@ const CATEGORY_TITLES: Record<ProductCategory, string> = {
 
 export default function Category() {
   const t = useT();
+  const { colors } = useTheme();
   const { category } = useLocalSearchParams<{ category?: ProductCategory }>();
   const [sort, setSort] = useState<SortOrder>('asc');
 
@@ -35,11 +36,13 @@ export default function Category() {
   const title = category ? CATEGORY_TITLES[category] : 'All produce';
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={title} />
       <ScreenScroll contentInsetBottom={40}>
         <View style={styles.metaRow}>
-          <Text style={styles.count}>{t('shop_productsCount', { count: sorted.length })}</Text>
+          <Text style={[styles.count, { color: colors.secondary }]}>
+            {t('shop_productsCount', { count: sorted.length })}
+          </Text>
           <SortToggle sort={sort} onToggle={() => setSort((s) => (s === 'asc' ? 'desc' : 'asc'))} />
         </View>
         <View style={styles.gridGap}>
@@ -51,13 +54,13 @@ export default function Category() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: space.md,
   },
-  count: { ...text.caption, color: color.secondary },
+  count: { ...text.caption },
   gridGap: { marginTop: space.md },
 });

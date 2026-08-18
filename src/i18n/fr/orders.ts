@@ -23,7 +23,12 @@ export const orders: Record<keyof typeof ordersEn, string> = {
   orders_reorderFrom: 'depuis {{orderId}}',
   orders_addItemsToCart: 'Ajouter {{count}} articles au panier',
   orders_outOfStock: 'Rupture de stock',
+  orders_stepOfTotal: 'Étape {{step}} sur {{total}}',
 
   a11y_previewEbm: "Aperçu de la facture EBM",
   a11y_paymentHistory: 'Voir l’historique des paiements de cette commande',
+  a11y_orderStatusStep: 'Statut de la commande : étape {{step}} sur {{total}}',
+  a11y_demoState: 'État de démonstration : {{state}}',
+  a11y_orderCard: 'Commande {{orderId}}, {{status}}',
+  a11y_activeOrderCard: 'Commande en cours {{orderId}}, {{status}}',
 };

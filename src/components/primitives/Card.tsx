@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { color, duration, radius, shadow, space } from '@/theme';
+import { duration, radius, shadow, space, useTheme } from '@/theme';
 
 export interface CardProps {
   padded?: boolean;
@@ -13,6 +13,7 @@ export interface CardProps {
 }
 
 export function Card({ padded = true, dark = false, onPress, accessibilityLabel, style, children }: CardProps) {
+  const { colors } = useTheme();
   const scale = useSharedValue(1);
 
   const onPressIn = useCallback(() => {
@@ -30,7 +31,7 @@ export function Card({ padded = true, dark = false, onPress, accessibilityLabel,
       style={[
         styles.base,
         padded && styles.padded,
-        { backgroundColor: dark ? color.pine : color.paper },
+        { backgroundColor: dark ? colors.pine : colors.paper, shadowColor: shadow.card.shadowColor },
         style,
       ]}
     >

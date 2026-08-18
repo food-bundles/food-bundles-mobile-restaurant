@@ -36,6 +36,7 @@ export const signatureDuration = {
   avatarThinkingInterval: 15000,
   avatarThinkingDotStagger: 200,
   avatarIdleBob: 3000,
+  marketChartDrawIn: 800,
 } as const;
 
 export const easing = {

@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { PriceText } from '@/components/product';
 import { ConfirmationCheck } from '@/components/checkout';
@@ -11,6 +11,7 @@ import { guestOrder } from '@/mocks';
 
 export default function GuestConfirmation() {
   const t = useT();
+  const { colors } = useTheme();
   const total = useGuestCartStore((state) => state.total());
 
   const onContinueBrowsing = () => {
@@ -22,13 +23,13 @@ export default function GuestConfirmation() {
     <ScreenScroll>
       <View style={styles.center}>
         <ConfirmationCheck />
-        <Text style={styles.title}>{t('guest_orderPlaced')}</Text>
-        <Text style={styles.reference}>{guestOrder.id}</Text>
+        <Text style={[styles.title, { color: colors.ink }]}>{t('guest_orderPlaced')}</Text>
+        <Text style={[styles.reference, { color: colors.secondary }]}>{guestOrder.id}</Text>
       </View>
-      <View style={styles.totalCard}>
-        <Text style={styles.totalLabel}>{t('guest_total')}</Text>
-        <PriceText amount={total} size="hero" colorOverride={color.paper} />
-        <Text style={styles.window}>{guestOrder.window}</Text>
+      <View style={[styles.totalCard, { backgroundColor: colors.pine }]}>
+        <Text style={[styles.totalLabel, { color: colors.onPine }]}>{t('guest_total')}</Text>
+        <PriceText amount={total} size="hero" colorOverride={colors.paper} />
+        <Text style={[styles.window, { color: colors.onPineSoft }]}>{guestOrder.window}</Text>
       </View>
       <View style={styles.promptGap}>
         <ConvertPrompt />
@@ -37,9 +38,9 @@ export default function GuestConfirmation() {
         onPress={onContinueBrowsing}
         accessibilityRole="button"
         accessibilityLabel={t('guest_continueBrowsing')}
-        style={styles.button}
+        style={[styles.button, { backgroundColor: colors.leaf }]}
       >
-        <Text style={styles.buttonLabel}>{t('guest_continueBrowsing')}</Text>
+        <Text style={[styles.buttonLabel, { color: colors.paper }]}>{t('guest_continueBrowsing')}</Text>
       </Pressable>
     </ScreenScroll>
   );
@@ -47,26 +48,24 @@ export default function GuestConfirmation() {
 
 const styles = StyleSheet.create({
   center: { alignItems: 'center', marginTop: space.xl, gap: space.sm },
-  title: { ...text.h1, color: color.ink },
-  reference: { ...text.bodySemi, color: color.secondary, fontVariant: ['tabular-nums'] },
+  title: { ...text.h1 },
+  reference: { ...text.bodySemi, fontVariant: ['tabular-nums'] },
   totalCard: {
-    backgroundColor: color.pine,
     borderRadius: radius.lg,
     padding: space.lg,
     alignItems: 'center',
     marginTop: space.xl,
     gap: space.xs,
   },
-  totalLabel: { ...text.overline, color: color.onPine },
-  window: { ...text.caption, color: color.onPineSoft, marginTop: space.sm },
+  totalLabel: { ...text.overline },
+  window: { ...text.caption, marginTop: space.sm },
   promptGap: { marginTop: space.lg },
   button: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: space.lg,
   },
-  buttonLabel: { ...text.bodySemi, color: color.paper },
+  buttonLabel: { ...text.bodySemi },
 });

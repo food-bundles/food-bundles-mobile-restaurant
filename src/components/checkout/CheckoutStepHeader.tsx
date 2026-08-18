@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color, hit, space, text } from '@/theme';
+import { hit, space, text, useTheme } from '@/theme';
 import { ChevronLeftIcon } from '@/components/icons';
 import { useT } from '@/i18n';
 
@@ -12,11 +12,12 @@ export interface CheckoutStepHeaderProps {
 
 export function CheckoutStepHeader({ title, step }: CheckoutStepHeaderProps) {
   const t = useT();
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
 
   return (
     <View>
-      <View style={[styles.row, { paddingTop: insets.top + space.sm }]}>
+      <View style={[styles.row, { borderBottomColor: colors.hairline, paddingTop: insets.top + space.sm }]}>
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
@@ -25,11 +26,11 @@ export function CheckoutStepHeader({ title, step }: CheckoutStepHeaderProps) {
         >
           <ChevronLeftIcon />
         </Pressable>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, { color: colors.ink }]}>{title}</Text>
       </View>
       <View style={styles.progressRow}>
-        <View style={[styles.segment, styles.segmentDone]} />
-        <View style={[styles.segment, step === 2 && styles.segmentDone]} />
+        <View style={[styles.segment, { backgroundColor: colors.leaf }]} />
+        <View style={[styles.segment, { backgroundColor: step === 2 ? colors.leaf : colors.hairline }]} />
       </View>
     </View>
   );
@@ -43,11 +44,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     paddingBottom: space.sm,
     borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
   },
   backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  title: { ...text.h2, color: color.ink },
+  title: { ...text.h2 },
   progressRow: { flexDirection: 'row', gap: space.xs, paddingHorizontal: space.md, marginTop: space.sm },
-  segment: { flex: 1, height: 4, borderRadius: 2, backgroundColor: color.hairline },
-  segmentDone: { backgroundColor: color.leaf },
+  segment: { flex: 1, height: 4, borderRadius: 2 },
 });

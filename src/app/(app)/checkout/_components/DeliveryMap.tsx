@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE, UrlTile, type Region } from 'react-native-maps';
 import * as Location from 'expo-location';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 import { useCheckoutStore } from '@/stores';
 
@@ -22,6 +22,7 @@ const KIMIHURURA_REGION: Region = {
 
 export function DeliveryMap() {
   const t = useT();
+  const { colors } = useTheme();
   const setAddress = useCheckoutStore((state) => state.setAddress);
   const mapRef = useRef<MapView>(null);
   const [region, setRegion] = useState<Region>(KIMIHURURA_REGION);
@@ -62,19 +63,19 @@ export function DeliveryMap() {
           coordinate={region}
           draggable
           onDragEnd={(e) => onDragEnd(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)}
-          pinColor={color.marigold}
+          pinColor={colors.marigold}
         />
       </MapView>
       <Pressable
         onPress={onUseCurrentLocation}
         accessibilityRole="button"
         accessibilityLabel={t('checkout_useLocation')}
-        style={styles.locationButton}
+        style={[styles.locationButton, { backgroundColor: colors.paper }]}
       >
-        <Text style={styles.locationLabel}>{t('checkout_useLocation')}</Text>
+        <Text style={[styles.locationLabel, { color: colors.leaf }]}>{t('checkout_useLocation')}</Text>
       </Pressable>
-      <View style={styles.hint}>
-        <Text style={styles.hintLabel}>{t('checkout_dragPin')}</Text>
+      <View style={[styles.hint, { backgroundColor: colors.ink }]}>
+        <Text style={[styles.hintLabel, { color: colors.paper }]}>{t('checkout_dragPin')}</Text>
       </View>
     </View>
   );
@@ -88,22 +89,20 @@ const styles = StyleSheet.create({
     top: space.sm,
     right: space.sm,
     minHeight: 44,
-    backgroundColor: color.paper,
     borderRadius: radius.pill,
     paddingHorizontal: space.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  locationLabel: { ...text.label, color: color.leaf },
+  locationLabel: { ...text.label },
   hint: {
     position: 'absolute',
     bottom: space.sm,
     left: '50%',
     transform: [{ translateX: -60 }],
-    backgroundColor: color.ink,
     borderRadius: radius.pill,
     paddingHorizontal: space.sm,
     paddingVertical: space.xs,
   },
-  hintLabel: { ...text.micro, color: color.paper },
+  hintLabel: { ...text.micro },
 });

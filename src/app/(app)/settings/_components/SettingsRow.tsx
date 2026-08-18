@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
-import { color, hit, space, text } from '@/theme';
+import { hit, space, text, useTheme } from '@/theme';
 import { ChevronRightIcon } from '@/components/icons';
 
 export interface SettingsRowProps {
@@ -11,14 +11,24 @@ export interface SettingsRowProps {
 }
 
 export function SettingsRow({ label, trailing, onPress, isLast, destructive }: SettingsRowProps) {
+  const { colors } = useTheme();
+
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      style={[styles.row, !isLast && styles.rowBorder]}
+      style={[styles.row, !isLast && [styles.rowBorder, { borderBottomColor: colors.neutralLine }]]}
     >
-      <Text style={[styles.label, destructive && styles.labelDestructive]}>{label}</Text>
+      <Text
+        style={[
+          styles.label,
+          { color: colors.ink },
+          destructive && { color: colors.chili, fontFamily: text.bodySemi.fontFamily },
+        ]}
+      >
+        {label}
+      </Text>
       {trailing}
       {!destructive ? <ChevronRightIcon /> : null}
     </Pressable>
@@ -34,7 +44,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     justifyContent: 'space-between',
   },
-  rowBorder: { borderBottomWidth: 1, borderBottomColor: color.neutralLine },
-  label: { ...text.body, color: color.ink, flex: 1 },
-  labelDestructive: { color: color.chili, fontFamily: text.bodySemi.fontFamily },
+  rowBorder: { borderBottomWidth: 1 },
+  label: { ...text.body, flex: 1 },
 });

@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 
 export interface OrderActionsRowProps {
@@ -9,6 +9,7 @@ export interface OrderActionsRowProps {
 
 export function OrderActionsRow({ ebmAvailable }: OrderActionsRowProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <View style={styles.row}>
@@ -17,17 +18,21 @@ export function OrderActionsRow({ ebmAvailable }: OrderActionsRowProps) {
         disabled={!ebmAvailable}
         accessibilityRole="button"
         accessibilityLabel={t('a11y_previewEbm')}
-        style={[styles.action, !ebmAvailable && styles.actionDisabled]}
+        style={[
+          styles.action,
+          { backgroundColor: colors.paper, borderColor: colors.hairline },
+          !ebmAvailable && styles.actionDisabled,
+        ]}
       >
-        <Text style={styles.actionLabel}>{t('orders_downloadEbm')}</Text>
+        <Text style={[styles.actionLabel, { color: colors.leaf }]}>{t('orders_downloadEbm')}</Text>
       </Pressable>
       <Pressable
         onPress={() => router.push('/(app)/wallet/transactions')}
         accessibilityRole="button"
         accessibilityLabel={t('a11y_paymentHistory')}
-        style={styles.action}
+        style={[styles.action, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
       >
-        <Text style={styles.actionLabel}>{t('orders_paymentHistory')}</Text>
+        <Text style={[styles.actionLabel, { color: colors.leaf }]}>{t('orders_paymentHistory')}</Text>
       </Pressable>
     </View>
   );
@@ -38,13 +43,11 @@ const styles = StyleSheet.create({
   action: {
     flex: 1,
     minHeight: hit.min,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
   actionDisabled: { opacity: 0.5 },
-  actionLabel: { ...text.label, color: color.leaf },
+  actionLabel: { ...text.label },
 });

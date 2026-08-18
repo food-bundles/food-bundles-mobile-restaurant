@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { color, hit, space, text } from '@/theme';
+import { hit, space, text, useTheme } from '@/theme';
 import { ChevronLeftIcon } from '@/components/icons';
 import { useT } from '@/i18n';
 
@@ -16,9 +16,15 @@ export interface ScreenHeaderProps {
 export function ScreenHeader({ title, subtitle, canGoBack = true, onBack, trailing }: ScreenHeaderProps) {
   const t = useT();
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   return (
-    <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
+    <View
+      style={[
+        styles.header,
+        { paddingTop: insets.top + space.sm, borderBottomColor: colors.hairline, backgroundColor: colors.oat },
+      ]}
+    >
       {canGoBack ? (
         <Pressable
           onPress={onBack ?? (() => router.back())}
@@ -30,11 +36,11 @@ export function ScreenHeader({ title, subtitle, canGoBack = true, onBack, traili
         </Pressable>
       ) : null}
       <View style={styles.titleCol}>
-        <Text style={styles.title} numberOfLines={1} accessibilityRole="header">
+        <Text style={[styles.title, { color: colors.ink }]} numberOfLines={1} accessibilityRole="header">
           {title}
         </Text>
         {subtitle ? (
-          <Text style={styles.subtitle} numberOfLines={1}>
+          <Text style={[styles.subtitle, { color: colors.secondary }]} numberOfLines={1}>
             {subtitle}
           </Text>
         ) : null}
@@ -52,11 +58,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     paddingBottom: space.sm,
     borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-    backgroundColor: color.oat,
   },
   backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
   titleCol: { flex: 1 },
-  title: { ...text.h2, color: color.ink },
-  subtitle: { ...text.caption, color: color.secondary, marginTop: 2 },
+  title: { ...text.h2 },
+  subtitle: { ...text.caption, marginTop: 2 },
 });

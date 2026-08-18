@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, space } from '@/theme';
+import { space, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { BillingToggle } from './_components/BillingToggle';
 import { PlanSelectCard } from './_components/PlanSelectCard';
@@ -12,6 +12,7 @@ import type { BillingCycle, Tier } from '@/mocks/types';
 
 export default function Plans() {
   const t = useT();
+  const { colors } = useTheme();
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('MONTHLY');
   const termsAccepted = useSessionStore((state) => state.termsAccepted);
   const setTier = useSessionStore((state) => state.setTier);
@@ -26,7 +27,7 @@ export default function Plans() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={t('sub_plans')} />
       <ScreenScroll contentInsetBottom={40}>
         <View style={styles.toggleGap}>
@@ -48,7 +49,7 @@ export default function Plans() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   toggleGap: { marginTop: space.md },
   cardsGap: { gap: space.md, marginTop: space.md },
 });

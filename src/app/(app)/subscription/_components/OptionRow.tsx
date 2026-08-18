@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, hit, radius, text } from '@/theme';
+import { hit, radius, text, useTheme } from '@/theme';
 
 export interface OptionRowOption<T extends string> {
   value: T;
@@ -13,6 +13,8 @@ export interface OptionRowProps<T extends string> {
 }
 
 export function OptionRow<T extends string>({ options, selected, onSelect }: OptionRowProps<T>) {
+  const { colors } = useTheme();
+
   return (
     <View style={styles.row}>
       {options.map((option) => {
@@ -24,9 +26,15 @@ export function OptionRow<T extends string>({ options, selected, onSelect }: Opt
             accessibilityRole="radio"
             accessibilityState={{ selected: active }}
             accessibilityLabel={option.label}
-            style={[styles.option, active && styles.optionActive]}
+            style={[
+              styles.option,
+              { borderColor: colors.hairline },
+              active && { backgroundColor: colors.leaf, borderColor: colors.leaf },
+            ]}
           >
-            <Text style={[styles.label, active && styles.labelActive]}>{option.label}</Text>
+            <Text style={[styles.label, { color: colors.secondary }, active && { color: colors.paper }]}>
+              {option.label}
+            </Text>
           </Pressable>
         );
       })}
@@ -41,12 +49,9 @@ const styles = StyleSheet.create({
     minHeight: hit.min,
     borderRadius: radius.md,
     borderWidth: 1.5,
-    borderColor: color.hairline,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 4,
   },
-  optionActive: { backgroundColor: color.leaf, borderColor: color.leaf },
-  label: { ...text.label, color: color.secondary, textAlign: 'center' },
-  labelActive: { color: color.paper },
+  label: { ...text.label, textAlign: 'center' },
 });

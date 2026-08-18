@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { Input } from '@/components/primitives';
 import { ChevronLeftIcon, LogoMark } from '@/components/icons';
@@ -11,6 +11,7 @@ import { account } from '@/mocks';
 
 export default function Login() {
   const t = useT();
+  const { colors } = useTheme();
   const login = useSessionStore((s) => s.login);
   const [email, setEmail] = useState(account.email);
   const [password, setPassword] = useState('••••••••');
@@ -34,8 +35,8 @@ export default function Login() {
       <View style={styles.logoWrap}>
         <LogoMark />
       </View>
-      <Text style={styles.title}>{t('auth_welcomeBack')}</Text>
-      <Text style={styles.subtitle}>{t('auth_loginSub')}</Text>
+      <Text style={[styles.title, { color: colors.ink }]}>{t('auth_welcomeBack')}</Text>
+      <Text style={[styles.subtitle, { color: colors.secondary }]}>{t('auth_loginSub')}</Text>
       <View style={styles.fields}>
         <Input label={t('auth_email')} value={email} onChangeText={setEmail} keyboardType="email-address" />
         <Input
@@ -50,7 +51,7 @@ export default function Login() {
               accessibilityLabel={t('auth_show')}
               style={styles.showButton}
             >
-              <Text style={styles.showLabel}>{t('auth_show')}</Text>
+              <Text style={[styles.showLabel, { color: colors.leaf }]}>{t('auth_show')}</Text>
             </Pressable>
           }
         />
@@ -60,26 +61,26 @@ export default function Login() {
           accessibilityLabel={t('auth_forgotQ')}
           style={styles.forgotButton}
         >
-          <Text style={styles.forgotLabel}>{t('auth_forgotQ')}</Text>
+          <Text style={[styles.forgotLabel, { color: colors.leaf }]}>{t('auth_forgotQ')}</Text>
         </Pressable>
       </View>
       <Pressable
         onPress={onLogin}
         accessibilityRole="button"
         accessibilityLabel={t('auth_logIn')}
-        style={styles.loginButton}
+        style={[styles.loginButton, { backgroundColor: colors.leaf }]}
       >
-        <Text style={styles.loginLabel}>{t('auth_logIn')}</Text>
+        <Text style={[styles.loginLabel, { color: colors.paper }]}>{t('auth_logIn')}</Text>
       </Pressable>
       <View style={styles.signupRow}>
-        <Text style={styles.signupText}>{t('auth_newHere')} </Text>
+        <Text style={[styles.signupText, { color: colors.secondary }]}>{t('auth_newHere')} </Text>
         <Pressable
           onPress={() => router.push('/(auth)/signup')}
           accessibilityRole="button"
           accessibilityLabel={t('auth_createBizAccount')}
           style={styles.signupButton}
         >
-          <Text style={styles.signupLink}>{t('auth_createBizAccount')}</Text>
+          <Text style={[styles.signupLink, { color: colors.leaf }]}>{t('auth_createBizAccount')}</Text>
         </Pressable>
       </View>
     </ScreenScroll>
@@ -89,24 +90,23 @@ export default function Login() {
 const styles = StyleSheet.create({
   backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
   logoWrap: { marginTop: space.sm },
-  title: { ...text.h1, color: color.ink, marginTop: space.lg },
-  subtitle: { ...text.body, color: color.secondary, marginTop: space.xs, marginBottom: space.lg },
+  title: { ...text.h1, marginTop: space.lg },
+  subtitle: { ...text.body, marginTop: space.xs, marginBottom: space.lg },
   fields: { gap: space.md },
   showButton: { minHeight: hit.min, paddingHorizontal: space.xs, alignItems: 'center', justifyContent: 'center' },
-  showLabel: { ...text.label, color: color.leaf },
+  showLabel: { ...text.label },
   forgotButton: { minHeight: hit.min, alignItems: 'flex-end', justifyContent: 'center' },
-  forgotLabel: { ...text.label, color: color.leaf },
+  forgotLabel: { ...text.label },
   loginButton: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: space.lg,
   },
-  loginLabel: { ...text.bodySemi, color: color.paper },
+  loginLabel: { ...text.bodySemi },
   signupRow: { flexDirection: 'row', justifyContent: 'center', marginTop: space.lg },
-  signupText: { ...text.caption, color: color.secondary },
+  signupText: { ...text.caption },
   signupButton: { minHeight: hit.min, alignItems: 'center', justifyContent: 'center' },
-  signupLink: { ...text.label, color: color.leaf },
+  signupLink: { ...text.label },
 });

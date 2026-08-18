@@ -8,5 +8,3 @@ export { StickyFooter } from './StickyFooter';
 export type { StickyFooterProps } from './StickyFooter';
 export { SwipeRow } from './SwipeRow';
 export type { SwipeRowProps } from './SwipeRow';
-export { PlaceholderScreen } from './PlaceholderScreen';
-export type { PlaceholderScreenProps } from './PlaceholderScreen';
