@@ -6,7 +6,6 @@ export const shop: Record<keyof typeof shopEn, string> = {
   shop_popularWeek: 'Bikunzwe iki cyumweru',
   shop_seeAll: 'Reba byose',
   shop_add: 'Ongeraho',
-  shop_askForSupport: 'Saba ubufasha',
   shop_notifications: 'Amatangazo, {{count}} ntarasomwa',
   shop_openCart: 'Fungura igikapu',
   shop_productsCount: 'Ibicuruzwa {{count}}',

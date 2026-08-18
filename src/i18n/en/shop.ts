@@ -4,7 +4,6 @@ export const shop = {
   shop_popularWeek: 'Popular this week',
   shop_seeAll: 'See all',
   shop_add: 'Add',
-  shop_askForSupport: 'Ask for support',
   shop_notifications: 'Notifications, {{count}} unread',
   shop_openCart: 'Open cart',
   shop_productsCount: '{{count}} products',

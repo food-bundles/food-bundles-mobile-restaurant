@@ -3,6 +3,7 @@ export const common = {
   tab_orders: 'Orders',
   tab_wallet: 'Wallet',
   tab_more: 'More',
+  nav_aiSupport: 'AI Support',
 
   st_pending: 'Pending',
   st_confirmed: 'Confirmed',

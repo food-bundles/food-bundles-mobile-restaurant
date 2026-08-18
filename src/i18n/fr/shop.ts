@@ -6,7 +6,6 @@ export const shop: Record<keyof typeof shopEn, string> = {
   shop_popularWeek: 'Populaire cette semaine',
   shop_seeAll: 'Voir tout',
   shop_add: 'Ajouter',
-  shop_askForSupport: 'Demander de l’aide',
   shop_notifications: 'Notifications, {{count}} non lues',
   shop_openCart: 'Ouvrir le panier',
   shop_productsCount: '{{count}} produits',

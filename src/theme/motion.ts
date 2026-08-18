@@ -27,6 +27,15 @@ export const signatureDuration = {
   carouselPhaseFade: 400,
   carouselPulseScale: 260,
   carouselShimmerSweep: 900,
+  avatarBlinkInterval: 4000,
+  avatarBlink: 120,
+  avatarEyeShiftInterval: 7000,
+  avatarEyeShift: 400,
+  avatarExpressionInterval: 12000,
+  avatarExpressionChange: 300,
+  avatarThinkingInterval: 15000,
+  avatarThinkingDotStagger: 200,
+  avatarIdleBob: 3000,
 } as const;
 
 export const easing = {

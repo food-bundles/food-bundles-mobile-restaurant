@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { color, hit, radius, space, text } from '@/theme';
 import { useT } from '@/i18n';
 import { BasketIcon, OrdersIcon, WalletIcon, MoreIcon, type IconProps } from '@/components/icons';
+import { AvatarTabButton } from '@/components/navigation';
 
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
   return <Text style={[styles.label, focused && styles.labelActive]}>{label}</Text>;
@@ -50,6 +51,13 @@ export default function TabsLayout() {
           title: t('tab_orders'),
           tabBarLabel: ({ focused }) => <TabLabel label={t('tab_orders')} focused={focused} />,
           tabBarIcon: ({ focused }) => <TabIconPill Icon={OrdersIcon} focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
+        name="support"
+        options={{
+          title: t('nav_aiSupport'),
+          tabBarButton: () => <AvatarTabButton />,
         }}
       />
       <Tabs.Screen

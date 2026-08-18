@@ -7,7 +7,6 @@ import { CategoryChips, type CategoryOption } from '@/app/(public)/_components/C
 import { ShopHomeHeader } from '../shop/_components/ShopHomeHeader';
 import { SearchTrigger } from '../shop/_components/SearchTrigger';
 import { HeroCarousel } from '../shop/_components/HeroCarousel';
-import { SupportFab } from '../shop/_components/SupportFab';
 import { ProductGrid } from '../shop/_components/ProductGrid';
 import { SeeAllLink } from '../shop/_components/SeeAllLink';
 import { products } from '@/mocks';
@@ -60,7 +59,6 @@ export default function ShopHome() {
           </View>
         }
       />
-      <SupportFab />
     </View>
   );
 }
