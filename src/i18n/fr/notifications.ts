@@ -27,4 +27,11 @@ export const notifications: Record<keyof typeof notificationsEn, string> = {
   chat_suggestion1: 'Où est ma commande ?',
   chat_suggestion2: 'Comment fonctionnent les bons ?',
   chat_suggestion3: 'Recharger mon portefeuille',
+  chat_answerOrderStatus:
+    'La commande FB-24815 est en cours de livraison, arrivée prévue vers 10h30. Vous pouvez suivre chaque étape sur l’écran de la commande.',
+  chat_answerVouchers:
+    'Basique et Premium reçoivent tous deux un lot de bons chaque mois — chaque bon règle une commande. Chaque paiement par bon est confirmé par un code à usage unique.',
+  chat_answerTopUp:
+    'Ouvrez Portefeuille → Recharger et choisissez MTN MoMo, Airtel Money ou carte. Vous pouvez aussi partager un lien de recharge avec votre comptable.',
+  chat_fallbackAnswer: 'Merci — un spécialiste FoodBundles vous répondra sous peu.',
 };

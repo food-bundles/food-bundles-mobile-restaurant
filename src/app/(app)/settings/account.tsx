@@ -9,6 +9,7 @@ import { useSessionStore } from '@/stores';
 import { useLanguage } from '@/stores';
 import { useT } from '@/i18n';
 import { account } from '@/mocks';
+import { clearAllCache } from '@/lib';
 import type { Language } from '@/i18n';
 
 const LANGUAGES: { code: Language; label: string }[] = [
@@ -28,6 +29,7 @@ export default function Account() {
 
   const onLogout = () => {
     logout();
+    clearAllCache();
     router.replace('/(auth)/login');
   };
 

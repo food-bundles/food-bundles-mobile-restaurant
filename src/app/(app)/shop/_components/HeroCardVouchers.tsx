@@ -56,10 +56,10 @@ export function HeroCardVouchers({
     <HeroCardShell onPress={onPress} accessibilityLabel={`${overline}, ${title}`} tone="dark" overline={overline}>
       <View>
         {subscribed ? (
-          <View style={[styles.creditBar, { backgroundColor: colors.onPineSoft }]}>
+          <View style={[styles.availabilityBar, { backgroundColor: colors.onPineSoft }]}>
             <View
               style={[
-                styles.creditFill,
+                styles.availabilityFill,
                 { width: `${Math.round(availableFraction * 100)}%`, backgroundColor: colors.marigold },
               ]}
             />
@@ -90,13 +90,13 @@ export function HeroCardVouchers({
 }
 
 const styles = StyleSheet.create({
-  creditBar: {
+  availabilityBar: {
     height: 6,
     borderRadius: 3,
     overflow: 'hidden',
     marginBottom: space.sm,
   },
-  creditFill: { height: '100%', borderRadius: radius.sm },
+  availabilityFill: { height: '100%', borderRadius: radius.sm },
   title: { ...text.h2 },
   subtitle: { ...text.caption, marginTop: 2 },
   available: { ...text.priceLg, marginTop: space.xs },

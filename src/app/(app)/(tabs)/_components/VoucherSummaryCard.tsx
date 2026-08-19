@@ -3,14 +3,19 @@ import { radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 import { formatDate, formatRwf } from '@/lib';
 
-export interface CreditLineCardProps {
+export interface VoucherSummaryCardProps {
   availableCount: number;
   totalCount: number;
   availableValue: number;
   nextGrantDate: string;
 }
 
-export function CreditLineCard({ availableCount, totalCount, availableValue, nextGrantDate }: CreditLineCardProps) {
+export function VoucherSummaryCard({
+  availableCount,
+  totalCount,
+  availableValue,
+  nextGrantDate,
+}: VoucherSummaryCardProps) {
   const t = useT();
   const { colors } = useTheme();
 

@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
-import { CreditLineCard } from './CreditLineCard';
+import { VoucherSummaryCard } from './VoucherSummaryCard';
 import { VoucherListItem } from './VoucherListItem';
 import { useVouchersStore, useSessionStore } from '@/stores';
 import { useT } from '@/i18n';
@@ -25,7 +25,7 @@ export function VouchersActive() {
         </View>
       </View>
       <View style={styles.cardGap}>
-        <CreditLineCard
+        <VoucherSummaryCard
           availableCount={available.length}
           totalCount={vouchers.length}
           availableValue={availableValue}

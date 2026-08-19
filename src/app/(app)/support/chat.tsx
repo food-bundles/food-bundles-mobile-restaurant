@@ -8,6 +8,7 @@ import { ChatHeader } from './_components/ChatHeader';
 import { ChatComposer } from './_components/ChatComposer';
 import { type Suggestion } from './_components/SuggestionChips';
 import { useT } from '@/i18n';
+import type { TranslationKey } from '@/i18n';
 
 interface ChatMessage {
   fromUser: boolean;
@@ -15,16 +16,11 @@ interface ChatMessage {
   imageUri?: string;
 }
 
-const ANSWERS: Record<string, string> = {
-  orderStatus:
-    'Order FB-24815 is In transit, arriving around 10:30. You can track every step on the order screen.',
-  vouchers:
-    'Basic and Premium both grant a batch of vouchers every month — each one pays for one order. Every voucher payment is confirmed with a one-time code.',
-  topUp:
-    'Open Wallet → Top up and choose MTN MoMo, Airtel Money, or card. You can also share a top-up link with your accountant.',
+const ANSWER_KEY: Record<string, TranslationKey> = {
+  orderStatus: 'chat_answerOrderStatus',
+  vouchers: 'chat_answerVouchers',
+  topUp: 'chat_answerTopUp',
 };
-
-const FALLBACK_ANSWER = 'Thanks — a FoodBundles specialist will follow up shortly.';
 
 export default function Chat() {
   const t = useT();
@@ -51,13 +47,17 @@ export default function Chat() {
   };
 
   const askSuggestion = (suggestion: Suggestion) => {
-    appendReply({ fromUser: true, text: suggestion.label }, ANSWERS[suggestion.key] ?? FALLBACK_ANSWER);
+    const answerKey = ANSWER_KEY[suggestion.key];
+    appendReply({ fromUser: true, text: suggestion.label }, answerKey ? t(answerKey) : t('chat_fallbackAnswer'));
   };
 
   const sendDraft = () => {
     const trimmed = draft.trim();
     if (!trimmed && !pendingImageUri) return;
-    appendReply({ fromUser: true, text: trimmed, imageUri: pendingImageUri ?? undefined }, FALLBACK_ANSWER);
+    appendReply(
+      { fromUser: true, text: trimmed, imageUri: pendingImageUri ?? undefined },
+      t('chat_fallbackAnswer'),
+    );
     setDraft('');
     setPendingImageUri(null);
   };

@@ -25,4 +25,11 @@ export const notifications = {
   chat_suggestion1: 'Where is my order?',
   chat_suggestion2: 'How do vouchers work?',
   chat_suggestion3: 'Top up my wallet',
+  chat_answerOrderStatus:
+    'Order FB-24815 is In transit, arriving around 10:30. You can track every step on the order screen.',
+  chat_answerVouchers:
+    'Basic and Premium both grant a batch of vouchers every month — each one pays for one order. Every voucher payment is confirmed with a one-time code.',
+  chat_answerTopUp:
+    'Open Wallet → Top up and choose MTN MoMo, Airtel Money, or card. You can also share a top-up link with your accountant.',
+  chat_fallbackAnswer: 'Thanks — a FoodBundles specialist will follow up shortly.',
 } as const;
