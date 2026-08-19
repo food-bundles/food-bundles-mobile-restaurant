@@ -1,9 +1,14 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { hit, radius, space, text, useTheme } from '@/theme';
 
+export interface Suggestion {
+  key: string;
+  label: string;
+}
+
 export interface SuggestionChipsProps {
-  suggestions: string[];
-  onSelect: (suggestion: string) => void;
+  suggestions: Suggestion[];
+  onSelect: (suggestion: Suggestion) => void;
 }
 
 export function SuggestionChips({ suggestions, onSelect }: SuggestionChipsProps) {
@@ -13,13 +18,13 @@ export function SuggestionChips({ suggestions, onSelect }: SuggestionChipsProps)
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
       {suggestions.map((suggestion) => (
         <Pressable
-          key={suggestion}
+          key={suggestion.key}
           onPress={() => onSelect(suggestion)}
           accessibilityRole="button"
-          accessibilityLabel={suggestion}
+          accessibilityLabel={suggestion.label}
           style={[styles.chip, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
         >
-          <Text style={[styles.label, { color: colors.leaf }]}>{suggestion}</Text>
+          <Text style={[styles.label, { color: colors.leaf }]}>{suggestion.label}</Text>
         </Pressable>
       ))}
     </ScrollView>

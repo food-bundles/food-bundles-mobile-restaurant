@@ -22,6 +22,8 @@ export const notifications: Record<keyof typeof notificationsEn, string> = {
   chat_onlineNow: 'Turi kuri interineti',
   chat_typeMessage: 'Andika ubutumwa…',
   chat_send: 'Ohereza ubutumwa',
+  chat_attach: 'Ohereza ifoto',
+  chat_removeImage: 'Kuraho ifoto',
   chat_suggestion1: 'Itumiza ryanjye riri he?',
   chat_suggestion2: 'Inguzanyo zikora zite?',
   chat_suggestion3: 'Ongeramo ku ikofi',

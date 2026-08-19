@@ -20,6 +20,8 @@ export const notifications = {
   chat_onlineNow: 'Online now',
   chat_typeMessage: 'Type a message…',
   chat_send: 'Send message',
+  chat_attach: 'Attach a photo',
+  chat_removeImage: 'Remove photo',
   chat_suggestion1: 'Where is my order?',
   chat_suggestion2: 'How do vouchers work?',
   chat_suggestion3: 'Top up my wallet',

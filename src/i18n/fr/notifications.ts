@@ -22,6 +22,8 @@ export const notifications: Record<keyof typeof notificationsEn, string> = {
   chat_onlineNow: 'En ligne maintenant',
   chat_typeMessage: 'Écrivez un message…',
   chat_send: 'Envoyer le message',
+  chat_attach: 'Joindre une photo',
+  chat_removeImage: 'Retirer la photo',
   chat_suggestion1: 'Où est ma commande ?',
   chat_suggestion2: 'Comment fonctionnent les bons ?',
   chat_suggestion3: 'Recharger mon portefeuille',

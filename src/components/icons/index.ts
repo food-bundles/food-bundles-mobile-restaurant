@@ -22,3 +22,4 @@ export { SunIcon } from './SunIcon';
 export { CameraIcon } from './CameraIcon';
 export { RefreshIcon } from './RefreshIcon';
 export { TrendingUpIcon } from './TrendingUpIcon';
+export { AttachIcon } from './AttachIcon';
