@@ -30,7 +30,7 @@ export const settings = {
   help_topics: 'Topics',
   help_ordersDelivery: 'Orders & delivery',
   help_walletPayments: 'Wallet & payments',
-  help_vouchersCredit: 'Vouchers & credit',
+  help_vouchersCredit: 'Vouchers',
   help_stillNeedHelp: 'Still need help?',
   help_chatWithTeam: 'Chat with the FoodBundles team.',
   help_contact: 'Contact',

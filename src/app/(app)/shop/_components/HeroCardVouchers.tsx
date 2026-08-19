@@ -13,8 +13,8 @@ export interface HeroCardVouchersProps {
   title: string;
   subtitle: string;
   linkLabel: string;
-  usedFraction?: number;
-  available?: number;
+  availableFraction?: number;
+  availableValue?: number;
   settlementLabel: string;
   unlockCta: string;
   onPress: () => void;
@@ -27,8 +27,8 @@ export function HeroCardVouchers({
   title,
   subtitle,
   linkLabel,
-  usedFraction = 0,
-  available = 0,
+  availableFraction = 0,
+  availableValue = 0,
   settlementLabel,
   unlockCta,
   onPress,
@@ -58,13 +58,18 @@ export function HeroCardVouchers({
         {subscribed ? (
           <View style={[styles.creditBar, { backgroundColor: colors.onPineSoft }]}>
             <View
-              style={[styles.creditFill, { width: `${Math.round(usedFraction * 100)}%`, backgroundColor: colors.marigold }]}
+              style={[
+                styles.creditFill,
+                { width: `${Math.round(availableFraction * 100)}%`, backgroundColor: colors.marigold },
+              ]}
             />
           </View>
         ) : null}
         <Text style={[styles.title, { color: colors.paper }]}>{title}</Text>
         <Text style={[styles.subtitle, { color: colors.onPineSoft }]}>{subtitle}</Text>
-        {subscribed ? <Text style={[styles.available, { color: colors.paper }]}>{formatRwf(available)}</Text> : null}
+        {subscribed ? (
+          <Text style={[styles.available, { color: colors.paper }]}>{formatRwf(availableValue)}</Text>
+        ) : null}
         {phase === 2 && subscribed ? (
           <Animated.Text style={[styles.settlement, { color: colors.onPine }, fadeStyle]}>
             {settlementLabel}

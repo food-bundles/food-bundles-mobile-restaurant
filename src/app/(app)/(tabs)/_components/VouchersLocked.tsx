@@ -4,7 +4,7 @@ import { radius, space, text, useTheme } from '@/theme';
 import { VoucherIcon } from '@/components/icons';
 import { useT } from '@/i18n';
 
-const FEATURES = ['Buy now, settle later', 'Credit line up to your limit', 'One OTP per voucher payment'];
+const FEATURES = ['Vouchers granted every month', 'Each voucher pays for one order', 'One OTP per voucher payment'];
 
 export function VouchersLocked() {
   const t = useT();

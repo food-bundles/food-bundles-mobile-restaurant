@@ -1,42 +1,33 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { radius, space, text, useTheme } from '@/theme';
-import { PriceText } from '@/components/product';
 import { useT } from '@/i18n';
-import { formatRwf } from '@/lib';
+import { formatDate, formatRwf } from '@/lib';
 
 export interface CreditLineCardProps {
-  limit: number;
-  used: number;
-  isRepaymentDue: boolean;
+  availableCount: number;
+  totalCount: number;
+  availableValue: number;
+  nextGrantDate: string;
 }
 
-export function CreditLineCard({ limit, used, isRepaymentDue }: CreditLineCardProps) {
+export function CreditLineCard({ availableCount, totalCount, availableValue, nextGrantDate }: CreditLineCardProps) {
   const t = useT();
   const { colors } = useTheme();
-  const available = limit - used;
 
   return (
     <View style={[styles.card, { backgroundColor: colors.pine }]}>
       <View style={styles.topRow}>
         <Text style={[styles.label, { color: colors.onPine }]}>{t('vouchers_title')}</Text>
-        <View
-          style={[
-            styles.statusBadge,
-            { backgroundColor: isRepaymentDue ? colors.marigold : colors.onPineSoft },
-          ]}
-        >
-          <Text style={[styles.statusLabel, { color: colors.pine }]}>
-            {isRepaymentDue ? t('vouchers_repaymentDueLabel') : t('vouchers_activeLabel')}
-          </Text>
+        <View style={[styles.statusBadge, { backgroundColor: colors.onPineSoft }]}>
+          <Text style={[styles.statusLabel, { color: colors.pine }]}>{t('vouchers_activeLabel')}</Text>
         </View>
       </View>
-      <PriceText amount={available} size="hero" colorOverride={colors.paper} />
+      <Text style={[styles.hero, { color: colors.paper }]}>
+        {t('vouchers_countLeft', { count: availableCount, total: totalCount })}
+      </Text>
       <View style={styles.usedRow}>
         <Text style={[styles.usedLabel, { color: colors.onPineSoft }]}>
-          {t('vouchers_usedOfLimit', {
-            used: formatRwf(used),
-            limit: formatRwf(limit),
-          })}
+          {t('vouchers_worthAndGrant', { value: formatRwf(availableValue), date: formatDate(nextGrantDate) })}
         </Text>
       </View>
     </View>
@@ -49,6 +40,7 @@ const styles = StyleSheet.create({
   label: { ...text.overline },
   statusBadge: { borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 3 },
   statusLabel: { ...text.micro },
+  hero: { ...text.priceHero },
   usedRow: { marginTop: space.sm },
   usedLabel: { ...text.caption, fontVariant: ['tabular-nums'] },
 });

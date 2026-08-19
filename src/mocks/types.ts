@@ -110,3 +110,16 @@ export interface Plan {
   weekly: number;
   features: string[];
 }
+
+export type VoucherStatus = 'AVAILABLE' | 'USED' | 'EXPIRED';
+
+export interface Voucher {
+  id: string;
+  code: string;
+  amount: number;
+  status: VoucherStatus;
+  issuedAt: string;
+  expiresAt: string;
+  usedAt?: string;
+  orderId?: string;
+}

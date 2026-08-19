@@ -34,7 +34,7 @@ export const settings: Record<keyof typeof settingsEn, string> = {
   help_topics: 'Sujets',
   help_ordersDelivery: 'Commandes et livraison',
   help_walletPayments: 'Portefeuille et paiements',
-  help_vouchersCredit: 'Bons et crédit',
+  help_vouchersCredit: 'Bons',
   help_stillNeedHelp: 'Besoin d’aide supplémentaire ?',
   help_chatWithTeam: 'Discutez avec l’équipe FoodBundles.',
   help_contact: 'Contact',

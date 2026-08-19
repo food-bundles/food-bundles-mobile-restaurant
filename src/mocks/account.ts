@@ -7,5 +7,4 @@ export const account = {
   tin: '102 938 471',
   address: 'KG 11 Ave, Kimihurura, Kigali',
   walletBalance: 1240000,
-  creditLine: { limit: 300000, used: 120000, dueDate: '2026-08-31' },
 };

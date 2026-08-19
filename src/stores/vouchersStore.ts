@@ -1,43 +1,25 @@
 import { create } from 'zustand';
-import { account } from '@/mocks/account';
-import { sleep } from '@/lib';
-import type { Tier } from '@/mocks/types';
-
-const CREDIT_MIN = 50000;
-const CREDIT_MAX = 500000;
+import { vouchers as seedVouchers } from '@/mocks/vouchers';
+import type { Tier, Voucher } from '@/mocks/types';
 
 interface VouchersState {
-  creditLimit: number;
-  creditUsed: number;
-  dueDate: string;
-  requestedAmount: number;
-  approved: boolean;
-  submitting: boolean;
-  adjustRequested: (delta: number) => void;
-  submitRequest: () => Promise<void>;
-  /** Records a completed voucher payment against the credit line, raising creditUsed. */
-  deductCredit: (amount: number) => void;
+  vouchers: Voucher[];
+  nextGrantDate: string;
+  /** Marks one voucher as used against an order; no-op if it's already spent or missing. */
+  redeemVoucher: (voucherId: string, orderId: string) => void;
 }
 
-export const useVouchersStore = create<VouchersState>((set, get) => ({
-  creditLimit: account.creditLine.limit,
-  creditUsed: account.creditLine.used,
-  dueDate: account.creditLine.dueDate,
-  requestedAmount: account.creditLine.limit,
-  approved: false,
-  submitting: false,
-  adjustRequested: (delta) =>
+export const useVouchersStore = create<VouchersState>((set) => ({
+  vouchers: seedVouchers,
+  nextGrantDate: '2026-09-01',
+  redeemVoucher: (voucherId, orderId) =>
     set((state) => ({
-      requestedAmount: Math.min(CREDIT_MAX, Math.max(CREDIT_MIN, state.requestedAmount + delta)),
+      vouchers: state.vouchers.map((voucher) =>
+        voucher.id === voucherId && voucher.status === 'AVAILABLE'
+          ? { ...voucher, status: 'USED', usedAt: new Date().toISOString(), orderId }
+          : voucher,
+      ),
     })),
-  submitRequest: async () => {
-    set({ submitting: true });
-    await sleep(1300);
-    set({ submitting: false, approved: true, creditLimit: get().requestedAmount });
-  },
-  deductCredit: (amount) =>
-    set((state) => ({ creditUsed: Math.min(state.creditLimit, state.creditUsed + amount) })),
 }));
 
 export const isVouchersUnlocked = (tier: Tier): boolean => tier !== 'NONE';
-export { CREDIT_MIN, CREDIT_MAX };

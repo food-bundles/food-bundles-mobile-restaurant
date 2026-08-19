@@ -19,7 +19,7 @@ const ANSWERS: Record<string, string> = {
   orderStatus:
     'Order FB-24815 is In transit, arriving around 10:30. You can track every step on the order screen.',
   vouchers:
-    'On Premium you get a credit line — order now and settle by the due date. Each voucher payment is confirmed with a one-time code.',
+    'Basic and Premium both grant a batch of vouchers every month — each one pays for one order. Every voucher payment is confirmed with a one-time code.',
   topUp:
     'Open Wallet → Top up and choose MTN MoMo, Airtel Money, or card. You can also share a top-up link with your accountant.',
 };

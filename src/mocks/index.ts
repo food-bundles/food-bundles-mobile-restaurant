@@ -7,6 +7,7 @@ export { affiliators } from './affiliators';
 export { addresses } from './addresses';
 export { plans } from './plans';
 export { account } from './account';
+export { vouchers } from './vouchers';
 export { LANDING_IMAGES } from './landingImages';
 export {
   COMMODITIES,

@@ -10,7 +10,7 @@ export const plans: Plan[] = [
       'FoodBundles market + 2 more markets',
       'Standard delivery',
       'WhatsApp-only support',
-      'Fixed voucher limit',
+      '4 vouchers of 25,000 RWF every month',
     ],
   },
   {
@@ -22,7 +22,7 @@ export const plans: Plan[] = [
       'All markets + price comparison',
       'Free delivery',
       'Direct AI-call support',
-      'Negotiable voucher limit',
+      '10 vouchers of 50,000 RWF every month',
     ],
   },
 ];

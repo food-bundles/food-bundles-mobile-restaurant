@@ -10,7 +10,6 @@ import { useT } from '@/i18n';
 import { account } from '@/mocks';
 
 type Frequency = 'RARELY' | 'SOMETIMES' | 'OFTEN';
-type Duration = '30' | '60' | '90';
 
 export default function Underwriting() {
   const t = useT();
@@ -19,7 +18,6 @@ export default function Underwriting() {
   const [reason, setReason] = useState('Stock produce between supplier payouts');
   const [firstTime, setFirstTime] = useState(true);
   const [frequency, setFrequency] = useState<Frequency>('SOMETIMES');
-  const [duration, setDuration] = useState<Duration>('60');
 
   if (completed === '1') {
     return (
@@ -33,10 +31,10 @@ export default function Underwriting() {
           <Pressable
             onPress={() => router.replace({ pathname: '/(app)/(tabs)/wallet', params: { tab: 'vouchers' } })}
             accessibilityRole="button"
-            accessibilityLabel={t('vouchers_useAtCheckout')}
+            accessibilityLabel={t('vouchers_startUsing')}
             style={[styles.completedButton, { backgroundColor: colors.leaf }]}
           >
-            <Text style={[styles.completedButtonLabel, { color: colors.paper }]}>{t('vouchers_title')}</Text>
+            <Text style={[styles.completedButtonLabel, { color: colors.paper }]}>{t('vouchers_startUsing')}</Text>
           </Pressable>
         </View>
       </ScreenScroll>
@@ -71,18 +69,6 @@ export default function Underwriting() {
               ]}
               selected={frequency}
               onSelect={setFrequency}
-            />
-          </View>
-          <View>
-            <Text style={[styles.label, { color: colors.ink }]}>{t('underwriting_repaymentDuration')}</Text>
-            <OptionRow
-              options={[
-                { value: '30', label: t('underwriting_days30') },
-                { value: '60', label: t('underwriting_days60') },
-                { value: '90', label: t('underwriting_days90') },
-              ]}
-              selected={duration}
-              onSelect={setDuration}
             />
           </View>
         </View>

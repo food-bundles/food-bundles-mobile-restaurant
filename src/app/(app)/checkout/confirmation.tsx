@@ -13,7 +13,7 @@ const PAYMENT_LABELS: Record<string, string> = {
   MOBILE_MONEY: 'Mobile Money',
   CARD: 'Card',
   CASH: 'Prepaid wallet',
-  VOUCHER: 'Voucher credit',
+  VOUCHER: 'Voucher',
 };
 
 export default function CheckoutConfirmation() {

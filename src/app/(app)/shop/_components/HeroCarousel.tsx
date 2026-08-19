@@ -28,8 +28,9 @@ export function HeroCarousel() {
   const [phase, setPhase] = useState<1 | 2>(1);
   const [paused, setPaused] = useState(false);
   const subscribed = useSessionStore((s) => s.subscribed);
-  const creditLimit = useVouchersStore((s) => s.creditLimit);
-  const creditUsed = useVouchersStore((s) => s.creditUsed);
+  const vouchers = useVouchersStore((s) => s.vouchers);
+  const availableVouchers = vouchers.filter((voucher) => voucher.status === 'AVAILABLE');
+  const availableVoucherValue = availableVouchers.reduce((sum, voucher) => sum + voucher.amount, 0);
   const activeOrder = orders.find((order) => order.status === 'IN_TRANSIT') ?? orders[0];
   const entrance = useSharedValue(0);
 
@@ -63,8 +64,8 @@ export function HeroCarousel() {
       subscribed={subscribed}
       title={subscribed ? t('hero_vouchersTitle') : t('sub_unlockTitle')}
       subtitle={subscribed ? t('hero_vouchersSubtitleActive') : t('hero_vouchersSubtitleLocked')}
-      usedFraction={creditLimit > 0 ? creditUsed / creditLimit : 0}
-      available={creditLimit - creditUsed}
+      availableFraction={vouchers.length > 0 ? availableVouchers.length / vouchers.length : 0}
+      availableValue={availableVoucherValue}
       settlementLabel={t('hero_vouchersNextSettlement')}
       unlockCta={t('hero_vouchersUnlockCta')}
       linkLabel={subscribed ? t('vouchers_useAtCheckout') : t('sub_seePlans')}

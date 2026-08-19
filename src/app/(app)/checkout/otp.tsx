@@ -7,7 +7,7 @@ import { ChevronLeftIcon, VoucherIcon } from '@/components/icons';
 import { OtpBoxes } from '@/components/checkout';
 import { sleep } from '@/lib';
 import { useT } from '@/i18n';
-import { useVouchersStore } from '@/stores';
+import { useCheckoutStore, useVouchersStore } from '@/stores';
 import { orders } from '@/mocks';
 import type { Href } from 'expo-router';
 
@@ -21,20 +21,19 @@ function formatCountdown(totalSeconds: number): string {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
-type Purpose = 'payment' | 'underwriting' | 'creditLine';
+type Purpose = 'payment' | 'underwriting';
 
 const DESTINATIONS: Record<Purpose, Href> = {
   payment: '/(app)/checkout/confirmation',
   underwriting: { pathname: '/(app)/subscription/underwriting', params: { completed: '1' } },
-  creditLine: { pathname: '/(app)/vouchers/credit-line', params: { completed: '1' } },
 };
 
 export default function Otp() {
   const t = useT();
   const { colors } = useTheme();
   const { purpose } = useLocalSearchParams<{ purpose?: Purpose }>();
-  const submitCreditRequest = useVouchersStore((state) => state.submitRequest);
-  const deductCredit = useVouchersStore((state) => state.deductCredit);
+  const redeemVoucher = useVouchersStore((state) => state.redeemVoucher);
+  const selectedVoucherId = useCheckoutStore((state) => state.selectedVoucherId);
   const activeOrder = orders.find((order) => order.id === 'FB-24815') ?? orders[0];
   const [code, setCode] = useState(MOCK_PREFILL);
   const [seconds, setSeconds] = useState(RESEND_SECONDS);
@@ -48,13 +47,9 @@ export default function Otp() {
 
   const onVerify = async () => {
     setVerifying(true);
-    if (purpose === 'creditLine') {
-      await submitCreditRequest();
-    } else {
-      await sleep(1300);
-      if (purpose === undefined || purpose === 'payment') {
-        deductCredit(activeOrder.total);
-      }
+    await sleep(1300);
+    if ((purpose === undefined || purpose === 'payment') && selectedVoucherId) {
+      redeemVoucher(selectedVoucherId, activeOrder.id);
     }
     setVerifying(false);
     router.replace(DESTINATIONS[purpose ?? 'payment']);
