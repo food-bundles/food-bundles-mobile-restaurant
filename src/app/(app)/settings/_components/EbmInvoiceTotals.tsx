@@ -14,23 +14,26 @@ export function EbmInvoiceTotals({ order }: EbmInvoiceTotalsProps) {
   const t = useT();
   const { colors } = useTheme();
   const vatIncluded = Math.round((order.subtotal * VAT_RATE) / (1 + VAT_RATE));
+  const taxableBase = order.subtotal - vatIncluded;
 
   return (
-    <View style={[styles.card, { borderTopColor: colors.hairline }]}>
-      <View style={styles.row}>
-        <Text style={[styles.label, { color: colors.secondary }]}>{t('shop_subtotal')}</Text>
-        <Text style={[styles.value, { color: colors.ink }]}>{formatRwf(order.subtotal)}</Text>
-      </View>
+    <View style={styles.card}>
       <View style={styles.row}>
         <Text style={[styles.label, { color: colors.secondary }]}>{t('shop_delivery')}</Text>
         <Text style={[styles.value, { color: colors.ink }]}>{formatRwf(order.deliveryFee)}</Text>
       </View>
-      <View style={styles.row}>
-        <Text style={[styles.label, { color: colors.secondary }]}>{t('ebm_vatIncluded')}</Text>
-        <Text style={[styles.value, { color: colors.ink }]}>{formatRwf(vatIncluded)}</Text>
+      <View style={[styles.taxSummary, { borderColor: colors.hairline }]}>
+        <View style={styles.row}>
+          <Text style={[styles.label, { color: colors.secondary }]}>{t('ebm_totalTaxCode', { code: 'B', rate: 18 })}</Text>
+          <Text style={[styles.value, { color: colors.ink }]}>{formatRwf(taxableBase)}</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={[styles.label, { color: colors.secondary }]}>{t('ebm_totalTax')}</Text>
+          <Text style={[styles.value, { color: colors.ink }]}>{formatRwf(vatIncluded)}</Text>
+        </View>
       </View>
-      <View style={[styles.row, styles.totalRow]}>
-        <Text style={[styles.totalLabel, { color: colors.ink }]}>{t('shop_total')}</Text>
+      <View style={[styles.row, styles.totalRow, { borderTopColor: colors.hairline }]}>
+        <Text style={[styles.totalLabel, { color: colors.ink }]}>{t('ebm_totalRwf')}</Text>
         <Text style={[styles.totalValue, { color: colors.ink }]}>{formatRwf(order.total)}</Text>
       </View>
     </View>
@@ -38,11 +41,17 @@ export function EbmInvoiceTotals({ order }: EbmInvoiceTotalsProps) {
 }
 
 const styles = StyleSheet.create({
-  card: { marginTop: space.md, borderTopWidth: 1, paddingTop: space.sm },
+  card: { marginTop: space.md },
   row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 2 },
   label: { ...text.caption },
   value: { ...text.caption, fontVariant: ['tabular-nums'] },
-  totalRow: { marginTop: space.xs },
+  taxSummary: {
+    marginTop: 2,
+    borderTopWidth: 1,
+    borderStyle: 'dashed',
+    paddingTop: space.xs,
+  },
+  totalRow: { marginTop: space.xs, borderTopWidth: 1, paddingTop: space.xs },
   totalLabel: { ...text.bodySemi },
   totalValue: { ...text.bodySemi, fontVariant: ['tabular-nums'] },
 });

@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { hit, radius, space, text, useTheme } from '@/theme';
-import { OrderItemsCard } from '@/components/order';
 import { Toast } from '@/components/primitives';
 import { EbmInvoiceHeader } from './EbmInvoiceHeader';
+import { EbmFiscalBlock } from './EbmFiscalBlock';
 import { EbmInvoiceMeta } from './EbmInvoiceMeta';
+import { EbmLineItemsTable } from './EbmLineItemsTable';
 import { EbmInvoiceTotals } from './EbmInvoiceTotals';
+import { EbmQrBlock } from './EbmQrBlock';
+import { deriveFiscalIds } from './ebmFiscalIds';
 import { useT } from '@/i18n';
 import type { Order } from '@/mocks/types';
 
@@ -38,11 +41,11 @@ export function EbmPreviewSheet({ order, onClose }: EbmPreviewSheetProps) {
             <Text style={[styles.title, { color: colors.ink }]}>{t('ebm_invoicePreview')}</Text>
             <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
               <EbmInvoiceHeader />
+              <EbmFiscalBlock order={order} />
               <EbmInvoiceMeta order={order} />
-              <View style={styles.itemsGap}>
-                <OrderItemsCard lines={order.lines} title={t('ebm_items')} showCount={false} bare />
-              </View>
+              <EbmLineItemsTable lines={order.lines} />
               <EbmInvoiceTotals order={order} />
+              <EbmQrBlock {...deriveFiscalIds(order.id)} total={order.total} />
             </ScrollView>
             <View style={styles.footerRow}>
               <Pressable
@@ -91,7 +94,6 @@ const styles = StyleSheet.create({
     marginBottom: space.sm,
   },
   title: { ...text.h2, marginBottom: space.md },
-  itemsGap: { marginTop: space.md },
   footerRow: { flexDirection: 'row', gap: space.sm, marginTop: space.lg },
   closeButton: {
     flex: 1,
