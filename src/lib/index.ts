@@ -5,3 +5,4 @@ export type { Telecom } from './detectTelecom';
 export { formatDate, formatTime } from './dates';
 export { formatTin, isValidTin } from './formatTin';
 export { generateTotpSecret, buildOtpauthUri, currentMockTotpCode, validateTotp } from './totp';
+export { setCache, getCache, clearCache, clearAllCache, refreshStaleCaches } from './cache';
