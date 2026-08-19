@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { AppState } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -13,10 +14,22 @@ import {
   IBMPlexSans_600SemiBold,
 } from '@expo-google-fonts/ibm-plex-sans';
 import * as SplashScreen from 'expo-splash-screen';
+import * as Notifications from 'expo-notifications';
 import { hydrateLanguage } from '@/i18n';
 import { hydrateTheme, useTheme } from '@/theme';
+import { refreshStaleCaches } from '@/lib';
+import { registerOrderStatusTask } from '@/tasks/orderStatusTask';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function RootLayout() {
   const { isDark } = useTheme();
@@ -31,6 +44,14 @@ export default function RootLayout() {
   useEffect(() => {
     hydrateLanguage();
     hydrateTheme();
+    registerOrderStatusTask();
+  }, []);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') refreshStaleCaches();
+    });
+    return () => subscription.remove();
   }, []);
 
   useEffect(() => {

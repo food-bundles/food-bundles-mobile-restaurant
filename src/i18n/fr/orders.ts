@@ -24,6 +24,8 @@ export const orders: Record<keyof typeof ordersEn, string> = {
   orders_addItemsToCart: 'Ajouter {{count}} articles au panier',
   orders_outOfStock: 'Rupture de stock',
   orders_stepOfTotal: 'Étape {{step}} sur {{total}}',
+  orders_statusNotifTitle: 'Mise à jour de la commande {{orderId}}',
+  orders_statusNotifBody: 'Votre commande est maintenant {{status}}.',
 
   a11y_previewEbm: "Aperçu de la facture EBM",
   a11y_paymentHistory: 'Voir l’historique des paiements de cette commande',

@@ -22,6 +22,8 @@ export const orders = {
   orders_addItemsToCart: 'Add {{count}} items to cart',
   orders_outOfStock: 'Out of stock',
   orders_stepOfTotal: 'Step {{step}} of {{total}}',
+  orders_statusNotifTitle: 'Order {{orderId}} update',
+  orders_statusNotifBody: 'Your order is now {{status}}.',
 
   a11y_previewEbm: 'Preview EBM invoice',
   a11y_paymentHistory: 'View payment history for this order',
