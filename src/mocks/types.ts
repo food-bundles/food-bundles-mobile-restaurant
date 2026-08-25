@@ -177,4 +177,5 @@ export interface MenuDish {
   mealTypes: MealType[];
   source: string;
   ingredients: MenuIngredient[];
+  image: ImageSourcePropType;
 }

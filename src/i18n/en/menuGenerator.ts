@@ -1,7 +1,7 @@
 export const menuGenerator = {
   menu_generatorShortcut: 'Generate a menu',
   menu_step1Title: 'Tell us about your menu',
-  menu_restaurantType: 'Restaurant type',
+  menu_cuisineStyle: 'Cuisine style',
   menu_mealTypesToInclude: 'Meal types to include',
   menu_coversPerService: 'Covers per service',
   menu_generateCta: 'Generate menu',
@@ -23,9 +23,16 @@ export const menuGenerator = {
   menu_byIngredient: 'By ingredient',
   menu_costPerPortion: '{{amount}} / portion',
   menu_bestSourcedFrom: 'Best sourced from: {{source}}',
-  menu_addAllToCart: 'Add all ingredients to cart',
+  menu_selectAllIngredients: 'Select all',
+  menu_deselectAllIngredients: 'Deselect all',
+  menu_addSelectedToCart: 'Add selected to cart',
   menu_adjustQuantities: 'Adjust quantities',
   menu_orderAllFromFoodBundles: 'Order all from FoodBundles',
   menu_exportPdf: 'Export menu PDF',
   menu_exportShareMessage: "{{restaurant}}'s generated menu, ready to order from FoodBundles.",
+
+  menu_cheapestProteinsTitle: "Today's cheapest proteins",
+  menu_trendingTitle: 'Trending in Kigali',
+  menu_trendingUgali: 'Ugali ↑ ordered 3× more this week',
+  menu_trendingAvocados: 'Avocados ↓ high price — skip',
 } as const;

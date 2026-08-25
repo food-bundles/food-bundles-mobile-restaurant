@@ -4,6 +4,8 @@ import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader, StickyFooter } from '@/components/layout';
 import { MultiSelectChips } from './_components/MultiSelectChips';
 import { PortionStepper } from './_components/PortionStepper';
+import { MarketContextCard } from './_components/MarketContextCard';
+import { TrendingChipsRow } from './_components/TrendingChipsRow';
 import { MenuTabSwitch, type MenuTab } from './_components/MenuTabSwitch';
 import { MenuDishCard } from './_components/MenuDishCard';
 import { IngredientListRow } from './_components/IngredientListRow';
@@ -40,8 +42,8 @@ export default function MenuGenerator() {
   const t = useT();
   const { colors } = useTheme();
   const addQty = useCartStore((state) => state.addQty);
-  const [cuisines, setCuisines] = useState<CuisineType[]>(['AFRICAN']);
-  const [mealTypes, setMealTypes] = useState<MealType[]>(['LUNCH', 'DINNER']);
+  const [cuisines, setCuisines] = useState<CuisineType[]>([]);
+  const [mealTypes, setMealTypes] = useState<MealType[]>([]);
   const [portions, setPortions] = useState(DEFAULT_PORTIONS);
   const [generated, setGenerated] = useState(false);
   const [tab, setTab] = useState<MenuTab>('byMeal');
@@ -56,9 +58,10 @@ export default function MenuGenerator() {
   const dishes: MenuDish[] = cuisines.flatMap((cuisine) => getDishesForMenu(cuisine, mealTypes));
   const consolidated = consolidateIngredients(dishes);
 
-  const onAddDishIngredients = (dish: MenuDish, quantities: Record<string, number>) => {
-    for (const ingredient of dish.ingredients) {
-      addQty(ingredient.productId, quantities[ingredient.productId] ?? ingredient.qty);
+  const onAddDishIngredients = (dish: MenuDish, productIds: string[], quantities: Record<string, number>) => {
+    for (const productId of productIds) {
+      const ingredient = dish.ingredients.find((i) => i.productId === productId);
+      if (ingredient) addQty(productId, quantities[productId] ?? ingredient.qty);
     }
   };
 
@@ -75,7 +78,7 @@ export default function MenuGenerator() {
       <View style={[styles.container, { backgroundColor: colors.oat }]}>
         <ScreenHeader title={t('menu_step1Title')} />
         <ScreenScroll contentInsetBottom={100}>
-          <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('menu_restaurantType')}</Text>
+          <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('menu_cuisineStyle')}</Text>
           <MultiSelectChips
             options={CUISINE_OPTIONS.map((cuisine) => ({ key: cuisine, label: t(CUISINE_LABEL[cuisine]) }))}
             selected={cuisines}
@@ -89,6 +92,11 @@ export default function MenuGenerator() {
           />
           <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('menu_coversPerService')}</Text>
           <PortionStepper value={portions} onChange={setPortions} />
+          <View style={styles.contextGap}>
+            <MarketContextCard />
+          </View>
+          <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('menu_trendingTitle')}</Text>
+          <TrendingChipsRow />
         </ScreenScroll>
         <StickyFooter>
           <Pressable
@@ -154,6 +162,7 @@ export default function MenuGenerator() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   sectionLabel: { ...text.overline, marginTop: space.lg, marginBottom: space.sm },
+  contextGap: { marginTop: space.lg },
   subtitle: { ...text.caption, marginTop: space.sm },
   tabGap: { marginTop: space.md },
   listGap: { marginTop: space.md },
