@@ -3,8 +3,7 @@ import { radius, shadow, space, text, useTheme } from '@/theme';
 import { Badge } from '@/components/primitives';
 import { Sparkline } from './Sparkline';
 import { formatRwf } from '@/lib';
-import { COMMODITIES, PRICE_HISTORY, type CommodityId } from '@/mocks';
-import { weeklyAverage } from './marketAnalytics';
+import { COMMODITIES, PRICE_HISTORY, momentumChangePct, type CommodityId } from '@/mocks';
 
 export interface WatchlistCardProps {
   commodityId: CommodityId;
@@ -18,7 +17,7 @@ export function WatchlistCard({ commodityId }: WatchlistCardProps) {
 
   const history = PRICE_HISTORY[commodityId];
   const todayPrice = history[history.length - 1];
-  const { changePct } = weeklyAverage(history);
+  const changePct = momentumChangePct(commodityId);
   const isUp = changePct >= 0;
 
   return (

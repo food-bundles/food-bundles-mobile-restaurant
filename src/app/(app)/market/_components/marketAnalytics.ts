@@ -2,12 +2,10 @@ const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Satu
 
 export type Volatility = 'LOW' | 'MEDIUM' | 'HIGH';
 
-/** Mean of a 7-day price series, plus its % change against the prior week's mean. */
-export function weeklyAverage(values: number[]): { average: number; changePct: number } {
+/** Mean of a 7-day price series. */
+export function weeklyAverage(values: number[]): { average: number } {
   const average = values.reduce((sum, v) => sum + v, 0) / values.length;
-  const priorWeekEstimate = average * 0.97;
-  const changePct = ((average - priorWeekEstimate) / priorWeekEstimate) * 100;
-  return { average: Math.round(average), changePct };
+  return { average: Math.round(average) };
 }
 
 /** The weekday with the lowest recorded price in the series. */

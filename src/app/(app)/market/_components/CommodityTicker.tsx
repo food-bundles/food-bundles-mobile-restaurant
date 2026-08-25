@@ -3,8 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { radius, signatureDuration, space, text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
-import { COMMODITIES, PRICE_HISTORY } from '@/mocks';
-import { weeklyAverage } from './marketAnalytics';
+import { COMMODITIES, PRICE_HISTORY, momentumChangePct } from '@/mocks';
 
 /** Stock-ticker-style marquee cycling through each tracked commodity's price and delta every 3s. */
 export function CommodityTicker() {
@@ -26,7 +25,7 @@ export function CommodityTicker() {
   const fadeStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
   const commodity = COMMODITIES[index];
   const history = PRICE_HISTORY[commodity.id];
-  const { changePct } = weeklyAverage(history);
+  const changePct = momentumChangePct(commodity.id);
   const isUp = changePct >= 0;
 
   return (

@@ -107,4 +107,7 @@ export const market: Record<keyof typeof marketEn, string> = {
   priceHistory_viewOrder: 'Reba itumiza {{orderId}}',
   priceHistory_bestTime: 'Buri gihe wishyura make igihe utumije {{name}} ku wa {{cheapDay}} (impuzandengo {{cheapAvg}} ugereranyije na {{pricyAvg}} ku wa {{pricyDay}})',
   priceHistory_downloadCsv: 'Kuramo CSV',
+
+  chart_errorTitle: 'Ntibyashobotse gushushanya iki gishushanyo',
+  chart_errorMessage: 'Hari ikibazo cyabaye mu gushushanya igiciro. Ongera ugerageze.',
 };

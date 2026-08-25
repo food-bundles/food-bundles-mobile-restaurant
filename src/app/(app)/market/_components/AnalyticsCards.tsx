@@ -5,8 +5,10 @@ import { formatRwf } from '@/lib';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
 import { weeklyAverage, cheapestDay, volatility, type Volatility } from './marketAnalytics';
+import { momentumChangePct, type CommodityId } from '@/mocks';
 
 export interface AnalyticsCardsProps {
+  commodityId: CommodityId;
   priceHistory: number[];
   volumeHistory: number[];
 }
@@ -28,10 +30,11 @@ const VOLATILITY_TONE: Record<Volatility, 'ripe' | 'marigold' | 'chili'> = {
 };
 
 /** Horizontal row of four derived-insight cards below the market comparison table. */
-export function AnalyticsCards({ priceHistory, volumeHistory }: AnalyticsCardsProps) {
+export function AnalyticsCards({ commodityId, priceHistory, volumeHistory }: AnalyticsCardsProps) {
   const t = useT();
   const { colors } = useTheme();
-  const { average, changePct } = weeklyAverage(priceHistory);
+  const { average } = weeklyAverage(priceHistory);
+  const changePct = momentumChangePct(commodityId);
   const day = cheapestDay(priceHistory);
   const vol = volatility(priceHistory);
   const maxVolume = Math.max(...volumeHistory, 1);

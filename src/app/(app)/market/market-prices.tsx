@@ -7,8 +7,7 @@ import { MarketScreenHeader } from './_components/MarketScreenHeader';
 import { MarketTopTabSwitch } from './_components/MarketTopTabSwitch';
 import { DashboardTab } from './_components/DashboardTab';
 import { ChartsTab } from './_components/ChartsTab';
-import { PRICE_HISTORY } from '@/mocks';
-import { weeklyAverage } from './_components/marketAnalytics';
+import { momentumChangePct } from '@/mocks';
 import { useT } from '@/i18n';
 
 const UPDATED_MINUTES_AGO = 3;
@@ -22,7 +21,7 @@ export default function MarketPrices() {
   const [topTab, setTopTab] = useState<MarketTopTab>('dashboard');
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const { changePct } = weeklyAverage(PRICE_HISTORY.irishPotatoes);
+  const changePct = momentumChangePct('irishPotatoes');
 
   const onSelectTab = (tab: MarketTopTab) => {
     if (tab === 'priceHistory') {

@@ -8,13 +8,22 @@ export interface OhlcDay {
   close: number;
 }
 
+const MIN_WICK_MARGIN = 3;
+
 /** Derives a deterministic OHLC candle per day from the existing daily close-price history. */
 function deriveOhlc(closes: number[]): OhlcDay[] {
   return closes.map((close, index) => {
     const open = index === 0 ? close : closes[index - 1];
-    const high = Math.max(open, close) + Math.round(Math.abs(close - open) * 0.4) + 3;
-    const low = Math.min(open, close) - Math.round(Math.abs(close - open) * 0.4) - 3;
-    return { open, high, low, close };
+    const bodyTop = Math.max(open, close);
+    const bodyBottom = Math.min(open, close);
+    const spread = Math.max(bodyTop - bodyBottom, 1);
+    const high = bodyTop + Math.round(spread * 0.4) + MIN_WICK_MARGIN;
+    const low = bodyBottom - Math.round(spread * 0.4) - MIN_WICK_MARGIN;
+    const candle = { open, high, low, close };
+    if (__DEV__ && (high < bodyTop || low > bodyBottom)) {
+      console.warn(`[tradingDashboard] malformed OHLC candle: ${JSON.stringify(candle)}`);
+    }
+    return candle;
   });
 }
 
@@ -45,10 +54,16 @@ export interface MomentumReading {
 export const MOMENTUM: Record<CommodityId, MomentumReading> = {
   irishPotatoes: { direction: 'UP', magnitudePct: 3.1 },
   tomatoes: { direction: 'UP', magnitudePct: 13.4 },
-  redOnions: { direction: 'FLAT', magnitudePct: 0.8 },
-  cabbage: { direction: 'DOWN', magnitudePct: 14.4 },
+  redOnions: { direction: 'DOWN', magnitudePct: 2.8 },
+  cabbage: { direction: 'DOWN', magnitudePct: 14.2 },
   carrots: { direction: 'FLAT', magnitudePct: 1.2 },
 };
+
+/** Signed percent change for a commodity, derived from its momentum reading (never uniform across commodities). */
+export function momentumChangePct(commodityId: CommodityId): number {
+  const { direction, magnitudePct } = MOMENTUM[commodityId];
+  return direction === 'DOWN' ? -magnitudePct : magnitudePct;
+}
 
 /** Restaurant's tracked commodities for the Dashboard watchlist (max 5, seeded with all 5). */
 export const WATCHLIST: CommodityId[] = ['irishPotatoes', 'tomatoes', 'redOnions', 'cabbage', 'carrots'];

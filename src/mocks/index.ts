@@ -1,5 +1,6 @@
 export * from './types';
 export { products } from './products';
+export { PRODUCT_IMAGES } from './productImages';
 export { orders, guestOrder } from './orders';
 export { transactions } from './transactions';
 export { notifications } from './notifications';
@@ -36,6 +37,7 @@ export {
   MOST_ACTIVE,
   COMPARISON_PRESETS,
   COMPARISON_SERIES,
+  momentumChangePct,
 } from './tradingDashboard';
 export type { OhlcDay, PriceMomentum, MomentumReading, ComparisonPreset } from './tradingDashboard';
 export { ORDER_TIMING_INSIGHTS } from './orderTimingInsights';

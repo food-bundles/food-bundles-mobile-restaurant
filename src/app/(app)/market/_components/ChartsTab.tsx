@@ -17,6 +17,7 @@ import { TrackMarketToggle } from './TrackMarketToggle';
 import { MarketFeatureCard } from './MarketFeatureCard';
 import { ComparePeriodsSheet } from './ComparePeriodsSheet';
 import { PeriodComparisonChart } from './PeriodComparisonChart';
+import { ChartErrorBoundary } from '@/components/market';
 import { BasketIcon, TrendingUpIcon } from '@/components/icons';
 import { useSessionStore } from '@/stores';
 import {
@@ -67,22 +68,22 @@ export function ChartsTab({ refreshKey }: ChartsTabProps) {
       <View style={[styles.section, styles.card, { backgroundColor: colors.paper }]}>
         <ChartTypeToggle active={chartType} onSelect={setChartType} />
         <View style={styles.chartGap}>
-          {chartType === 'LINE' ? (
-            <View>
-              <PriceAreaChart
-                key={`${commodityId}-${range}-${refreshKey}`}
-                values={series.values}
-                dayLabels={series.labels}
-              />
-              {showMa ? <MovingAverageOverlay values={series.values} /> : null}
-            </View>
-          ) : (
-            <CandlestickChart candles={OHLC_HISTORY[commodityId]} />
-          )}
+          <ChartErrorBoundary key={`${commodityId}-${range}-${refreshKey}-${chartType}`}>
+            {chartType === 'LINE' ? (
+              <View>
+                <PriceAreaChart values={series.values} dayLabels={series.labels} />
+                {showMa ? <MovingAverageOverlay values={series.values} /> : null}
+              </View>
+            ) : (
+              <CandlestickChart candles={OHLC_HISTORY[commodityId]} />
+            )}
+          </ChartErrorBoundary>
         </View>
         <MaOverlayToggle enabled={showMa} onToggle={() => setShowMa((prev) => !prev)} />
         <View style={styles.volumeGap}>
-          <VolumeBars volumes={VOLUME_TREND[commodityId]} />
+          <ChartErrorBoundary>
+            <VolumeBars volumes={VOLUME_TREND[commodityId]} />
+          </ChartErrorBoundary>
         </View>
         <View style={styles.rangeGap}>
           <TimeRangeTabs options={TIME_RANGES} selected={range} onSelect={setRange} />
@@ -107,10 +108,12 @@ export function ChartsTab({ refreshKey }: ChartsTabProps) {
             <Text style={[styles.compareOpenLabel, { color: colors.leaf }]}>{t('compare_openButton')}</Text>
           </Pressable>
         </View>
-        <PeriodComparisonChart
-          current={COMPARISON_SERIES[comparePreset].current}
-          previous={COMPARISON_SERIES[comparePreset].previous}
-        />
+        <ChartErrorBoundary>
+          <PeriodComparisonChart
+            current={COMPARISON_SERIES[comparePreset].current}
+            previous={COMPARISON_SERIES[comparePreset].previous}
+          />
+        </ChartErrorBoundary>
       </View>
 
       <View style={styles.section}>
@@ -136,7 +139,7 @@ export function ChartsTab({ refreshKey }: ChartsTabProps) {
       </View>
 
       <View style={styles.section}>
-        <AnalyticsCards priceHistory={weeklyValues} volumeHistory={VOLUME_TREND[commodityId]} />
+        <AnalyticsCards commodityId={commodityId} priceHistory={weeklyValues} volumeHistory={VOLUME_TREND[commodityId]} />
       </View>
 
       <View style={[styles.section, styles.card, { backgroundColor: colors.paper }]}>

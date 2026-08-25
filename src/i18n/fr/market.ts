@@ -111,4 +111,7 @@ export const market: Record<keyof typeof marketEn, string> = {
   priceHistory_bestTime:
     'Vous payez systématiquement moins en commandant {{name}} le {{cheapDay}} (moy. {{cheapAvg}} vs {{pricyAvg}} le {{pricyDay}})',
   priceHistory_downloadCsv: 'Télécharger le CSV',
+
+  chart_errorTitle: "Impossible d'afficher ce graphique",
+  chart_errorMessage: "Une erreur s'est produite lors de l'affichage du graphique. Réessayez.",
 };

@@ -45,10 +45,10 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    hydrateLanguage();
-    hydrateTheme();
-    registerOrderStatusTask();
-    bootstrapNotifications();
+    hydrateLanguage().catch(() => undefined);
+    hydrateTheme().catch(() => undefined);
+    registerOrderStatusTask().catch(() => undefined);
+    bootstrapNotifications().catch(() => undefined);
   }, []);
 
   useEffect(() => {

@@ -105,4 +105,7 @@ export const market = {
   priceHistory_viewOrder: 'View order {{orderId}}',
   priceHistory_bestTime: 'You consistently pay less when ordering {{name}} on {{cheapDay}}s (avg {{cheapAvg}} vs. {{pricyAvg}} on {{pricyDay}}s)',
   priceHistory_downloadCsv: 'Download CSV',
+
+  chart_errorTitle: "Couldn't draw this chart",
+  chart_errorMessage: 'Something went wrong rendering the price chart. Try again.',
 } as const;
