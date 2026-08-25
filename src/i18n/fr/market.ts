@@ -91,4 +91,24 @@ export const market: Record<keyof typeof marketEn, string> = {
   compare_month: 'Mois',
   compare_quarter: 'Trimestre',
   compare_netDifference: '{{sign}}{{percent}} % vs la même période du cycle précédent',
+
+  priceHistory_tabLabel: 'Mon historique de prix',
+  priceHistory_title: 'Votre commande vs. le marché',
+  priceHistory_thisWeek: 'Cette semaine',
+  priceHistory_thisMonth: 'Ce mois-ci',
+  priceHistory_last3Months: '3 derniers mois',
+  priceHistory_summaryAbove:
+    'Sur la période sélectionnée, vous avez payé en moyenne {{percent}} % au-dessus du prix de référence FoodBundles.',
+  priceHistory_summaryBelow:
+    'Sur la période sélectionnée, vous avez payé en moyenne {{percent}} % en dessous du prix de référence FoodBundles.',
+  priceHistory_summarySaved: 'Vous avez économisé {{amount}} par rapport aux prix du marché Kimironko.',
+  priceHistory_perItem: 'Détail par article',
+  priceHistory_empty: 'Aucune commande tarifée sur cette période pour le moment.',
+  priceHistory_avgPaid: 'Prix moyen payé : {{price}}/kg',
+  priceHistory_vsMarket: '{{sign}}{{percent}} % vs {{market}}',
+  priceHistory_ordersOnChart: 'Vos commandes sur ce graphique',
+  priceHistory_viewOrder: 'Voir la commande {{orderId}}',
+  priceHistory_bestTime:
+    'Vous payez systématiquement moins en commandant {{name}} le {{cheapDay}} (moy. {{cheapAvg}} vs {{pricyAvg}} le {{pricyDay}})',
+  priceHistory_downloadCsv: 'Télécharger le CSV',
 };

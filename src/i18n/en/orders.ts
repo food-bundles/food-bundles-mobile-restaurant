@@ -17,6 +17,7 @@ export const orders = {
   orders_paymentHistory: 'Payment history',
   orders_reorderBtn: 'Reorder these items',
   orders_contactSupport: 'Contact support',
+  orders_comparePricesPaid: 'Compare prices paid',
   orders_reorderTitle: 'Reorder',
   orders_reorderFrom: 'from {{orderId}}',
   orders_addItemsToCart: 'Add {{count}} items to cart',

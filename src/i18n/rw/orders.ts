@@ -19,6 +19,7 @@ export const orders: Record<keyof typeof ordersEn, string> = {
   orders_paymentHistory: 'Amateka y’ubwishyu',
   orders_reorderBtn: 'Ongera utumize ibi bintu',
   orders_contactSupport: 'Vugana n’ubufasha',
+  orders_comparePricesPaid: 'Gereranya ibiciro wishyuye',
   orders_reorderTitle: 'Ongera gutumiza',
   orders_reorderFrom: 'kuva kuri {{orderId}}',
   orders_addItemsToCart: 'Ongeraho ibintu {{count}} mu gikapu',

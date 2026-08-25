@@ -50,6 +50,8 @@ export interface OrderLine {
   unit: string;
   qty: number;
   each: number;
+  /** RWF/kg paid at order time, for tracked commodities only — used by the price-comparison screen. */
+  pricePerUnitAtOrderTime?: number;
 }
 
 export interface Order {

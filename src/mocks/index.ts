@@ -38,6 +38,8 @@ export {
   COMPARISON_SERIES,
 } from './tradingDashboard';
 export type { OhlcDay, PriceMomentum, MomentumReading, ComparisonPreset } from './tradingDashboard';
+export { ORDER_TIMING_INSIGHTS } from './orderTimingInsights';
+export type { OrderTimingInsight } from './orderTimingInsights';
 export { LANDING_IMAGES } from './landingImages';
 export {
   COMMODITIES,

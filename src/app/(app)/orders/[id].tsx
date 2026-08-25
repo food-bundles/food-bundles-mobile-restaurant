@@ -36,6 +36,14 @@ export default function OrderDetail() {
           <OrderActionsRow ebmAvailable={order.ebmAvailable} />
         </View>
         <Pressable
+          onPress={() => router.push('/(app)/market/price-comparison')}
+          accessibilityRole="button"
+          accessibilityLabel={t('orders_comparePricesPaid')}
+          style={styles.compareLinkHit}
+        >
+          <Text style={[styles.compareLinkLabel, { color: colors.leaf }]}>{t('orders_comparePricesPaid')} →</Text>
+        </Pressable>
+        <Pressable
           onPress={() => router.push({ pathname: '/(app)/orders/reorder', params: { id: order.id } })}
           accessibilityRole="button"
           accessibilityLabel={t('orders_reorderBtn')}
@@ -67,6 +75,8 @@ const styles = StyleSheet.create({
   metaGap: { marginTop: space.md },
   itemsGap: { marginTop: space.md },
   actionsGap: { marginTop: space.md },
+  compareLinkHit: { minHeight: 44, justifyContent: 'center', alignItems: 'center', marginTop: space.md },
+  compareLinkLabel: { ...text.label },
   reorderButton: {
     minHeight: 44,
     borderRadius: radius.md,

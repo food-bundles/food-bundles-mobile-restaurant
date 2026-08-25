@@ -12,3 +12,6 @@ export type { BuyingAdviceItem } from './buyingAdvice';
 export { consolidateIngredients } from './menuPlanning';
 export type { ConsolidatedIngredient } from './menuPlanning';
 export { computePercentile } from './percentile';
+export { computeItemComparisons, computeComparisonSummary, filterOrdersByRange } from './priceComparison';
+export type { ItemComparison, OrderPricePoint, ComparisonSummary, PriceHistoryRange } from './priceComparison';
+export { buildComparisonCsv } from './exportCsv';

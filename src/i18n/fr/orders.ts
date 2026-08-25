@@ -19,6 +19,7 @@ export const orders: Record<keyof typeof ordersEn, string> = {
   orders_paymentHistory: 'Historique des paiements',
   orders_reorderBtn: 'Commander à nouveau ces articles',
   orders_contactSupport: 'Contacter le support',
+  orders_comparePricesPaid: 'Comparer les prix payés',
   orders_reorderTitle: 'Commander à nouveau',
   orders_reorderFrom: 'depuis {{orderId}}',
   orders_addItemsToCart: 'Ajouter {{count}} articles au panier',
