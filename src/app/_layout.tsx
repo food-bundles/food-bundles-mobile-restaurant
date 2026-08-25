@@ -19,6 +19,9 @@ import { hydrateLanguage } from '@/i18n';
 import { hydrateTheme, useTheme } from '@/theme';
 import { refreshStaleCaches } from '@/lib';
 import { registerOrderStatusTask } from '@/tasks/orderStatusTask';
+import { bootstrapNotifications } from '@/tasks/bootstrapNotifications';
+import { InAppBanner } from '@/components/notifications/InAppBanner';
+import { startPriceAlertPolling } from '@/tasks/priceAlertPoller';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -45,6 +48,7 @@ export default function RootLayout() {
     hydrateLanguage();
     hydrateTheme();
     registerOrderStatusTask();
+    bootstrapNotifications();
   }, []);
 
   useEffect(() => {
@@ -53,6 +57,8 @@ export default function RootLayout() {
     });
     return () => subscription.remove();
   }, []);
+
+  useEffect(() => startPriceAlertPolling(), []);
 
   useEffect(() => {
     if (fontsLoaded) SplashScreen.hideAsync().catch(() => undefined);
@@ -68,6 +74,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(app)" />
       </Stack>
+      <InAppBanner />
     </GestureHandlerRootView>
   );
 }

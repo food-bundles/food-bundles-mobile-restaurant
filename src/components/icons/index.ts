@@ -29,3 +29,4 @@ export { ReceiptIcon } from './ReceiptIcon';
 export { DeliveryBagIcon } from './DeliveryBagIcon';
 export { PosTerminalIcon } from './PosTerminalIcon';
 export { ShieldIcon } from './ShieldIcon';
+export { CalendarIcon } from './CalendarIcon';

@@ -41,6 +41,8 @@ export const signatureDuration = {
   scoreBarStagger: 200,
   tickerCycle: 3000,
   tickerFade: 250,
+  bannerAutoDismiss: 4000,
+  bannerSlide: 300,
 } as const;
 
 export const easing = {

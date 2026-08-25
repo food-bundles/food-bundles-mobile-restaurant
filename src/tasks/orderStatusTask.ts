@@ -8,9 +8,17 @@
  */
 import * as TaskManager from 'expo-task-manager';
 import * as BackgroundTask from 'expo-background-task';
-import * as Notifications from 'expo-notifications';
 import { useOrdersStore } from '@/stores/ordersStore';
+import { scheduleLocalNotification } from '@/services/notificationService';
 import { translate } from '@/i18n';
+import { products } from '@/mocks/products';
+
+function extractUri(source: unknown): string | undefined {
+  if (typeof source === 'object' && source !== null && 'uri' in source && typeof source.uri === 'string') {
+    return source.uri;
+  }
+  return undefined;
+}
 
 export const ORDER_STATUS_TASK = 'BACKGROUND_ORDER_STATUS_CHECK';
 
@@ -36,14 +44,19 @@ TaskManager.defineTask(ORDER_STATUS_TASK, async () => {
     const advance = useOrdersStore.getState().advanceOrderStatus(activeOrder.id);
     if (!advance) return BackgroundTask.BackgroundTaskResult.Success;
 
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: translate('orders_statusNotifTitle', { orderId: advance.orderId }),
-        body: translate('orders_statusNotifBody', {
-          status: translate(STATUS_KEY[advance.newStatus]),
-        }),
-      },
-      trigger: null,
+    const firstItem = activeOrder.lines[0];
+    const firstProduct = firstItem ? products.find((p) => p.id === firstItem.productId) : undefined;
+
+    await scheduleLocalNotification({
+      channel: 'order',
+      title: translate('notif_orderStatusChanged', {
+        orderId: advance.orderId,
+        status: translate(STATUS_KEY[advance.newStatus]),
+      }),
+      body: translate('orders_statusNotifBody', { status: translate(STATUS_KEY[advance.newStatus]) }),
+      imageUri: extractUri(firstProduct?.image),
+      deepLink: `/(app)/orders/${advance.orderId}`,
+      actionLabel: translate('notif_viewOrderAction'),
     });
 
     return BackgroundTask.BackgroundTaskResult.Success;

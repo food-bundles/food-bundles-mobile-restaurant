@@ -7,17 +7,21 @@ import { PaymentMethodPicker } from './_components/PaymentMethodPicker';
 import { OrderItemsCard } from '@/components/order';
 import { CheckoutStepHeader } from '@/components/checkout';
 import { PriceText } from '@/components/product';
-import { useCheckoutStore } from '@/stores';
-import { useT } from '@/i18n';
+import { useCheckoutStore, useWalletStore } from '@/stores';
+import { scheduleLocalNotification } from '@/services/notificationService';
+import { useT, translate } from '@/i18n';
 import { orders } from '@/mocks';
 import { formatRwf, sleep } from '@/lib';
 
 const PROCESSING_DELAY_MS = 1300;
+const LOW_BALANCE_THRESHOLD_RWF = 20_000;
 
+/** Checkout payment step: choose a method and confirm, routing to the voucher or OTP flow as needed. */
 export default function CheckoutPayment() {
   const t = useT();
   const { colors } = useTheme();
   const method = useCheckoutStore((state) => state.method);
+  const walletBalance = useWalletStore((state) => state.balance);
   const activeOrder = orders.find((order) => order.id === 'FB-24815') ?? orders[0];
   const [processing, setProcessing] = useState(false);
 
@@ -25,6 +29,15 @@ export default function CheckoutPayment() {
     if (method === 'VOUCHER') {
       router.push('/(app)/checkout/voucher');
       return;
+    }
+    if (method === 'CASH' && walletBalance - activeOrder.total < LOW_BALANCE_THRESHOLD_RWF) {
+      await scheduleLocalNotification({
+        channel: 'wallet',
+        title: translate('notif_lowWalletBalance'),
+        body: translate('notif_lowWalletBalanceBody'),
+        deepLink: '/(app)/(tabs)/wallet',
+        actionLabel: translate('wallet_topUp'),
+      });
     }
     setProcessing(true);
     await sleep(PROCESSING_DELAY_MS);

@@ -9,10 +9,12 @@ import { QuickAmountChips } from './_components/QuickAmountChips';
 import { ShareAccountantRow } from './_components/ShareAccountantRow';
 import { ActionSheet } from './_components/ActionSheet';
 import { useWalletStore } from '@/stores';
-import { useT } from '@/i18n';
+import { scheduleLocalNotification } from '@/services/notificationService';
+import { useT, translate } from '@/i18n';
 import { formatRwf } from '@/lib';
 import { account } from '@/mocks';
 
+/** Top-up screen: pick an amount and a payment method, then confirm to add it to the wallet balance. */
 export default function TopUp() {
   const t = useT();
   const { colors } = useTheme();
@@ -27,6 +29,12 @@ export default function TopUp() {
     setSubmitting(true);
     await topUp(amount);
     setSubmitting(false);
+    await scheduleLocalNotification({
+      channel: 'wallet',
+      title: translate('notif_walletToppedUp', { amount: formatRwf(amount) }),
+      body: translate('notif_walletToppedUpBody'),
+      deepLink: '/(app)/(tabs)/wallet',
+    });
     router.back();
   };
 

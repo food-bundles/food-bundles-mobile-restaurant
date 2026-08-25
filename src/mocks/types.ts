@@ -78,13 +78,26 @@ export interface Transaction {
   note: string;
 }
 
-export interface NotificationItem {
+export type NotificationChannel =
+  | 'order'
+  | 'wallet'
+  | 'voucher'
+  | 'marketPrice'
+  | 'priceAlert'
+  | 'consent'
+  | 'repayment'
+  | 'system';
+
+export interface AppNotification {
   id: string;
+  channel: NotificationChannel;
   title: string;
   body: string;
-  date: string;
+  imageUri?: string;
+  deepLink?: string;
+  timestamp: string;
   read: boolean;
-  orderId?: string;
+  actionLabel?: string;
 }
 
 export interface Address {

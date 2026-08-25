@@ -6,8 +6,9 @@ import { ScreenScroll } from '@/components/layout';
 import { ChevronLeftIcon, VoucherIcon } from '@/components/icons';
 import { OtpBoxes } from '@/components/checkout';
 import { sleep } from '@/lib';
-import { useT } from '@/i18n';
+import { useT, translate } from '@/i18n';
 import { useCheckoutStore, useVouchersStore } from '@/stores';
+import { scheduleLocalNotification } from '@/services/notificationService';
 import { orders } from '@/mocks';
 import type { Href } from 'expo-router';
 
@@ -28,11 +29,13 @@ const DESTINATIONS: Record<Purpose, Href> = {
   underwriting: '/(app)/vouchers/score-result',
 };
 
+/** Shared OTP verification screen for payment, voucher redemption, and underwriting completion. */
 export default function Otp() {
   const t = useT();
   const { colors } = useTheme();
   const { purpose } = useLocalSearchParams<{ purpose?: Purpose }>();
   const redeemVoucher = useVouchersStore((state) => state.redeemVoucher);
+  const vouchers = useVouchersStore((state) => state.vouchers);
   const selectedVoucherId = useCheckoutStore((state) => state.selectedVoucherId);
   const activeOrder = orders.find((order) => order.id === 'FB-24815') ?? orders[0];
   const [code, setCode] = useState(MOCK_PREFILL);
@@ -50,6 +53,15 @@ export default function Otp() {
     await sleep(1300);
     if ((purpose === undefined || purpose === 'payment') && selectedVoucherId) {
       redeemVoucher(selectedVoucherId, activeOrder.id);
+      const voucher = vouchers.find((v) => v.id === selectedVoucherId);
+      if (voucher) {
+        await scheduleLocalNotification({
+          channel: 'voucher',
+          title: translate('notif_voucherApplied', { code: voucher.code, orderId: activeOrder.id }),
+          body: translate('notif_voucherAppliedBody'),
+          deepLink: '/(app)/(tabs)/wallet?tab=vouchers',
+        });
+      }
     }
     setVerifying(false);
     router.replace(DESTINATIONS[purpose ?? 'payment']);

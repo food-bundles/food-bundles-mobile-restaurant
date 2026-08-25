@@ -1,52 +1,75 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import type { Href } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
-import { BellIcon } from '@/components/icons';
-import { formatDate } from '@/lib';
+import { SwipeRow } from '@/components/layout';
+import { renderChannelIcon } from '@/components/notifications/channelIcon';
+import { computeRelativeTime } from '@/lib';
 import { useT } from '@/i18n';
-import type { NotificationItem } from '@/mocks/types';
+import type { AppNotification } from '@/mocks/types';
 
 export interface NotificationRowProps {
-  notification: NotificationItem;
+  notification: AppNotification;
   onPress: () => void;
+  onDelete: () => void;
 }
 
-export function NotificationRow({ notification, onPress }: NotificationRowProps) {
+function useRelativeTimeLabel(iso: string): string {
+  const t = useT();
+  const result = computeRelativeTime(iso);
+  switch (result.kind) {
+    case 'justNow':
+      return t('notif_justNow');
+    case 'minutesAgo':
+      return t('notif_minutesAgo', { minutes: result.minutes });
+    case 'hoursAgo':
+      return t('notif_hoursAgo', { hours: result.hours });
+    case 'yesterday':
+      return t('notif_yesterdayAt', { time: result.time });
+    case 'daysAgo':
+      return t('notif_daysAgo', { days: result.days });
+  }
+}
+
+/** One notification-centre row: image or channel icon, title/body, relative time, and swipe-to-delete. */
+export function NotificationRow({ notification, onPress, onDelete }: NotificationRowProps) {
   const t = useT();
   const { colors } = useTheme();
+  const timeLabel = useRelativeTimeLabel(notification.timestamp);
   const readLabel = notification.read ? t('notif_readLabel') : t('notif_unreadLabel');
 
+  const onRowPress = () => {
+    onPress();
+    if (notification.deepLink) router.push(notification.deepLink as Href);
+  };
+
   return (
-    <Pressable
-      onPress={() => {
-        onPress();
-        if (notification.orderId) {
-          router.push({ pathname: '/(app)/notifications/[orderId]', params: { orderId: notification.orderId } });
-        }
-      }}
-      accessibilityRole="button"
-      accessibilityLabel={`${notification.title}, ${readLabel}`}
-      style={[styles.row, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
-    >
-      <View
-        style={[
-          styles.iconWrap,
-          { backgroundColor: notification.read ? colors.neutral : colors.tintLeaf },
-        ]}
+    <SwipeRow onDelete={onDelete} deleteLabel={t('notif_delete')}>
+      <Pressable
+        onPress={onRowPress}
+        accessibilityRole="button"
+        accessibilityLabel={`${notification.title}, ${readLabel}`}
+        style={[styles.row, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
       >
-        <BellIcon size={18} color={notification.read ? colors.secondary : colors.leaf} />
-      </View>
-      <View style={styles.textCol}>
-        <Text style={[styles.title, { color: notification.read ? colors.secondary : colors.ink }]}>
-          {notification.title}
-        </Text>
-        <Text style={[styles.body, { color: colors.secondary }]} numberOfLines={2}>
-          {notification.body}
-        </Text>
-        <Text style={[styles.date, { color: colors.muted }]}>{formatDate(notification.date)}</Text>
-      </View>
-      {!notification.read ? <View style={[styles.dot, { backgroundColor: colors.marigold }]} /> : null}
-    </Pressable>
+        {notification.imageUri ? (
+          <Image source={{ uri: notification.imageUri }} style={styles.image} />
+        ) : (
+          <View style={[styles.iconWrap, { backgroundColor: colors.tintLeaf }]}>
+            {renderChannelIcon(notification.channel, colors.leaf)}
+          </View>
+        )}
+        <View style={styles.textCol}>
+          <Text style={[styles.title, { color: notification.read ? colors.secondary : colors.ink }]}>
+            {notification.title}
+          </Text>
+          <Text style={[styles.body, { color: colors.secondary }]} numberOfLines={2}>
+            {notification.body}
+          </Text>
+          <Text style={[styles.time, { color: colors.muted }]}>{timeLabel}</Text>
+        </View>
+        {!notification.read ? <View style={[styles.dot, { backgroundColor: colors.marigold }]} /> : null}
+      </Pressable>
+    </SwipeRow>
   );
 }
 
@@ -58,18 +81,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: radius.lg,
     padding: space.md,
-    marginBottom: space.sm,
   },
-  iconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: radius.sm + 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  image: { width: 48, height: 48, borderRadius: radius.sm + 2 },
+  iconWrap: { width: 48, height: 48, borderRadius: radius.sm + 2, alignItems: 'center', justifyContent: 'center' },
   textCol: { flex: 1 },
   title: { ...text.bodySemi },
   body: { ...text.caption, marginTop: 2 },
-  date: { ...text.micro, marginTop: space.xs },
+  time: { ...text.micro, marginTop: space.xs },
   dot: { width: 8, height: 8, borderRadius: 4, marginTop: 4 },
 });

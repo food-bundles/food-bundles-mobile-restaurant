@@ -48,14 +48,9 @@ export async function clearAllCache(): Promise<void> {
  * entry has actually expired — dynamic imports avoid a lib -> stores import cycle.
  */
 export async function refreshStaleCaches(): Promise<void> {
-  const [{ useOrdersStore }, { useNotificationsStore }, { useWalletStore }] = await Promise.all([
+  const [{ useOrdersStore }, { useWalletStore }] = await Promise.all([
     import('@/stores/ordersStore'),
-    import('@/stores/notificationsStore'),
     import('@/stores/walletStore'),
   ]);
-  await Promise.all([
-    useOrdersStore.getState().fetch(),
-    useNotificationsStore.getState().fetch(),
-    useWalletStore.getState().fetch(),
-  ]);
+  await Promise.all([useOrdersStore.getState().fetch(), useWalletStore.getState().fetch()]);
 }

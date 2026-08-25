@@ -65,6 +65,10 @@ export default function Account() {
           <SettingsRow label={t('settings_businessDetails')} onPress={() => router.push('/(app)/settings/business')} />
           <SettingsRow label={t('settings_deliveryAddresses')} onPress={() => router.push('/(app)/settings/addresses')} />
           <SettingsRow label={t('settings_ebmInvoices')} onPress={() => router.push('/(app)/settings/ebm')} />
+          <SettingsRow
+            label={t('settings_notificationsTitle')}
+            onPress={() => router.push('/(app)/settings/notifications')}
+          />
           <SettingsRow label={t('settings_messagesSupport')} onPress={() => router.push('/(app)/support/chat')} />
           <SettingsRow
             label={t('settings_twoFactor')}

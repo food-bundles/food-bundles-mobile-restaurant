@@ -15,3 +15,5 @@ export { computePercentile } from './percentile';
 export { computeItemComparisons, computeComparisonSummary, filterOrdersByRange } from './priceComparison';
 export type { ItemComparison, OrderPricePoint, ComparisonSummary, PriceHistoryRange } from './priceComparison';
 export { buildComparisonCsv } from './exportCsv';
+export { computeRelativeTime } from './relativeTime';
+export type { RelativeTimeResult } from './relativeTime';
