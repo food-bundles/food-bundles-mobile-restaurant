@@ -10,9 +10,14 @@ export const voucherConsent: Record<keyof typeof voucherConsentEn, string> = {
     "Je confirme que chaque source sélectionnée peut accéder à mes données commerciales pendant 30 jours, conformément à la politique de données de FoodBundles.",
   consent_continue: 'Continuer avec les sources sélectionnées',
   consent_moreSourcesHint: 'Plus vous autorisez de sources, plus votre limite de crédit potentielle est élevée.',
+  consent_estimatedLimit: 'Limite estimée : {{amount}}',
+  consent_otherSources: 'Autres sources',
+  consent_selectAll: 'Tout sélectionner',
+  consent_included: 'Inclus',
 
   consent_otpTitle: "Confirmer l'accès aux données",
-  consent_otpSubtitle: 'Entrez le code envoyé à votre téléphone pour autoriser {{source}} pendant 30 jours.',
+  consent_otpSubtitleAll:
+    'Entrez le code à 6 chiffres envoyé au {{phone}} pour autoriser l’accès pour toutes les sources sélectionnées pendant 30 jours.',
   consent_otpConfirm: "Confirmer l'accès",
 
   consent_euclName: 'EUCL Cash Power',
@@ -57,10 +62,12 @@ export const voucherConsent: Record<keyof typeof voucherConsentEn, string> = {
   consent_expiredMultiple: '{{count}} sources de données ont expiré — renouvelez pour conserver votre limite',
   consent_renew: 'Renouveler',
 
-  score_title: 'Votre évaluation de crédit',
-  score_approvedLimit: 'Limite approuvée : {{amount}}',
-  score_breakdown: 'Détail du score',
-  score_notAuthorized: 'Non autorisé — autorisez pour augmenter votre limite',
-  score_authorizeSource: 'Autoriser {{source}}',
+  score_title: 'Vous êtes approuvé pour',
+  score_approvedLimit: '{{amount}}',
+  score_creditLineTitle: 'Votre ligne de crédit',
+  score_availableToUse: 'Disponible : {{amount}}',
+  score_validFor: 'Valable 30 jours · Se renouvelle le {{date}}',
+  score_supplier: 'Fournisseur : {{name}}',
+  score_authorizeMoreSources: 'Autorisez plus de sources de données pour augmenter votre limite →',
   score_claimCta: 'Réclamer votre ligne de crédit',
 };

@@ -8,9 +8,13 @@ export const voucherConsent = {
     "I confirm each selected source may access my business data for 30 days, per FoodBundles' data policy.",
   consent_continue: 'Continue with selected sources',
   consent_moreSourcesHint: 'The more sources you authorize, the higher your potential credit limit.',
+  consent_estimatedLimit: 'Estimated limit: {{amount}}',
+  consent_otherSources: 'Other sources',
+  consent_selectAll: 'Select all',
+  consent_included: 'Included',
 
   consent_otpTitle: 'Confirm data access',
-  consent_otpSubtitle: 'Enter the code sent to your phone to authorize {{source}} for 30 days.',
+  consent_otpSubtitleAll: "Enter the 6-digit code sent to {{phone}} to authorize access for all selected sources for 30 days.",
   consent_otpConfirm: 'Confirm access',
 
   consent_euclName: 'EUCL Cash Power',
@@ -55,10 +59,12 @@ export const voucherConsent = {
   consent_expiredMultiple: '{{count}} data sources expired — renew to maintain your credit limit',
   consent_renew: 'Renew',
 
-  score_title: 'Your credit assessment',
-  score_approvedLimit: 'Approved limit: {{amount}}',
-  score_breakdown: 'Score breakdown',
-  score_notAuthorized: 'Not authorized — authorize to increase your limit',
-  score_authorizeSource: 'Authorize {{source}}',
+  score_title: "You're approved for",
+  score_approvedLimit: '{{amount}}',
+  score_creditLineTitle: 'Your credit line',
+  score_availableToUse: 'Available to use: {{amount}}',
+  score_validFor: 'Valid for 30 days · Renews on {{date}}',
+  score_supplier: 'Supplier: {{name}}',
+  score_authorizeMoreSources: 'Authorize more data sources to increase your limit →',
   score_claimCta: 'Claim your credit line',
 } as const;

@@ -30,3 +30,5 @@ export { DeliveryBagIcon } from './DeliveryBagIcon';
 export { PosTerminalIcon } from './PosTerminalIcon';
 export { ShieldIcon } from './ShieldIcon';
 export { CalendarIcon } from './CalendarIcon';
+export { RepeatIcon } from './RepeatIcon';
+export { RocketIcon } from './RocketIcon';

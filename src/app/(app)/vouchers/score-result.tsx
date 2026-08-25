@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { radius, space, text, useTheme } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { ScoreCircle } from './_components/ScoreCircle';
-import { ScoreBreakdownRow } from './_components/ScoreBreakdownRow';
+import { CreditLineCard } from './_components/CreditLineCard';
 import { useVouchersStore } from '@/stores';
-import { computeScore, formatRwf } from '@/lib';
+import { computeScore, formatRwf, TOGGLEABLE_SOURCES } from '@/lib';
 import { useT } from '@/i18n';
-import type { DataConsentSource } from '@/mocks/types';
 
-const SOURCE_ORDER: DataConsentSource[] = ['eucl', 'rra', 'vubaVuba', 'kayko', 'foodbundles', 'creditBureau'];
+const RENEWS_AT_ISO = '2026-09-24';
+const SUPPLIER_NAME = 'FoodBundles';
 
-/** Shown after OTP verification: the mock qualification tier, approved limit and per-source contribution breakdown. */
+/** Shown after OTP verification: an approved-checkmark circle, the credit line, and a link to authorize more. */
 export default function ScoreResult() {
   const t = useT();
   const { colors } = useTheme();
@@ -25,44 +25,35 @@ export default function ScoreResult() {
     return result;
   }, [consentList, setCreditScore]);
 
-  const maxContribution = Math.max(...score.scoreBreakdown.map((entry) => entry.contribution), 1);
   const grantedSources = new Set(score.scoreBreakdown.map((entry) => entry.source));
+  const hasUnauthorizedSources = TOGGLEABLE_SOURCES.some((source) => !grantedSources.has(source));
 
-  const onAuthorize = (source: DataConsentSource) => {
-    router.push({ pathname: '/(app)/vouchers/consent', params: { sources: source } });
-  };
-
-  const onClaim = () => {
-    router.replace({ pathname: '/(app)/subscription/underwriting', params: { completed: '1' } });
-  };
+  const onAuthorizeMore = () => router.push('/(app)/vouchers/consent');
+  const onClaim = () => router.replace({ pathname: '/(app)/subscription/underwriting', params: { completed: '1' } });
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenScroll contentInsetBottom={100}>
-        <Text style={[styles.title, { color: colors.ink }]}>{t('score_title')}</Text>
         <View style={styles.circleGap}>
-          <ScoreCircle tier={score.tier} score={score.limitRwf / 1000} />
+          <ScoreCircle />
         </View>
+        <Text style={[styles.caption, { color: colors.secondary }]}>{t('score_title')}</Text>
         <Text style={[styles.limit, { color: colors.leaf }]}>
           {t('score_approvedLimit', { amount: formatRwf(score.limitRwf) })}
         </Text>
-        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('score_breakdown')}</Text>
-        <View style={[styles.card, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
-          {SOURCE_ORDER.map((source, index) => {
-            const entry = score.scoreBreakdown.find((e) => e.source === source);
-            return (
-              <ScoreBreakdownRow
-                key={source}
-                source={source}
-                granted={grantedSources.has(source)}
-                contribution={entry?.contribution ?? 0}
-                maxContribution={maxContribution}
-                index={index}
-                onAuthorize={() => onAuthorize(source)}
-              />
-            );
-          })}
+        <View style={styles.cardGap}>
+          <CreditLineCard limitRwf={score.limitRwf} renewsAtIso={RENEWS_AT_ISO} supplierName={SUPPLIER_NAME} />
         </View>
+        {hasUnauthorizedSources ? (
+          <Pressable
+            onPress={onAuthorizeMore}
+            accessibilityRole="button"
+            accessibilityLabel={t('score_authorizeMoreSources')}
+            style={styles.authorizeMoreHit}
+          >
+            <Text style={[styles.authorizeMoreLabel, { color: colors.leaf }]}>{t('score_authorizeMoreSources')}</Text>
+          </Pressable>
+        ) : null}
       </ScreenScroll>
       <StickyFooter>
         <Pressable
@@ -80,11 +71,12 @@ export default function ScoreResult() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  title: { ...text.h1, textAlign: 'center', marginTop: space.lg },
-  circleGap: { marginTop: space.lg },
-  limit: { ...text.display, textAlign: 'center', marginTop: space.md },
-  sectionLabel: { ...text.overline, marginTop: space.xl, marginBottom: space.sm },
-  card: { borderWidth: 1, borderRadius: radius.lg, padding: space.md },
-  claimButton: { minHeight: 48, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  circleGap: { marginTop: space.xl },
+  caption: { ...text.body, textAlign: 'center', marginTop: space.lg },
+  limit: { ...text.display, textAlign: 'center', marginTop: space.xs },
+  cardGap: { marginTop: space.xl },
+  authorizeMoreHit: { minHeight: hit.min, justifyContent: 'center', alignItems: 'center', marginTop: space.lg },
+  authorizeMoreLabel: { ...text.label },
+  claimButton: { minHeight: hit.min, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   claimLabel: { ...text.bodySemi },
 });

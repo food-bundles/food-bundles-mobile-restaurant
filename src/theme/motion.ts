@@ -43,6 +43,7 @@ export const signatureDuration = {
   tickerFade: 250,
   bannerAutoDismiss: 4000,
   bannerSlide: 300,
+  limitPreviewCountUp: 500,
 } as const;
 
 export const easing = {

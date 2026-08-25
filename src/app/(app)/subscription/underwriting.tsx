@@ -1,23 +1,27 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { radius, space, text, useTheme } from '@/theme';
-import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
+import { radius, shadow, space, text, useTheme } from '@/theme';
+import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { CheckIcon } from '@/components/icons';
-import { Input } from '@/components/primitives';
-import { OptionRow } from './_components/OptionRow';
+import { UnderwritingHeader } from './_components/UnderwritingHeader';
+import { TinInput } from './_components/TinInput';
+import { PurposeChips, type PurposeOption } from './_components/PurposeChips';
+import { FrequencyTiles, type FrequencyOption } from './_components/FrequencyTiles';
+import { FirstTimeToggleRow } from './_components/FirstTimeToggleRow';
 import { useT } from '@/i18n';
 import { account } from '@/mocks';
 
-type Frequency = 'RARELY' | 'SOMETIMES' | 'OFTEN';
-
+/** Voucher application form: TIN, purpose, usage frequency and first-time status, then on to data authorization. */
 export default function Underwriting() {
   const t = useT();
   const { colors } = useTheme();
   const { completed } = useLocalSearchParams<{ completed?: string }>();
-  const [reason, setReason] = useState('Stock produce between supplier payouts');
+  const [tin, setTin] = useState(account.tin);
+  const [purpose, setPurpose] = useState<PurposeOption>('BRIDGE_CASH_FLOW');
+  const [otherPurpose, setOtherPurpose] = useState('');
   const [firstTime, setFirstTime] = useState(true);
-  const [frequency, setFrequency] = useState<Frequency>('SOMETIMES');
+  const [frequency, setFrequency] = useState<FrequencyOption>('SOMETIMES');
 
   if (completed === '1') {
     return (
@@ -43,33 +47,25 @@ export default function Underwriting() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
-      <ScreenHeader title={t('underwriting_title')} />
-      <ScreenScroll contentInsetBottom={80}>
-        <View style={styles.fields}>
-          <Input label={t('underwriting_tin')} value={account.tin} onChangeText={() => undefined} editable={false} />
-          <Input label={t('underwriting_reason')} value={reason} onChangeText={setReason} />
-          <View>
-            <Text style={[styles.label, { color: colors.ink }]}>{t('underwriting_firstTime')}</Text>
-            <OptionRow
-              options={[
-                { value: 'yes', label: t('underwriting_yes') },
-                { value: 'no', label: t('underwriting_no') },
-              ]}
-              selected={firstTime ? 'yes' : 'no'}
-              onSelect={(value) => setFirstTime(value === 'yes')}
-            />
-          </View>
-          <View>
-            <Text style={[styles.label, { color: colors.ink }]}>{t('underwriting_frequency')}</Text>
-            <OptionRow
-              options={[
-                { value: 'RARELY', label: t('underwriting_rarely') },
-                { value: 'SOMETIMES', label: t('underwriting_sometimes') },
-                { value: 'OFTEN', label: t('underwriting_veryOften') },
-              ]}
-              selected={frequency}
-              onSelect={setFrequency}
-            />
+      <ScreenScroll contentInsetBottom={100} applyTopInset={false}>
+        <UnderwritingHeader />
+        <View style={[styles.formCard, { backgroundColor: colors.paper }]}>
+          <View style={styles.fields}>
+            <TinInput value={tin} onChangeText={setTin} prefilled={Boolean(account.tin)} />
+            <View>
+              <Text style={[styles.label, { color: colors.ink }]}>{t('underwriting_reason')}</Text>
+              <PurposeChips
+                selected={purpose}
+                onSelect={setPurpose}
+                otherText={otherPurpose}
+                onChangeOtherText={setOtherPurpose}
+              />
+            </View>
+            <View>
+              <Text style={[styles.label, { color: colors.ink }]}>{t('underwriting_frequency')}</Text>
+              <FrequencyTiles selected={frequency} onSelect={setFrequency} />
+            </View>
+            <FirstTimeToggleRow value={firstTime} onChange={setFirstTime} />
           </View>
         </View>
       </ScreenScroll>
@@ -80,8 +76,9 @@ export default function Underwriting() {
           accessibilityLabel={t('underwriting_continueVerification')}
           style={[styles.button, { backgroundColor: colors.leaf }]}
         >
-          <Text style={[styles.buttonLabel, { color: colors.paper }]}>{t('underwriting_continueVerification')}</Text>
+          <Text style={[styles.buttonLabel, { color: colors.paper }]}>{t('underwriting_continueVerification')} →</Text>
         </Pressable>
+        <Text style={[styles.footerNote, { color: colors.secondary }]}>{t('underwriting_noObligationNote')}</Text>
       </StickyFooter>
     </View>
   );
@@ -89,23 +86,20 @@ export default function Underwriting() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  fields: { gap: space.lg, marginTop: space.md },
+  formCard: {
+    marginTop: -24,
+    marginHorizontal: space.lg,
+    borderRadius: radius.lg,
+    padding: space.lg,
+    ...shadow.raised,
+  },
+  fields: { gap: space.lg },
   label: { ...text.label, marginBottom: space.sm },
-  button: {
-    minHeight: 48,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  button: { minHeight: 48, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   buttonLabel: { ...text.bodySemi },
+  footerNote: { ...text.micro, textAlign: 'center', marginTop: space.sm },
   completedWrap: { alignItems: 'center', marginTop: space.xxl, gap: space.sm },
-  completedIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  completedIcon: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
   completedTitle: { ...text.h1 },
   completedSub: { ...text.body, textAlign: 'center' },
   completedButton: {

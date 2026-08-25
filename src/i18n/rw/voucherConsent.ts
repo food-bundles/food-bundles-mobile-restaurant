@@ -10,9 +10,13 @@ export const voucherConsent: Record<keyof typeof voucherConsentEn, string> = {
     'Nemeje ko buri soko nahisemo rishobora kubona amakuru y’ubucuruzi bwanjye mu minsi 30, hakurikijwe politiki y’amakuru ya FoodBundles.',
   consent_continue: 'Komeza n’amasoko wahisemo',
   consent_moreSourcesHint: 'Uko wemera amasoko menshi ni ko urwego rwawe rw’inguzanyo rushobora kwiyongera.',
+  consent_estimatedLimit: 'Urwego rwagenwe: {{amount}}',
+  consent_otherSources: 'Andi masoko',
+  consent_selectAll: 'Hitamo byose',
+  consent_included: 'Birimo',
 
   consent_otpTitle: 'Emeza ko amakuru abonwa',
-  consent_otpSubtitle: 'Andika kode yoherejwe kuri telefone yawe kugira ngo wemeze {{source}} mu minsi 30.',
+  consent_otpSubtitleAll: 'Andika kode y’imibare 6 yoherejwe kuri {{phone}} kugira ngo wemeze ko amasoko wahisemo yose abona amakuru mu minsi 30.',
   consent_otpConfirm: 'Emeza uburenganzira',
 
   consent_euclName: 'EUCL Cash Power',
@@ -57,10 +61,12 @@ export const voucherConsent: Record<keyof typeof voucherConsentEn, string> = {
   consent_expiredMultiple: 'Amasoko {{count}} yarangije igihe — yongere kugira ngo ukomeze kugira urwego rwawe',
   consent_renew: 'Ongera',
 
-  score_title: 'Isuzuma ry’inguzanyo yawe',
-  score_approvedLimit: 'Urwego rwemejwe: {{amount}}',
-  score_breakdown: 'Uko amanota yagabanyijwe',
-  score_notAuthorized: 'Ntibyemejwe — byemeze kugira ngo wongere urwego rwawe',
-  score_authorizeSource: 'Emeza {{source}}',
+  score_title: 'Wemerewe',
+  score_approvedLimit: '{{amount}}',
+  score_creditLineTitle: 'Urwego rwawe rw’inguzanyo',
+  score_availableToUse: 'Ufite ushobora gukoresha: {{amount}}',
+  score_validFor: 'Bimara iminsi 30 · Bizongera ku {{date}}',
+  score_supplier: 'Uwaguriza: {{name}}',
+  score_authorizeMoreSources: 'Emeza andi masoko kugira ngo wongere urwego rwawe →',
   score_claimCta: 'Fata inguzanyo yawe',
 };

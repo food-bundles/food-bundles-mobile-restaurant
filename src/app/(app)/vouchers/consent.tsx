@@ -1,88 +1,125 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { radius, space, text, useTheme } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import {
   CheckIcon,
   DeliveryBagIcon,
   LockShieldIcon,
-  LogoMark,
   PosTerminalIcon,
   PowerBoltIcon,
   ReceiptIcon,
   ShieldIcon,
 } from '@/components/icons';
-import { ConsentSourceCard } from './_components/ConsentSourceCard';
+import { SourceTile } from './_components/SourceTile';
+import { LimitPreviewBar } from './_components/LimitPreviewBar';
+import { AlwaysIncludedRow } from './_components/AlwaysIncludedRow';
 import { ConsentOtpSheet } from './_components/ConsentOtpSheet';
 import { useVouchersStore } from '@/stores';
+import { BASE_LIMIT_RWF, SOURCE_CONTRIBUTION, TOGGLEABLE_SOURCES } from '@/lib';
 import { useT } from '@/i18n';
+import type { TranslationKey } from '@/i18n';
 import type { DataConsentSource } from '@/mocks/types';
 
-const SOURCE_ORDER: DataConsentSource[] = ['eucl', 'rra', 'vubaVuba', 'kayko', 'foodbundles', 'creditBureau'];
+type ToggleableSource = Exclude<DataConsentSource, 'foodbundles'>;
 
-const SOURCE_ICON: Record<DataConsentSource, (color: string) => React.ReactNode> = {
+const SOURCE_ICON: Record<ToggleableSource, (color: string) => React.ReactNode> = {
   eucl: (color) => <PowerBoltIcon color={color} />,
   rra: (color) => <ReceiptIcon color={color} />,
   vubaVuba: (color) => <DeliveryBagIcon color={color} />,
   kayko: (color) => <PosTerminalIcon color={color} />,
-  foodbundles: () => <LogoMark size={24} />,
   creditBureau: (color) => <ShieldIcon color={color} />,
 };
+
+const NAME_KEY: Record<DataConsentSource, TranslationKey> = {
+  eucl: 'consent_euclName',
+  rra: 'consent_rraName',
+  vubaVuba: 'consent_vubaName',
+  kayko: 'consent_kaykoName',
+  foodbundles: 'consent_foodbundlesName',
+  creditBureau: 'consent_bureauName',
+};
+
+const DESCRIPTION_KEY: Record<ToggleableSource, TranslationKey> = {
+  eucl: 'consent_euclDescription',
+  rra: 'consent_rraDescription',
+  vubaVuba: 'consent_vubaDescription',
+  kayko: 'consent_kaykoDescription',
+  creditBureau: 'consent_bureauDescription',
+};
+
+const MAX_LIMIT_RWF = BASE_LIMIT_RWF + TOGGLEABLE_SOURCES.reduce((sum, s) => sum + SOURCE_CONTRIBUTION[s], 0);
 
 /** Step 1 of the voucher application flow: authorize the third-party data sources used to size the credit limit. */
 export default function VoucherConsent() {
   const t = useT();
   const { colors } = useTheme();
   const { sources: sourcesParam } = useLocalSearchParams<{ sources?: string }>();
-  const consentList = useVouchersStore((state) => state.consentList);
   const setConsent = useVouchersStore((state) => state.setConsent);
   const [acknowledged, setAcknowledged] = useState(false);
-  const [pendingSource, setPendingSource] = useState<DataConsentSource | null>(null);
+  const [otpOpen, setOtpOpen] = useState(false);
 
   const filter = sourcesParam ? new Set(sourcesParam.split(',')) : null;
-  const visibleSources = filter ? SOURCE_ORDER.filter((source) => filter.has(source)) : SOURCE_ORDER;
+  const visibleSources = filter
+    ? TOGGLEABLE_SOURCES.filter((source) => filter.has(source))
+    : TOGGLEABLE_SOURCES;
 
-  const onToggle = (source: DataConsentSource, granted: boolean) => {
-    if (granted) {
-      setConsent(source, false);
-      return;
-    }
-    setPendingSource(source);
+  const [selected, setSelected] = useState<Set<ToggleableSource>>(new Set());
+
+  const toggleSource = (source: ToggleableSource) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(source)) next.delete(source);
+      else next.add(source);
+      return next;
+    });
   };
 
-  const onOtpConfirmed = (source: DataConsentSource) => {
-    setConsent(source, true);
-    setPendingSource(null);
-  };
+  const onSelectAll = () => setSelected(new Set(visibleSources));
 
-  const onContinue = () => {
+  const estimatedLimit =
+    BASE_LIMIT_RWF + Array.from(selected).reduce((sum, source) => sum + SOURCE_CONTRIBUTION[source], 0);
+
+  const onOtpConfirmed = () => {
+    for (const source of selected) setConsent(source, true);
+    setOtpOpen(false);
     router.push('/(app)/subscription/underwriting');
   };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
-      <ScreenScroll contentInsetBottom={140}>
+      <ScreenScroll contentInsetBottom={160}>
         <View style={styles.header}>
           <View style={[styles.iconWrap, { backgroundColor: colors.tintLeaf }]}>
             <LockShieldIcon size={26} color={colors.leaf} />
           </View>
           <Text style={[styles.title, { color: colors.ink }]}>{t('consent_title')}</Text>
           <Text style={[styles.subtitle, { color: colors.secondary }]}>{t('consent_subtitle')}</Text>
+          <LimitPreviewBar limitRwf={estimatedLimit} maxLimitRwf={MAX_LIMIT_RWF} />
         </View>
-        {visibleSources.map((source) => {
-          const consent = consentList.find((c) => c.source === source);
-          return (
-            <ConsentSourceCard
+
+        <AlwaysIncludedRow name={t(NAME_KEY.foodbundles)} />
+
+        <View style={styles.gridHeaderRow}>
+          <Text style={[styles.gridLabel, { color: colors.secondary }]}>{t('consent_otherSources')}</Text>
+          <Pressable onPress={onSelectAll} accessibilityRole="button" accessibilityLabel={t('consent_selectAll')} style={styles.selectAllHit}>
+            <Text style={[styles.selectAllLabel, { color: colors.leaf }]}>{t('consent_selectAll')}</Text>
+          </Pressable>
+        </View>
+        <View style={styles.grid}>
+          {visibleSources.map((source) => (
+            <SourceTile
               key={source}
-              source={source}
               icon={SOURCE_ICON[source](colors.leaf)}
-              granted={consent?.granted ?? false}
-              locked={source === 'foodbundles'}
-              onToggle={() => onToggle(source, consent?.granted ?? false)}
+              name={t(NAME_KEY[source])}
+              descriptionKey={DESCRIPTION_KEY[source]}
+              contributionRwf={SOURCE_CONTRIBUTION[source]}
+              selected={selected.has(source)}
+              onToggle={() => toggleSource(source)}
             />
-          );
-        })}
+          ))}
+        </View>
       </ScreenScroll>
       <StickyFooter>
         <Pressable
@@ -104,17 +141,21 @@ export default function VoucherConsent() {
           <Text style={[styles.checkboxLabel, { color: colors.body }]}>{t('consent_acknowledgement')}</Text>
         </Pressable>
         <Pressable
-          onPress={onContinue}
-          disabled={!acknowledged}
+          onPress={() => setOtpOpen(true)}
+          disabled={!acknowledged || selected.size === 0}
           accessibilityRole="button"
           accessibilityLabel={t('consent_continue')}
-          style={[styles.continueButton, { backgroundColor: colors.leaf }, !acknowledged && styles.disabled]}
+          style={[
+            styles.continueButton,
+            { backgroundColor: colors.leaf },
+            (!acknowledged || selected.size === 0) && styles.disabled,
+          ]}
         >
           <Text style={[styles.continueLabel, { color: colors.paper }]}>{t('consent_continue')} →</Text>
         </Pressable>
         <Text style={[styles.hint, { color: colors.secondary }]}>{t('consent_moreSourcesHint')}</Text>
       </StickyFooter>
-      <ConsentOtpSheet source={pendingSource} onClose={() => setPendingSource(null)} onConfirmed={onOtpConfirmed} />
+      <ConsentOtpSheet visible={otpOpen} onClose={() => setOtpOpen(false)} onConfirmed={onOtpConfirmed} />
     </View>
   );
 }
@@ -123,8 +164,8 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { alignItems: 'center', marginTop: space.lg, marginBottom: space.lg, paddingHorizontal: space.md },
   iconWrap: {
-    width: 52,
-    height: 52,
+    width: 80,
+    height: 80,
     borderRadius: radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
@@ -132,6 +173,11 @@ const styles = StyleSheet.create({
   },
   title: { ...text.h1, textAlign: 'center' },
   subtitle: { ...text.body, textAlign: 'center', marginTop: space.xs },
+  gridHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  gridLabel: { ...text.overline },
+  selectAllHit: { minHeight: hit.min, justifyContent: 'center' },
+  selectAllLabel: { ...text.label },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginTop: space.sm },
   checkboxRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginBottom: space.md },
   checkbox: {
     width: 20,
@@ -142,7 +188,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   checkboxLabel: { ...text.caption, flex: 1 },
-  continueButton: { minHeight: 48, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  continueButton: { minHeight: hit.min, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   disabled: { opacity: 0.5 },
   continueLabel: { ...text.bodySemi },
   hint: { ...text.micro, textAlign: 'center', marginTop: space.sm },

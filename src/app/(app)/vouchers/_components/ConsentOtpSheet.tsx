@@ -4,45 +4,34 @@ import { hit, radius, space, text, useTheme } from '@/theme';
 import { OtpBoxes } from '@/components/checkout';
 import { sleep } from '@/lib';
 import { useT } from '@/i18n';
-import type { TranslationKey } from '@/i18n';
-import type { DataConsentSource } from '@/mocks/types';
+import { account } from '@/mocks';
 
 const CODE_LENGTH = 6;
 const MOCK_PREFILL = '418';
 
-const NAME_KEY: Record<DataConsentSource, TranslationKey> = {
-  eucl: 'consent_euclName',
-  rra: 'consent_rraName',
-  vubaVuba: 'consent_vubaName',
-  kayko: 'consent_kaykoName',
-  foodbundles: 'consent_foodbundlesName',
-  creditBureau: 'consent_bureauName',
-};
-
 export interface ConsentOtpSheetProps {
-  source: DataConsentSource | null;
+  visible: boolean;
   onClose: () => void;
-  onConfirmed: (source: DataConsentSource) => void;
+  onConfirmed: () => void;
 }
 
-/** Bottom-sheet OTP step confirming a single data-source consent grant. */
-export function ConsentOtpSheet({ source, onClose, onConfirmed }: ConsentOtpSheetProps) {
+/** Bottom-sheet OTP step: one code authorizes every currently-selected source at once, for 30 days. */
+export function ConsentOtpSheet({ visible, onClose, onConfirmed }: ConsentOtpSheetProps) {
   const t = useT();
   const { colors } = useTheme();
   const [code, setCode] = useState(MOCK_PREFILL);
   const [verifying, setVerifying] = useState(false);
 
   const onVerify = async () => {
-    if (!source) return;
     setVerifying(true);
     await sleep(900);
     setVerifying(false);
     setCode(MOCK_PREFILL);
-    onConfirmed(source);
+    onConfirmed();
   };
 
   return (
-    <Modal visible={source !== null} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.container}>
         <Pressable
           onPress={onClose}
@@ -52,37 +41,35 @@ export function ConsentOtpSheet({ source, onClose, onConfirmed }: ConsentOtpShee
         >
           <View style={[styles.scrim, { backgroundColor: colors.ink }]} />
         </Pressable>
-        {source ? (
-          <View style={[styles.sheet, { backgroundColor: colors.paper }]}>
-            <View style={[styles.grabber, { backgroundColor: colors.hairline }]} />
-            <Text style={[styles.title, { color: colors.ink }]}>{t('consent_otpTitle')}</Text>
-            <Text style={[styles.subtitle, { color: colors.secondary }]}>
-              {t('consent_otpSubtitle', { source: t(NAME_KEY[source]) })}
-            </Text>
-            <View style={styles.boxesWrap}>
-              <TextInput
-                value={code}
-                onChangeText={(next) => setCode(next.replace(/\D/g, '').slice(0, CODE_LENGTH))}
-                keyboardType="number-pad"
-                maxLength={CODE_LENGTH}
-                accessibilityLabel={t('a11y_enterOtp')}
-                style={styles.hiddenInput}
-              />
-              <View style={styles.boxesVisual} pointerEvents="none">
-                <OtpBoxes value={code} length={CODE_LENGTH} />
-              </View>
+        <View style={[styles.sheet, { backgroundColor: colors.paper }]}>
+          <View style={[styles.grabber, { backgroundColor: colors.hairline }]} />
+          <Text style={[styles.title, { color: colors.ink }]}>{t('consent_otpTitle')}</Text>
+          <Text style={[styles.subtitle, { color: colors.secondary }]}>
+            {t('consent_otpSubtitleAll', { phone: account.phone })}
+          </Text>
+          <View style={styles.boxesWrap}>
+            <TextInput
+              value={code}
+              onChangeText={(next) => setCode(next.replace(/\D/g, '').slice(0, CODE_LENGTH))}
+              keyboardType="number-pad"
+              maxLength={CODE_LENGTH}
+              accessibilityLabel={t('a11y_enterOtp')}
+              style={styles.hiddenInput}
+            />
+            <View style={styles.boxesVisual} pointerEvents="none">
+              <OtpBoxes value={code} length={CODE_LENGTH} />
             </View>
-            <Pressable
-              onPress={onVerify}
-              disabled={verifying}
-              accessibilityRole="button"
-              accessibilityLabel={t('consent_otpConfirm')}
-              style={[styles.confirmButton, { backgroundColor: colors.leaf }]}
-            >
-              <Text style={[styles.confirmLabel, { color: colors.paper }]}>{t('consent_otpConfirm')}</Text>
-            </Pressable>
           </View>
-        ) : null}
+          <Pressable
+            onPress={onVerify}
+            disabled={verifying}
+            accessibilityRole="button"
+            accessibilityLabel={t('consent_otpConfirm')}
+            style={[styles.confirmButton, { backgroundColor: colors.leaf }]}
+          >
+            <Text style={[styles.confirmLabel, { color: colors.paper }]}>{t('consent_otpConfirm')}</Text>
+          </Pressable>
+        </View>
       </View>
     </Modal>
   );
