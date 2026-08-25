@@ -3,15 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
-import {
-  CheckIcon,
-  DeliveryBagIcon,
-  LockShieldIcon,
-  PosTerminalIcon,
-  PowerBoltIcon,
-  ReceiptIcon,
-  ShieldIcon,
-} from '@/components/icons';
+import { CheckIcon, LockShieldIcon } from '@/components/icons';
 import { SourceTile } from './_components/SourceTile';
 import { LimitPreviewBar } from './_components/LimitPreviewBar';
 import { AlwaysIncludedRow } from './_components/AlwaysIncludedRow';
@@ -21,15 +13,16 @@ import { BASE_LIMIT_RWF, SOURCE_CONTRIBUTION, TOGGLEABLE_SOURCES } from '@/lib';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
 import type { DataConsentSource } from '@/mocks/types';
+import type { PartnerLogoKey } from '@/constants/partners';
 
 type ToggleableSource = Exclude<DataConsentSource, 'foodbundles'>;
 
-const SOURCE_ICON: Record<ToggleableSource, (color: string) => React.ReactNode> = {
-  eucl: (color) => <PowerBoltIcon color={color} />,
-  rra: (color) => <ReceiptIcon color={color} />,
-  vubaVuba: (color) => <DeliveryBagIcon color={color} />,
-  kayko: (color) => <PosTerminalIcon color={color} />,
-  creditBureau: (color) => <ShieldIcon color={color} />,
+const SOURCE_PARTNER_KEY: Record<ToggleableSource, PartnerLogoKey> = {
+  eucl: 'eucl',
+  rra: 'rra',
+  vubaVuba: 'vubaVuba',
+  kayko: 'kayko',
+  creditBureau: 'crb',
 };
 
 const NAME_KEY: Record<DataConsentSource, TranslationKey> = {
@@ -111,7 +104,7 @@ export default function VoucherConsent() {
           {visibleSources.map((source) => (
             <SourceTile
               key={source}
-              icon={SOURCE_ICON[source](colors.leaf)}
+              partner={SOURCE_PARTNER_KEY[source]}
               name={t(NAME_KEY[source])}
               descriptionKey={DESCRIPTION_KEY[source]}
               contributionRwf={SOURCE_CONTRIBUTION[source]}

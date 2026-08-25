@@ -1,9 +1,9 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { formatTin } from '@/lib';
 import { radius, space, text, useTheme } from '@/theme';
+import { PartnerLogo } from '@/components/partners';
 import { useT } from '@/i18n';
 
-const LOGO_URI = 'https://res.cloudinary.com/dzxyelclu/image/upload/v1760111270/Food_bundle_logo_cfsnsw.png';
 const SELLER_TIN = '100482991';
 
 export function EbmInvoiceHeader() {
@@ -12,12 +12,9 @@ export function EbmInvoiceHeader() {
 
   return (
     <View style={styles.wrap}>
-      <Image
-        source={{ uri: LOGO_URI }}
-        accessibilityLabel="FoodBundles logo"
-        resizeMode="contain"
-        style={styles.logo}
-      />
+      <View style={styles.logo}>
+        <PartnerLogo partner="rra" name="RRA" width={48} height={32} />
+      </View>
       <Text style={[styles.company, { color: colors.ink }]}>FoodBundles Ltd</Text>
       <Text style={[styles.meta, { color: colors.secondary }]}>KG 5 Ave, Kigali, Rwanda</Text>
       <Text style={[styles.meta, { color: colors.secondary }]}>TIN: {formatTin(SELLER_TIN)}</Text>
@@ -32,7 +29,7 @@ export function EbmInvoiceHeader() {
 
 const styles = StyleSheet.create({
   wrap: { alignItems: 'center', gap: 2 },
-  logo: { width: 44, height: 44, borderRadius: radius.sm, marginBottom: space.xs },
+  logo: { width: 48, height: 32, alignItems: 'center', justifyContent: 'center', marginBottom: space.xs },
   company: { ...text.h2 },
   meta: { ...text.caption },
   certifiedBadge: {

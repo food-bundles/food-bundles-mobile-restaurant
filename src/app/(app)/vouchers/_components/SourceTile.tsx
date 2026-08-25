@@ -1,12 +1,14 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { radius, space, text, useTheme } from '@/theme';
 import { CheckIcon } from '@/components/icons';
+import { PartnerLogo } from '@/components/partners';
 import { formatRwf } from '@/lib';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
+import type { PartnerLogoKey } from '@/constants/partners';
 
 export interface SourceTileProps {
-  icon: React.ReactNode;
+  partner: PartnerLogoKey;
   name: string;
   descriptionKey: TranslationKey;
   contributionRwf: number;
@@ -17,7 +19,7 @@ export interface SourceTileProps {
 const MIN_TILE_HEIGHT = 140;
 
 /** One 2-column consent grid tile: logo, name, contribution badge, description, and a selected checkmark overlay. */
-export function SourceTile({ icon, name, descriptionKey, contributionRwf, selected, onToggle }: SourceTileProps) {
+export function SourceTile({ partner, name, descriptionKey, contributionRwf, selected, onToggle }: SourceTileProps) {
   const t = useT();
   const { colors } = useTheme();
 
@@ -38,7 +40,9 @@ export function SourceTile({ icon, name, descriptionKey, contributionRwf, select
           <CheckIcon size={12} color={colors.paper} />
         </View>
       ) : null}
-      <View style={[styles.logoWrap, { backgroundColor: colors.tintLeaf }]}>{icon}</View>
+      <View style={styles.logoWrap}>
+        <PartnerLogo partner={partner} name={name} width={48} height={32} />
+      </View>
       <Text style={[styles.name, { color: colors.ink }]}>{name}</Text>
       <View style={[styles.contributionBadge, { backgroundColor: colors.ripe }]}>
         <Text style={[styles.contributionLabel, { color: colors.paper }]}>+{formatRwf(contributionRwf)}</Text>
@@ -70,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  logoWrap: { width: 40, height: 40, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
+  logoWrap: { width: 48, height: 32, alignItems: 'center', justifyContent: 'center' },
   name: { ...text.bodySemi, marginTop: space.sm },
   contributionBadge: {
     alignSelf: 'flex-start',
