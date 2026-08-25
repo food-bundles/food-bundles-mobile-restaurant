@@ -123,3 +123,26 @@ export interface Voucher {
   usedAt?: string;
   orderId?: string;
 }
+
+export type DataConsentSource = 'eucl' | 'rra' | 'vubaVuba' | 'kayko' | 'foodbundles' | 'creditBureau';
+
+export interface DataConsent {
+  source: DataConsentSource;
+  granted: boolean;
+  grantedAt: string | null;
+  expiresAt: string | null;
+}
+
+export type CreditTier = 'A' | 'B' | 'C' | 'D';
+
+export interface ScoreContribution {
+  source: DataConsentSource;
+  weight: number;
+  contribution: number;
+}
+
+export interface CreditScore {
+  tier: CreditTier;
+  limitRwf: number;
+  scoreBreakdown: ScoreContribution[];
+}

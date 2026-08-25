@@ -19,7 +19,7 @@ export default function Terms() {
   const onAccept = () => {
     acceptTerms();
     if (tier) setTier(tier);
-    router.push('/(app)/subscription/underwriting');
+    router.push('/(app)/vouchers/consent');
   };
 
   return (

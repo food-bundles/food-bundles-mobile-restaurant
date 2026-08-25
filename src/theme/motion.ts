@@ -37,6 +37,8 @@ export const signatureDuration = {
   avatarThinkingDotStagger: 200,
   avatarIdleBob: 3000,
   marketChartDrawIn: 800,
+  scoreCircleDraw: 1200,
+  scoreBarStagger: 200,
 } as const;
 
 export const easing = {

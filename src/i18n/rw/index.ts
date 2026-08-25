@@ -12,6 +12,7 @@ import { affiliators } from './affiliators';
 import { settings } from './settings';
 import { notifications } from './notifications';
 import { market } from './market';
+import { voucherConsent } from './voucherConsent';
 
 export const rw = {
   ...common,
@@ -28,4 +29,5 @@ export const rw = {
   ...settings,
   ...notifications,
   ...market,
+  ...voucherConsent,
 };

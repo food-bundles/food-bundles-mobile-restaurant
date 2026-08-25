@@ -25,7 +25,7 @@ type Purpose = 'payment' | 'underwriting';
 
 const DESTINATIONS: Record<Purpose, Href> = {
   payment: '/(app)/checkout/confirmation',
-  underwriting: { pathname: '/(app)/subscription/underwriting', params: { completed: '1' } },
+  underwriting: '/(app)/vouchers/score-result',
 };
 
 export default function Otp() {

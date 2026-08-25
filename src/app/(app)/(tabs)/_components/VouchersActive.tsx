@@ -3,21 +3,28 @@ import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
 import { VoucherSummaryCard } from './VoucherSummaryCard';
 import { VoucherListItem } from './VoucherListItem';
+import { ConsentExpiryBanner } from './ConsentExpiryBanner';
 import { useVouchersStore, useSessionStore } from '@/stores';
 import { useT } from '@/i18n';
+import type { DataConsentSource } from '@/mocks/types';
+
+const CONSENT_SOURCES: DataConsentSource[] = ['eucl', 'rra', 'vubaVuba', 'kayko', 'creditBureau'];
 
 export function VouchersActive() {
   const t = useT();
   const { colors } = useTheme();
   const vouchers = useVouchersStore((state) => state.vouchers);
   const nextGrantDate = useVouchersStore((state) => state.nextGrantDate);
+  const isConsentExpired = useVouchersStore((state) => state.isConsentExpired);
   const tier = useSessionStore((state) => state.tier);
 
   const available = vouchers.filter((voucher) => voucher.status === 'AVAILABLE');
   const availableValue = available.reduce((sum, voucher) => sum + voucher.amount, 0);
+  const expiredSources = CONSENT_SOURCES.filter((source) => isConsentExpired(source));
 
   return (
     <View>
+      <ConsentExpiryBanner expiredSources={expiredSources} />
       <View style={styles.header}>
         <Text style={[styles.title, { color: colors.ink }]}>{t('vouchers_title')}</Text>
         <View style={[styles.planBadge, { backgroundColor: colors.tintLeaf }]}>

@@ -23,7 +23,7 @@ export default function Plans() {
       return;
     }
     setTier(tier);
-    router.push('/(app)/subscription/underwriting');
+    router.push('/(app)/vouchers/consent');
   };
 
   return (

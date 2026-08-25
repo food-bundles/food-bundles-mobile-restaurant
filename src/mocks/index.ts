@@ -8,6 +8,7 @@ export { addresses } from './addresses';
 export { plans } from './plans';
 export { account } from './account';
 export { vouchers } from './vouchers';
+export { dataConsentSeed } from './dataConsent';
 export { LANDING_IMAGES } from './landingImages';
 export {
   COMMODITIES,
