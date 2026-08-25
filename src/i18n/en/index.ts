@@ -13,6 +13,7 @@ import { settings } from './settings';
 import { notifications } from './notifications';
 import { market } from './market';
 import { voucherConsent } from './voucherConsent';
+import { menuGenerator } from './menuGenerator';
 
 export const en = {
   ...common,
@@ -30,6 +31,7 @@ export const en = {
   ...notifications,
   ...market,
   ...voucherConsent,
+  ...menuGenerator,
 } as const;
 
 export type TranslationKey = keyof typeof en;

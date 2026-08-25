@@ -9,6 +9,9 @@ export { plans } from './plans';
 export { account } from './account';
 export { vouchers } from './vouchers';
 export { dataConsentSeed } from './dataConsent';
+export { menuDishesByCuisine, getDishesForMenu } from './menuGenerator';
+export { substitutions } from './substitutions';
+export type { Substitution } from './substitutions';
 export { LANDING_IMAGES } from './landingImages';
 export {
   COMMODITIES,

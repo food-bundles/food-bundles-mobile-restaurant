@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { router } from 'expo-router';
 import { radius, shadow, space, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
+import { BasketIcon, TrendingUpIcon } from '@/components/icons';
 import { useSessionStore } from '@/stores';
+import { useT } from '@/i18n';
 import {
   COMMODITIES,
   MARKET_COMPARISON,
@@ -20,11 +23,13 @@ import { TimeRangeTabs } from './_components/TimeRangeTabs';
 import { MarketComparisonTable } from './_components/MarketComparisonTable';
 import { AnalyticsCards } from './_components/AnalyticsCards';
 import { TrackMarketToggle } from './_components/TrackMarketToggle';
+import { MarketFeatureCard } from './_components/MarketFeatureCard';
 import { weeklyAverage } from './_components/marketAnalytics';
 
 const UPDATED_MINUTES_AGO = 3;
 
 export default function MarketPrices() {
+  const t = useT();
   const { colors } = useTheme();
   const subscribed = useSessionStore((state) => state.subscribed);
   const [commodityId, setCommodityId] = useState<CommodityId>('irishPotatoes');
@@ -60,6 +65,24 @@ export default function MarketPrices() {
           <View style={styles.rangeGap}>
             <TimeRangeTabs options={TIME_RANGES} selected={range} onSelect={setRange} />
           </View>
+        </View>
+
+        <View style={styles.section}>
+          <MarketFeatureCard
+            icon={<BasketIcon color={colors.leaf} />}
+            title={t('advisor_menuGeneratorTitle')}
+            subtitle={t('advisor_menuGeneratorSubtitle')}
+            onPress={() => router.push('/(app)/market/menu-generator')}
+          />
+        </View>
+
+        <View style={styles.section}>
+          <MarketFeatureCard
+            icon={<TrendingUpIcon color={colors.leaf} />}
+            title={t('advisor_smartBuyingTips')}
+            subtitle={t('advisor_smartBuyingTipsSubtitle')}
+            onPress={() => router.push('/(app)/market/purchase-advisor')}
+          />
         </View>
 
         <View style={styles.section}>

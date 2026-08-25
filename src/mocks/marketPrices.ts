@@ -17,9 +17,9 @@ export const COMMODITIES: CommodityInfo[] = [
 /** Seven trailing daily prices (RWF/kg), Monday through Sunday, at FoodBundles' own market. */
 export const PRICE_HISTORY: Record<CommodityId, number[]> = {
   irishPotatoes: [360, 355, 370, 380, 375, 390, 385],
-  tomatoes: [780, 820, 860, 840, 870, 900, 880],
+  tomatoes: [780, 820, 860, 840, 870, 900, 980],
   redOnions: [520, 530, 545, 560, 555, 570, 565],
-  cabbage: [310, 320, 330, 325, 340, 350, 345],
+  cabbage: [310, 320, 330, 325, 340, 350, 275],
   carrots: [400, 410, 405, 415, 420, 430, 425],
 };
 

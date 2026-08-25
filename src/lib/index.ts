@@ -7,3 +7,7 @@ export { formatTin, isValidTin } from './formatTin';
 export { generateTotpSecret, buildOtpauthUri, currentMockTotpCode, validateTotp } from './totp';
 export { setCache, getCache, clearCache, clearAllCache, refreshStaleCaches } from './cache';
 export { computeScore } from './creditScoring';
+export { computeBuyingAdvice, COMMODITY_PRODUCT_ID } from './buyingAdvice';
+export type { BuyingAdviceItem } from './buyingAdvice';
+export { consolidateIngredients } from './menuPlanning';
+export type { ConsolidatedIngredient } from './menuPlanning';

@@ -146,3 +146,20 @@ export interface CreditScore {
   limitRwf: number;
   scoreBreakdown: ScoreContribution[];
 }
+
+export type CuisineType = 'AFRICAN' | 'INDIAN' | 'WESTERN' | 'ASIAN' | 'MEDITERRANEAN' | 'FUSION';
+export type MealType = 'BREAKFAST' | 'LUNCH' | 'DINNER' | 'ALL_DAY';
+
+export interface MenuIngredient {
+  productId: string;
+  qty: number;
+}
+
+export interface MenuDish {
+  id: string;
+  name: string;
+  cuisine: CuisineType;
+  mealTypes: MealType[];
+  source: string;
+  ingredients: MenuIngredient[];
+}

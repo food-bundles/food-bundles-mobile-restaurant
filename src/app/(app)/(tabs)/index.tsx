@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -11,7 +11,7 @@ import { ProductGrid } from '../shop/_components/ProductGrid';
 import { SeeAllLink } from '../shop/_components/SeeAllLink';
 import { products } from '@/mocks';
 import { useT } from '@/i18n';
-import { space, useTheme } from '@/theme';
+import { hit, space, text, useTheme } from '@/theme';
 
 const CATEGORY_OPTIONS: CategoryOption[] = [
   { key: 'ALL', label: 'All' },
@@ -36,6 +36,14 @@ export default function ShopHome() {
         <View style={styles.carouselGap}>
           <HeroCarousel />
         </View>
+        <Pressable
+          onPress={() => router.push('/(app)/market/menu-generator')}
+          accessibilityRole="button"
+          accessibilityLabel={t('menu_generatorShortcut')}
+          style={styles.menuGeneratorHit}
+        >
+          <Text style={[styles.menuGeneratorLabel, { color: colors.leaf }]}>{t('menu_generatorShortcut')} →</Text>
+        </Pressable>
         <View style={styles.chipsGap}>
           <CategoryChips
             options={CATEGORY_OPTIONS}
@@ -69,6 +77,12 @@ const styles = StyleSheet.create({
   stickyHeader: {},
   searchGap: { marginTop: space.md, paddingHorizontal: space.lg },
   carouselGap: { marginTop: space.md },
+  menuGeneratorHit: {
+    minHeight: hit.min,
+    justifyContent: 'center',
+    paddingHorizontal: space.lg,
+  },
+  menuGeneratorLabel: { ...text.label },
   chipsGap: { marginTop: space.md, paddingHorizontal: space.lg, paddingBottom: space.sm },
   sectionGap: { paddingBottom: space.sm },
   gridContent: { paddingHorizontal: space.lg },

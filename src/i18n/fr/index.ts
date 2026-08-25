@@ -13,6 +13,7 @@ import { settings } from './settings';
 import { notifications } from './notifications';
 import { market } from './market';
 import { voucherConsent } from './voucherConsent';
+import { menuGenerator } from './menuGenerator';
 
 export const fr = {
   ...common,
@@ -30,4 +31,5 @@ export const fr = {
   ...notifications,
   ...market,
   ...voucherConsent,
+  ...menuGenerator,
 };
