@@ -114,4 +114,11 @@ export const market: Record<keyof typeof marketEn, string> = {
 
   chart_errorTitle: "Impossible d'afficher ce graphique",
   chart_errorMessage: "Une erreur s'est produite lors de l'affichage du graphique. Réessayez.",
+
+  advisor_savePct: 'ÉCONOMISEZ {{percent}} %',
+  advisor_swapInMenu: 'Substituer dans le menu',
+  advisor_cartRiskTitle: 'Risque sur votre panier',
+  advisor_reviewCart: 'Vérifier le panier',
+  advisor_weeklyPatternTitle: 'Tendance hebdomadaire — {{commodity}}',
+  advisor_cheapestExpensiveDay: 'Jour le moins cher : {{cheapest}} · Jour le plus cher : {{expensive}}',
 };

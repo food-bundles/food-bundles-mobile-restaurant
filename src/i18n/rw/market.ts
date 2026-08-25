@@ -110,4 +110,11 @@ export const market: Record<keyof typeof marketEn, string> = {
 
   chart_errorTitle: 'Ntibyashobotse gushushanya iki gishushanyo',
   chart_errorMessage: 'Hari ikibazo cyabaye mu gushushanya igiciro. Ongera ugerageze.',
+
+  advisor_savePct: 'WIZIGAME {{percent}}%',
+  advisor_swapInMenu: 'Hindura muri menu',
+  advisor_cartRiskTitle: 'Ibyago by’igikapu cyawe',
+  advisor_reviewCart: 'Reba igikapu',
+  advisor_weeklyPatternTitle: 'Uko ibiciro byahindutse mu cyumweru — {{commodity}}',
+  advisor_cheapestExpensiveDay: 'Umunsi giciro gike: {{cheapest}} · Umunsi giciro kiri hejuru: {{expensive}}',
 };

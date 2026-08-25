@@ -14,6 +14,12 @@ export function cheapestDay(values: number[]): string {
   return DAY_NAMES[minIndex] ?? DAY_NAMES[0];
 }
 
+/** The weekday with the highest recorded price in the series. */
+export function mostExpensiveDay(values: number[]): string {
+  const maxIndex = values.indexOf(Math.max(...values));
+  return DAY_NAMES[maxIndex] ?? DAY_NAMES[0];
+}
+
 /** Coefficient-of-variation based volatility bucket for a price series. */
 export function volatility(values: number[]): Volatility {
   const mean = values.reduce((sum, v) => sum + v, 0) / values.length;

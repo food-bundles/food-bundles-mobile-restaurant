@@ -46,6 +46,12 @@ export const market = {
   advisor_setPriceAlert: 'Set price alert',
   advisor_cartWarningTitle: 'Your upcoming orders need:',
   advisor_cartWarningBody: '{{name}} in your cart is priced well above its weekly average right now.',
+  advisor_savePct: 'SAVE {{percent}}%',
+  advisor_swapInMenu: 'Swap in menu',
+  advisor_cartRiskTitle: 'Your cart risk',
+  advisor_reviewCart: 'Review cart',
+  advisor_weeklyPatternTitle: 'Weekly pattern — {{commodity}}',
+  advisor_cheapestExpensiveDay: 'Cheapest day: {{cheapest}} · Most expensive: {{expensive}}',
 
   ranking_title: 'Your market standing',
   ranking_anonymousDisclaimer: 'Anonymous peer comparison — no restaurant names are shared.',
