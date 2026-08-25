@@ -7,6 +7,8 @@ export const more: Record<keyof typeof moreEn, string> = {
   more_affiliators: 'Abakozi',
   more_notifications: 'Amatangazo',
   more_marketPrices: 'Ibiciro by’isoko',
+  more_analytics: 'Isesengura',
+  more_marketStanding: 'Uko uhagaze ku isoko',
   more_accountSettings: 'Konti & Igenamiterere',
   more_help: 'Ubufasha',
 };

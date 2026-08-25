@@ -39,6 +39,8 @@ export const signatureDuration = {
   marketChartDrawIn: 800,
   scoreCircleDraw: 1200,
   scoreBarStagger: 200,
+  tickerCycle: 3000,
+  tickerFade: 250,
 } as const;
 
 export const easing = {

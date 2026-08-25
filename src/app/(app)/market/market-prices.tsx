@@ -1,47 +1,27 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
-import { radius, shadow, space, useTheme } from '@/theme';
+import { space, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
-import { BasketIcon, TrendingUpIcon } from '@/components/icons';
-import { useSessionStore } from '@/stores';
-import { useT } from '@/i18n';
-import {
-  COMMODITIES,
-  MARKET_COMPARISON,
-  PRICE_HISTORY,
-  TIME_RANGES,
-  VOLUME_TREND,
-  getPriceSeries,
-  type CommodityId,
-  type TimeRange,
-} from '@/mocks';
 import { MarketScreenHeader } from './_components/MarketScreenHeader';
-import { CommodityChips } from './_components/CommodityChips';
-import { PriceAreaChart } from './_components/PriceAreaChart';
-import { TimeRangeTabs } from './_components/TimeRangeTabs';
-import { MarketComparisonTable } from './_components/MarketComparisonTable';
-import { AnalyticsCards } from './_components/AnalyticsCards';
-import { TrackMarketToggle } from './_components/TrackMarketToggle';
-import { MarketFeatureCard } from './_components/MarketFeatureCard';
+import { MarketTopTabSwitch } from './_components/MarketTopTabSwitch';
+import { DashboardTab } from './_components/DashboardTab';
+import { ChartsTab } from './_components/ChartsTab';
+import { PRICE_HISTORY } from '@/mocks';
 import { weeklyAverage } from './_components/marketAnalytics';
+import { useT } from '@/i18n';
 
 const UPDATED_MINUTES_AGO = 3;
 
+type MarketTopTab = 'dashboard' | 'charts';
+
+/** Market Prices screen: a Dashboard portfolio view and a Charts deep-dive view. */
 export default function MarketPrices() {
   const t = useT();
   const { colors } = useTheme();
-  const subscribed = useSessionStore((state) => state.subscribed);
-  const [commodityId, setCommodityId] = useState<CommodityId>('irishPotatoes');
-  const [range, setRange] = useState<TimeRange>('7D');
+  const [topTab, setTopTab] = useState<MarketTopTab>('dashboard');
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const commodity = COMMODITIES.find((c) => c.id === commodityId) ?? COMMODITIES[0];
-  const series = getPriceSeries(commodityId, range);
-  const weeklyValues = PRICE_HISTORY[commodityId];
-  const { changePct } = weeklyAverage(weeklyValues);
-  const latestPrice = weeklyValues[weeklyValues.length - 1];
-  const alertPrice = Math.round(latestPrice * 0.95);
+  const { changePct } = weeklyAverage(PRICE_HISTORY.irishPotatoes);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
@@ -51,51 +31,17 @@ export default function MarketPrices() {
           onRefresh={() => setRefreshKey((key) => key + 1)}
           changePct={changePct}
         />
-
-        <View style={styles.section}>
-          <CommodityChips options={COMMODITIES} selected={commodityId} onSelect={setCommodityId} />
-        </View>
-
-        <View style={[styles.section, styles.card, { backgroundColor: colors.paper }]}>
-          <PriceAreaChart
-            key={`${commodityId}-${range}-${refreshKey}`}
-            values={series.values}
-            dayLabels={series.labels}
-          />
-          <View style={styles.rangeGap}>
-            <TimeRangeTabs options={TIME_RANGES} selected={range} onSelect={setRange} />
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <MarketFeatureCard
-            icon={<BasketIcon color={colors.leaf} />}
-            title={t('advisor_menuGeneratorTitle')}
-            subtitle={t('advisor_menuGeneratorSubtitle')}
-            onPress={() => router.push('/(app)/market/menu-generator')}
+        <View style={styles.tabSwitchGap}>
+          <MarketTopTabSwitch
+            options={[
+              { key: 'dashboard', label: t('dashboard_tabLabel') },
+              { key: 'charts', label: t('dashboard_chartsTabLabel') },
+            ]}
+            active={topTab}
+            onSelect={setTopTab}
           />
         </View>
-
-        <View style={styles.section}>
-          <MarketFeatureCard
-            icon={<TrendingUpIcon color={colors.leaf} />}
-            title={t('advisor_smartBuyingTips')}
-            subtitle={t('advisor_smartBuyingTipsSubtitle')}
-            onPress={() => router.push('/(app)/market/purchase-advisor')}
-          />
-        </View>
-
-        <View style={styles.section}>
-          <MarketComparisonTable rows={MARKET_COMPARISON} latestPrice={latestPrice} commodity={commodityId} />
-        </View>
-
-        <View style={styles.section}>
-          <AnalyticsCards priceHistory={weeklyValues} volumeHistory={VOLUME_TREND[commodityId]} />
-        </View>
-
-        <View style={[styles.section, styles.card, { backgroundColor: colors.paper }]}>
-          <TrackMarketToggle subscribed={subscribed} commodity={commodity.name} alertPrice={alertPrice} />
-        </View>
+        {topTab === 'dashboard' ? <DashboardTab /> : <ChartsTab refreshKey={refreshKey} />}
       </ScreenScroll>
     </View>
   );
@@ -103,11 +49,5 @@ export default function MarketPrices() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  section: { marginTop: space.lg },
-  card: {
-    borderRadius: radius.lg,
-    padding: space.lg,
-    ...shadow.card,
-  },
-  rangeGap: { marginTop: space.md },
+  tabSwitchGap: { marginTop: space.md },
 });

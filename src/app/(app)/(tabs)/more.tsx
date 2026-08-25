@@ -65,6 +65,15 @@ export default function More() {
           isLast
         />
       </View>
+      <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('more_analytics')}</Text>
+      <View style={[styles.group, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
+        <MoreMenuRow
+          icon={<TrendingUpIcon size={18} color={colors.leaf} />}
+          label={t('more_marketStanding')}
+          onPress={() => router.push('/(app)/market/restaurant-ranking')}
+          isLast
+        />
+      </View>
       <View style={[styles.group, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
         <MoreMenuRow
           icon={<PersonIcon size={18} color={colors.body} />}
@@ -84,6 +93,7 @@ export default function More() {
 
 const styles = StyleSheet.create({
   title: { ...text.h1 },
+  sectionLabel: { ...text.overline, marginTop: space.lg, marginBottom: space.sm },
   profileCard: {
     flexDirection: 'row',
     alignItems: 'center',

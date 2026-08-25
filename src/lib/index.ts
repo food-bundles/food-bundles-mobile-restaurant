@@ -11,3 +11,4 @@ export { computeBuyingAdvice, COMMODITY_PRODUCT_ID } from './buyingAdvice';
 export type { BuyingAdviceItem } from './buyingAdvice';
 export { consolidateIngredients } from './menuPlanning';
 export type { ConsolidatedIngredient } from './menuPlanning';
+export { computePercentile } from './percentile';
