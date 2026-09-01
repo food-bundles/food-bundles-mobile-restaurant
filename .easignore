@@ -1,0 +1,11 @@
+node_modules/
+.expo/
+dist/
+web-build/
+.claude/
+design-reference/
+android/build/
+android/app/build/
+android/.gradle/
+ios/build/
+ios/Pods/

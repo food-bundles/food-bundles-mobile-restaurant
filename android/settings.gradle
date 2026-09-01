@@ -1,3 +1,15 @@
+// Force-delete the autolinking cache on non-Windows machines so it always regenerates with
+// correct paths on the build machine. This repo is developed on Windows, which bakes Windows
+// absolute paths into android/build/generated/autolinking/autolinking.json; EAS's own build-cache
+// restoration can pick that file up independently of .gitignore/.easignore, causing the Linux
+// builder to resolve every autolinked native module (react-native-svg, reanimated, etc.) to a
+// nonexistent path and produce zero Gradle variants for each — the exact "No matching variant...
+// No variants exist" failure. See https://github.com/expo/expo/issues/42370.
+def autolinkingCacheDir = new File(rootDir, "build/generated/autolinking")
+if (!System.getProperty("os.name").toLowerCase().contains("windows")) {
+    autolinkingCacheDir.deleteDir()
+}
+
 pluginManagement {
   def reactNativeGradlePlugin = new File(
     providers.exec {
