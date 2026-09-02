@@ -52,3 +52,5 @@ export {
   getPriceSeries,
 } from './marketPrices';
 export type { CommodityId, CommodityInfo, MarketComparisonRow, TimeRange, TimeRangeSeries } from './marketPrices';
+export { CONVERSATIONS, CHAT_MESSAGES, YOU_ID, SUPPORT_ID } from './chat';
+export type { ChatMessage, Conversation, ConversationKind, MessageKind, CallSession, CallKind, CallState } from './chat';

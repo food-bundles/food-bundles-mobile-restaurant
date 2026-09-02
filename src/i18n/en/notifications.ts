@@ -69,21 +69,4 @@ export const notifications = {
   settings_notifConsentDesc: 'Data access expiry notices',
   settings_notifRepaymentDesc: 'Upcoming and overdue settlements',
   settings_notifSystemDesc: 'App updates, policy changes',
-
-  chat_title: 'AI Support',
-  chat_onlineNow: 'Online now',
-  chat_typeMessage: 'Type a message…',
-  chat_send: 'Send message',
-  chat_attach: 'Attach a photo',
-  chat_removeImage: 'Remove photo',
-  chat_suggestion1: 'Where is my order?',
-  chat_suggestion2: 'How do vouchers work?',
-  chat_suggestion3: 'Top up my wallet',
-  chat_answerOrderStatus:
-    'Order FB-24815 is In transit, arriving around 10:30. You can track every step on the order screen.',
-  chat_answerVouchers:
-    'Basic and Premium both grant a batch of vouchers every month — each one pays for one order. Every voucher payment is confirmed with a one-time code.',
-  chat_answerTopUp:
-    'Open Wallet → Top up and choose MTN MoMo, Airtel Money, or card. You can also share a top-up link with your accountant.',
-  chat_fallbackAnswer: 'Thanks — a FoodBundles specialist will follow up shortly.',
 } as const;

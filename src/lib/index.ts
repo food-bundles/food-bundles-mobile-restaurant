@@ -17,3 +17,11 @@ export type { ItemComparison, OrderPricePoint, ComparisonSummary, PriceHistoryRa
 export { buildComparisonCsv } from './exportCsv';
 export { computeRelativeTime } from './relativeTime';
 export type { RelativeTimeResult } from './relativeTime';
+export {
+  waitForDelivery,
+  waitForRead,
+  typingDurationMs,
+  peerCannedReply,
+  simulateReply,
+  isSupportParticipant,
+} from './chatSimulator';

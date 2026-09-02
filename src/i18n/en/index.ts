@@ -14,6 +14,7 @@ import { notifications } from './notifications';
 import { market } from './market';
 import { voucherConsent } from './voucherConsent';
 import { menuGenerator } from './menuGenerator';
+import { chat } from './chat';
 
 export const en = {
   ...common,
@@ -32,6 +33,7 @@ export const en = {
   ...market,
   ...voucherConsent,
   ...menuGenerator,
+  ...chat,
 } as const;
 
 export type TranslationKey = keyof typeof en;

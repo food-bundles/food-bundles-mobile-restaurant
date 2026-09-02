@@ -31,7 +31,14 @@
       ],
       "expo-task-manager",
       "expo-notifications",
-      "expo-background-task"
+      "expo-background-task",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "FoodBundles needs microphone access to record voice notes in chat."
+        }
+      ],
+      "expo-document-picker"
     ],
     "experiments": {
       "typedRoutes": true

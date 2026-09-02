@@ -14,6 +14,7 @@ import { notifications } from './notifications';
 import { market } from './market';
 import { voucherConsent } from './voucherConsent';
 import { menuGenerator } from './menuGenerator';
+import { chat } from './chat';
 
 export const rw = {
   ...common,
@@ -32,4 +33,5 @@ export const rw = {
   ...market,
   ...voucherConsent,
   ...menuGenerator,
+  ...chat,
 };
