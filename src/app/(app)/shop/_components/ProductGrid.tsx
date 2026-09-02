@@ -1,10 +1,11 @@
-import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { type AnimatedScrollViewProps } from 'react-native-reanimated';
 import { router } from 'expo-router';
 import type { Product } from '@/mocks/types';
 import { ProductCard } from '@/components/product';
 import { useCartStore } from '@/stores';
 import { space } from '@/theme';
+import { StaggeredGridCell } from './StaggeredGridCell';
 
 export interface ProductGridProps {
   products: Product[];
@@ -44,10 +45,10 @@ export function ProductGrid({
       onScroll={onScroll}
       scrollEventThrottle={16}
       ListHeaderComponent={ListHeaderComponent}
-      renderItem={({ item }) => {
+      renderItem={({ item, index }) => {
         const line = lines.find((l) => l.productId === item.id);
         return (
-          <View style={styles.cell}>
+          <StaggeredGridCell index={index}>
             <ProductCard
               product={item}
               onPress={() => router.push({ pathname: '/(app)/shop/product/[id]', params: { id: item.id } })}
@@ -56,7 +57,7 @@ export function ProductGrid({
               onInc={() => inc(item.id)}
               onDec={() => dec(item.id)}
             />
-          </View>
+          </StaggeredGridCell>
         );
       }}
     />
@@ -67,5 +68,4 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   content: { gap: space.md },
   row: { gap: space.md },
-  cell: { flex: 1 },
 });

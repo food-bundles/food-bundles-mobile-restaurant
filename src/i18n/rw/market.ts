@@ -69,6 +69,7 @@ export const market: Record<keyof typeof marketEn, string> = {
   ranking_colPeerAvg: 'Impuzandengo y’abandi',
   ranking_colSuggestedPrice: 'Igiciro cyifujwe',
   ranking_pricingDisclaimer: 'Ibi ni inama gusa — bihindure ukurikije uko wifuza kugaragara.',
+  ranking_costTrendTitle: 'Igiciro cy’ibyumweru 7 bishize',
 
   dashboard_tabLabel: 'Imbonerahamwe',
   dashboard_chartsTabLabel: 'Ibishushanyo',

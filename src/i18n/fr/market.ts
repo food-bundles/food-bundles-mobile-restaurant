@@ -70,6 +70,7 @@ export const market: Record<keyof typeof marketEn, string> = {
   ranking_colPeerAvg: 'Moyenne des pairs',
   ranking_colSuggestedPrice: 'Prix suggéré',
   ranking_pricingDisclaimer: 'Ce ne sont que des suggestions — ajustez selon votre positionnement.',
+  ranking_costTrendTitle: 'Tendance d’efficacité sur 7 semaines',
 
   dashboard_tabLabel: 'Tableau de bord',
   dashboard_chartsTabLabel: 'Graphiques',

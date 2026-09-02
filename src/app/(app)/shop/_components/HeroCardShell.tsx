@@ -1,5 +1,7 @@
+import { useCallback } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { radius, space, text, useTheme, type ColorPalette } from '@/theme';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { duration, radius, space, text, useTheme, type ColorPalette } from '@/theme';
 
 export type HeroCardTone = 'dark' | 'photo' | 'paper' | 'cream';
 
@@ -37,25 +39,40 @@ export function HeroCardShell({
   background,
 }: HeroCardShellProps) {
   const { colors } = useTheme();
+  const scale = useSharedValue(1);
+
+  const onPressIn = useCallback(() => {
+    scale.value = withTiming(0.98, { duration: duration.press });
+  }, [scale]);
+
+  const onPressOut = useCallback(() => {
+    scale.value = withTiming(1, { duration: duration.press });
+  }, [scale]);
+
+  const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
   return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-      style={[styles.card, { backgroundColor: toneBg(colors)[tone] }]}
-    >
-      {background}
-      <View style={styles.headerRow}>
-        <Text style={[styles.overline, { color: toneOverline(colors)[tone] }]}>{overline}</Text>
-        {badge ? (
-          <View style={[styles.badge, { backgroundColor: colors.marigold }]}>
-            <Text style={[styles.badgeLabel, { color: colors.pine }]}>{badge}</Text>
-          </View>
-        ) : null}
-      </View>
-      {children}
-    </Pressable>
+    <Animated.View style={animatedStyle}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
+        style={[styles.card, { backgroundColor: toneBg(colors)[tone] }]}
+      >
+        {background}
+        <View style={styles.headerRow}>
+          <Text style={[styles.overline, { color: toneOverline(colors)[tone] }]}>{overline}</Text>
+          {badge ? (
+            <View style={[styles.badge, { backgroundColor: colors.marigold }]}>
+              <Text style={[styles.badgeLabel, { color: colors.pine }]}>{badge}</Text>
+            </View>
+          ) : null}
+        </View>
+        {children}
+      </Pressable>
+    </Animated.View>
   );
 }
 

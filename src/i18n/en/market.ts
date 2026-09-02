@@ -73,6 +73,7 @@ export const market = {
   ranking_colPeerAvg: 'Peer avg',
   ranking_colSuggestedPrice: 'Suggested price',
   ranking_pricingDisclaimer: 'These are suggestions only — adjust based on your positioning.',
+  ranking_costTrendTitle: '7-week efficiency trend',
 
   dashboard_tabLabel: 'Dashboard',
   dashboard_chartsTabLabel: 'Charts',

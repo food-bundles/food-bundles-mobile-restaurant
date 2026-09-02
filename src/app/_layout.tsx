@@ -22,6 +22,7 @@ import { registerOrderStatusTask } from '@/tasks/orderStatusTask';
 import { bootstrapNotifications } from '@/tasks/bootstrapNotifications';
 import { InAppBanner } from '@/components/notifications/InAppBanner';
 import { startPriceAlertPolling } from '@/tasks/priceAlertPoller';
+import { ThemeTransitionOverlay } from '@/components/layout';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -75,6 +76,7 @@ export default function RootLayout() {
         <Stack.Screen name="(app)" />
       </Stack>
       <InAppBanner />
+      <ThemeTransitionOverlay />
     </GestureHandlerRootView>
   );
 }

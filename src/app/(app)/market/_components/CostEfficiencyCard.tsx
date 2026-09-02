@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { radius, shadow, space, text, useTheme } from '@/theme';
-import { Sparkline } from './Sparkline';
+import { PriceAreaChart } from './PriceAreaChart';
 import { formatRwf } from '@/lib';
 import { YOUR_COST_PER_COVER, PEER_MEDIAN_COST_PER_COVER, COST_PER_COVER_TREND } from '@/mocks';
 import { useT } from '@/i18n';
 
-/** Compares the restaurant's ingredient cost per cover against the peer median, with a 7-week trend. */
+const TREND_WEEK_LABELS = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7'];
+
+/** Compares the restaurant's ingredient cost per cover against the peer median, with a 7-week trend chart. */
 export function CostEfficiencyCard() {
   const t = useT();
   const { colors } = useTheme();
@@ -22,8 +24,9 @@ export function CostEfficiencyCard() {
       <Text style={[styles.peerMedian, { color: colors.leaf }]}>
         {t('ranking_peerMedianMoreEfficient', { amount: formatRwf(PEER_MEDIAN_COST_PER_COVER), percent: efficiencyPct })}
       </Text>
-      <View style={styles.sparklineGap}>
-        <Sparkline values={COST_PER_COVER_TREND} />
+      <Text style={[styles.trendLabel, { color: colors.secondary }]}>{t('ranking_costTrendTitle')}</Text>
+      <View style={styles.chartGap}>
+        <PriceAreaChart values={COST_PER_COVER_TREND} dayLabels={TREND_WEEK_LABELS} />
       </View>
     </View>
   );
@@ -34,5 +37,6 @@ const styles = StyleSheet.create({
   title: { ...text.h2 },
   yourCost: { ...text.priceLg, marginTop: space.sm },
   peerMedian: { ...text.body, marginTop: space.xs },
-  sparklineGap: { marginTop: space.md },
+  trendLabel: { ...text.overline, marginTop: space.lg },
+  chartGap: { marginTop: space.sm },
 });

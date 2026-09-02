@@ -1,5 +1,7 @@
+import { useCallback } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { hit, radius, shadow, space, text, useTheme } from '@/theme';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { duration, hit, radius, shadow, space, text, useTheme } from '@/theme';
 import type { Product } from '@/mocks/types';
 import { useT } from '@/i18n';
 import { formatRwf } from '@/lib';
@@ -18,53 +20,69 @@ export interface ProductCardProps {
 export function ProductCard({ product, onPress, onAdd, qty = 0, onInc, onDec }: ProductCardProps) {
   const t = useT();
   const { colors } = useTheme();
+  const scale = useSharedValue(1);
+
+  const onPressIn = useCallback(() => {
+    scale.value = withTiming(0.98, { duration: duration.press });
+  }, [scale]);
+
+  const onPressOut = useCallback(() => {
+    scale.value = withTiming(1, { duration: duration.press });
+  }, [scale]);
+
+  const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
   return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={`${product.name}, ${product.unit}`}
-      style={[styles.container, { backgroundColor: colors.paper }]}
-    >
-      <Image source={product.image} accessible={false} style={[styles.image, { backgroundColor: colors.neutral }]} />
-      {product.wasPrice ? (
-        <View style={[styles.discountBadge, { backgroundColor: colors.chili }]}>
-          <Text style={[styles.discountLabel, { color: colors.paper }]}>{t('shop_sale')}</Text>
+    <Animated.View style={[styles.flexOne, animatedStyle]}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
+        accessibilityRole="button"
+        accessibilityLabel={`${product.name}, ${product.unit}`}
+        style={[styles.container, { backgroundColor: colors.paper }]}
+      >
+        <Image source={product.image} accessible={false} style={[styles.image, { backgroundColor: colors.neutral }]} />
+        {product.wasPrice ? (
+          <View style={[styles.discountBadge, { backgroundColor: colors.chili }]}>
+            <Text style={[styles.discountLabel, { color: colors.paper }]}>{t('shop_sale')}</Text>
+          </View>
+        ) : null}
+        <View style={styles.body}>
+          <Text style={[styles.name, { color: colors.ink }]} numberOfLines={1}>
+            {product.name}
+          </Text>
+          <Text style={[styles.unit, { color: colors.muted }]}>{product.unit}</Text>
+          <View style={styles.priceRow}>
+            <PriceText amount={product.price} size="md" />
+            {product.wasPrice ? (
+              <Text style={[styles.wasPrice, { color: colors.muted }]}>
+                {t('shop_wasPrice', { amount: formatRwf(product.wasPrice) })}
+              </Text>
+            ) : null}
+          </View>
         </View>
-      ) : null}
-      <View style={styles.body}>
-        <Text style={[styles.name, { color: colors.ink }]} numberOfLines={1}>
-          {product.name}
-        </Text>
-        <Text style={[styles.unit, { color: colors.muted }]}>{product.unit}</Text>
-        <View style={styles.priceRow}>
-          <PriceText amount={product.price} size="md" />
-          {product.wasPrice ? (
-            <Text style={[styles.wasPrice, { color: colors.muted }]}>
-              {t('shop_wasPrice', { amount: formatRwf(product.wasPrice) })}
-            </Text>
-          ) : null}
-        </View>
-      </View>
-      {qty > 0 && onInc && onDec ? (
-        <View style={styles.stepperWrap}>
-          <QuantityStepper qty={qty} onInc={onInc} onDec={onDec} />
-        </View>
-      ) : (
-        <Pressable
-          onPress={onAdd}
-          accessibilityRole="button"
-          accessibilityLabel={t('shop_addToCartFor', { name: product.name })}
-          style={[styles.addButton, { backgroundColor: colors.leaf }]}
-        >
-          <Text style={[styles.addLabel, { color: colors.paper }]}>{t('shop_add')}</Text>
-        </Pressable>
-      )}
-    </Pressable>
+        {qty > 0 && onInc && onDec ? (
+          <View style={styles.stepperWrap}>
+            <QuantityStepper qty={qty} onInc={onInc} onDec={onDec} />
+          </View>
+        ) : (
+          <Pressable
+            onPress={onAdd}
+            accessibilityRole="button"
+            accessibilityLabel={t('shop_addToCartFor', { name: product.name })}
+            style={[styles.addButton, { backgroundColor: colors.leaf }]}
+          >
+            <Text style={[styles.addLabel, { color: colors.paper }]}>{t('shop_add')}</Text>
+          </Pressable>
+        )}
+      </Pressable>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
+  flexOne: { flex: 1 },
   container: {
     flex: 1,
     borderRadius: radius.lg,
