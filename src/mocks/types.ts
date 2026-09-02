@@ -116,6 +116,8 @@ export interface Affiliator {
   name: string;
   role: string;
   status: AffiliatorStatus;
+  /** Links this affiliator to a peer-chat conversation; absent until a conversation has started. */
+  conversationId?: string;
 }
 
 export interface Plan {

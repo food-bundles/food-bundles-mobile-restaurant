@@ -3,9 +3,9 @@ import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { MoreMenuRow } from './_components/MoreMenuRow';
-import { PersonIcon, HelpIcon, WalletIcon, BellIcon, TrendingUpIcon } from '@/components/icons';
+import { PersonIcon, HelpIcon, WalletIcon, BellIcon, TrendingUpIcon, SendIcon } from '@/components/icons';
 import { useT } from '@/i18n';
-import { useNotificationsStore, useSessionStore } from '@/stores';
+import { useNotificationsStore, useSessionStore, useChatStore } from '@/stores';
 import { account, plans } from '@/mocks';
 
 export default function More() {
@@ -14,6 +14,9 @@ export default function More() {
   const tier = useSessionStore((state) => state.tier);
   const restaurantImageUri = useSessionStore((state) => state.restaurantImageUri);
   const unreadCount = useNotificationsStore((state) => state.unreadCount());
+  const unreadMessages = useChatStore((state) =>
+    state.conversations.reduce((total, conversation) => total + conversation.unreadCount, 0),
+  );
   const planLabel = plans.find((p) => p.id === tier)?.name ?? t('sub_noPlan');
 
   const initials = account.managerName
@@ -57,6 +60,12 @@ export default function More() {
           label={t('more_notifications')}
           trailing={unreadCount > 0 ? <View style={[styles.dot, { backgroundColor: colors.marigold }]} /> : null}
           onPress={() => router.push('/(app)/notifications')}
+        />
+        <MoreMenuRow
+          icon={<SendIcon size={18} color={colors.leaf} />}
+          label={t('msg_entryLabel')}
+          trailing={unreadMessages > 0 ? <View style={[styles.dot, { backgroundColor: colors.marigold }]} /> : null}
+          onPress={() => router.push('/(app)/messages')}
         />
         <MoreMenuRow
           icon={<TrendingUpIcon size={18} color={colors.leaf} />}

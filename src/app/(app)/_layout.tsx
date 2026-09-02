@@ -38,6 +38,10 @@ export default function AppLayout() {
         options={{ presentation: 'transparentModal', animation: 'fade' }}
       />
       <Stack.Screen
+        name="messages/[id]"
+        options={{ presentation: 'transparentModal', animation: 'fade' }}
+      />
+      <Stack.Screen
         name="affiliators/session"
         options={{ presentation: 'transparentModal', animation: 'fade' }}
       />
