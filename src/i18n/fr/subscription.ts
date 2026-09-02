@@ -28,6 +28,11 @@ export const subscription: Record<keyof typeof subscriptionEn, string> = {
   vouchers_expiresOn: 'Expire le {{date}}',
   vouchers_usedOn: 'Utilisé le {{date}}',
   vouchers_startUsing: 'Commencer à utiliser les bons',
+  vouchers_requestNew: 'Demander un nouveau bon',
+  vouchers_viewHistory: 'Historique des bons',
+  vouchers_historyTitle: 'Historique des bons',
+  vouchers_historyEmpty: 'Aucun bon pour le moment.',
+  vouchers_viewOrder: 'Voir la commande {{orderId}}',
 
   terms_title: 'Conditions générales',
   terms_intro: 'Avant votre premier abonnement de bons, veuillez lire et accepter les conditions FoodBundles.',

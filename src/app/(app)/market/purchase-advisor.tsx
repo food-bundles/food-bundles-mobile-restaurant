@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
+import { Toast } from '@/components/primitives';
 import { BuyNowCard } from './_components/BuyNowCard';
 import { WaitCard } from './_components/WaitCard';
 import { SubstituteCard } from './_components/SubstituteCard';
@@ -22,6 +24,7 @@ export default function PurchaseAdvisor() {
   const { colors } = useTheme();
   const isAuthenticated = useSessionStore((state) => state.isAuthenticated);
   const { buyNow, wait } = computeBuyingAdvice();
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const topCommodity = COMMODITIES.reduce((top, candidate) =>
     MOMENTUM[candidate.id].magnitudePct > MOMENTUM[top.id].magnitudePct ? candidate : top,
@@ -30,13 +33,14 @@ export default function PurchaseAdvisor() {
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={t('advisor_title')} />
+      <Toast message={toastMessage} onHide={() => setToastMessage(null)} />
       <ScreenScroll contentInsetBottom={space.xl}>
         <Text style={[styles.updated, { color: colors.secondary }]}>
           {t('advisor_lastUpdated', { time: LAST_UPDATED_LABEL })}
         </Text>
 
-        <BuyNowCard items={buyNow} />
-        <WaitCard items={wait} />
+        <BuyNowCard items={buyNow} onFeedback={setToastMessage} />
+        <WaitCard items={wait} onFeedback={setToastMessage} />
 
         <Text style={[styles.sectionTitle, { color: colors.ink }]}>{t('advisor_bestSubstitute')}</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.substitutesRow}>

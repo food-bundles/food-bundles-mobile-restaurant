@@ -47,7 +47,25 @@ export function VouchersActive() {
       >
         <Text style={[styles.useLabel, { color: colors.paper }]}>{t('vouchers_useAtCheckout')}</Text>
       </Pressable>
-      <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('vouchers_yourVouchers')}</Text>
+      <Pressable
+        onPress={() => router.push('/(app)/vouchers/consent')}
+        accessibilityRole="button"
+        accessibilityLabel={t('vouchers_requestNew')}
+        style={styles.requestButton}
+      >
+        <Text style={[styles.requestLabel, { color: colors.leaf }]}>{t('vouchers_requestNew')}</Text>
+      </Pressable>
+      <View style={styles.sectionHeaderRow}>
+        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('vouchers_yourVouchers')}</Text>
+        <Pressable
+          onPress={() => router.push('/(app)/vouchers/history')}
+          accessibilityRole="button"
+          accessibilityLabel={t('vouchers_viewHistory')}
+          style={styles.historyHit}
+        >
+          <Text style={[styles.historyLabel, { color: colors.leaf }]}>{t('vouchers_viewHistory')}</Text>
+        </Pressable>
+      </View>
       {vouchers.map((voucher) => (
         <VoucherListItem key={voucher.id} voucher={voucher} />
       ))}
@@ -69,5 +87,16 @@ const styles = StyleSheet.create({
     marginTop: space.md,
   },
   useLabel: { ...text.bodySemi },
-  sectionLabel: { ...text.overline, marginTop: space.lg, marginBottom: space.sm },
+  requestButton: { minHeight: 44, justifyContent: 'center', alignItems: 'center', marginTop: space.sm },
+  requestLabel: { ...text.label },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: space.lg,
+    marginBottom: space.sm,
+  },
+  sectionLabel: { ...text.overline },
+  historyHit: { minHeight: 44, justifyContent: 'center' },
+  historyLabel: { ...text.label },
 });

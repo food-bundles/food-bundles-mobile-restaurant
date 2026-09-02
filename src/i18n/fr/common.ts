@@ -25,6 +25,7 @@ export const common: Record<keyof typeof commonEn, string> = {
   action_remove: 'Retirer',
 
   common_loading: 'Chargement…',
+  common_pressBackToExit: 'Appuyez à nouveau sur retour pour quitter',
   a11y_skipSplash: "Passer l'écran de démarrage",
   a11y_decreaseQty: 'Diminuer la quantité',
   a11y_increaseQty: 'Augmenter la quantité',

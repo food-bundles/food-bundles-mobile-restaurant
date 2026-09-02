@@ -23,6 +23,7 @@ export const common = {
   action_remove: 'Remove',
 
   common_loading: 'Loading…',
+  common_pressBackToExit: 'Press back again to exit',
   a11y_skipSplash: 'Skip splash screen',
   a11y_decreaseQty: 'Decrease quantity',
   a11y_increaseQty: 'Increase quantity',

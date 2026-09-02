@@ -46,6 +46,9 @@ export const market: Record<keyof typeof marketEn, string> = {
   advisor_weeklyAvg: 'Moyenne 7 jours : {{price}}',
   advisor_addToCart: 'Ajouter au panier',
   advisor_setPriceAlert: 'Définir une alerte de prix',
+  advisor_addedToCart: '{{name}} ajouté au panier',
+  advisor_priceAlertSet: 'Alerte définie pour {{name}}',
+  advisor_priceAlertActive: 'Alerte définie',
   advisor_cartWarningTitle: 'Vos prochaines commandes nécessitent :',
   advisor_cartWarningBody: '{{name}} dans votre panier est actuellement bien au-dessus de sa moyenne hebdomadaire.',
 

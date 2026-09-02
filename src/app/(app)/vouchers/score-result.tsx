@@ -18,6 +18,7 @@ export default function ScoreResult() {
   const { colors } = useTheme();
   const consentList = useVouchersStore((state) => state.consentList);
   const setCreditScore = useVouchersStore((state) => state.setCreditScore);
+  const requestVoucher = useVouchersStore((state) => state.requestVoucher);
 
   const score = useMemo(() => {
     const result = computeScore(consentList);
@@ -29,7 +30,10 @@ export default function ScoreResult() {
   const hasUnauthorizedSources = TOGGLEABLE_SOURCES.some((source) => !grantedSources.has(source));
 
   const onAuthorizeMore = () => router.push('/(app)/vouchers/consent');
-  const onClaim = () => router.replace({ pathname: '/(app)/subscription/underwriting', params: { completed: '1' } });
+  const onClaim = () => {
+    requestVoucher(score.limitRwf);
+    router.replace({ pathname: '/(app)/subscription/underwriting', params: { completed: '1' } });
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>

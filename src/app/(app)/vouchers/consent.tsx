@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { hit, radius, space, text, useTheme } from '@/theme';
@@ -50,15 +50,24 @@ export default function VoucherConsent() {
   const { colors } = useTheme();
   const { sources: sourcesParam } = useLocalSearchParams<{ sources?: string }>();
   const setConsent = useVouchersStore((state) => state.setConsent);
+  const consentList = useVouchersStore((state) => state.consentList);
   const [acknowledged, setAcknowledged] = useState(false);
   const [otpOpen, setOtpOpen] = useState(false);
 
+  const isForeverGranted = (source: ToggleableSource) =>
+    consentList.some((c) => c.source === source && c.granted && c.expiresAt === null);
+
   const filter = sourcesParam ? new Set(sourcesParam.split(',')) : null;
-  const visibleSources = filter
-    ? TOGGLEABLE_SOURCES.filter((source) => filter.has(source))
-    : TOGGLEABLE_SOURCES;
+  const visibleSources = (filter ? TOGGLEABLE_SOURCES.filter((s) => filter.has(s)) : TOGGLEABLE_SOURCES).filter(
+    (source) => !isForeverGranted(source),
+  );
 
   const [selected, setSelected] = useState<Set<ToggleableSource>>(new Set());
+
+  useEffect(() => {
+    if (visibleSources.length === 0) router.replace('/(app)/vouchers/score-result');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleSource = (source: ToggleableSource) => {
     setSelected((prev) => {
@@ -74,11 +83,13 @@ export default function VoucherConsent() {
   const estimatedLimit =
     BASE_LIMIT_RWF + Array.from(selected).reduce((sum, source) => sum + SOURCE_CONTRIBUTION[source], 0);
 
-  const onOtpConfirmed = () => {
-    for (const source of selected) setConsent(source, true);
+  const onOtpConfirmed = (remember: boolean) => {
+    for (const source of selected) setConsent(source, true, remember);
     setOtpOpen(false);
     router.push('/(app)/subscription/underwriting');
   };
+
+  if (visibleSources.length === 0) return null;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>

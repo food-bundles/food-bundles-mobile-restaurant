@@ -46,6 +46,9 @@ export const market: Record<keyof typeof marketEn, string> = {
   advisor_weeklyAvg: 'Impuzandengo y’iminsi 7: {{price}}',
   advisor_addToCart: 'Ongeraho mu gikapu',
   advisor_setPriceAlert: 'Shyiraho imenyesha ry’igiciro',
+  advisor_addedToCart: '{{name}} yongewe mu gikapu',
+  advisor_priceAlertSet: 'Imenyesha ryashyizweho kuri {{name}}',
+  advisor_priceAlertActive: 'Imenyesha ryashyizweho',
   advisor_cartWarningTitle: 'Ibyatumijwe byawe bitegereje bikeneye:',
   advisor_cartWarningBody: '{{name}} iri mu gikapu cyawe ifite igiciro kiri hejuru cyane y’impuzandengo yacyo.',
 

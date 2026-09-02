@@ -18,6 +18,7 @@ export const voucherConsent: Record<keyof typeof voucherConsentEn, string> = {
   consent_otpTitle: "Confirmer l'accès aux données",
   consent_otpSubtitleAll:
     'Entrez le code à 6 chiffres envoyé au {{phone}} pour autoriser l’accès pour toutes les sources sélectionnées pendant 30 jours.',
+  consent_rememberChoice: 'Se souvenir de mon choix pour ces sources — ne plus demander',
   consent_otpConfirm: "Confirmer l'accès",
 
   consent_euclName: 'EUCL Cash Power',

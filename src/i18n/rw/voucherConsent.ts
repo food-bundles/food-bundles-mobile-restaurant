@@ -17,6 +17,7 @@ export const voucherConsent: Record<keyof typeof voucherConsentEn, string> = {
 
   consent_otpTitle: 'Emeza ko amakuru abonwa',
   consent_otpSubtitleAll: 'Andika kode y’imibare 6 yoherejwe kuri {{phone}} kugira ngo wemeze ko amasoko wahisemo yose abona amakuru mu minsi 30.',
+  consent_rememberChoice: 'Bika icyo nahisemo kuri aya masoko — ntumbaze nanone',
   consent_otpConfirm: 'Emeza uburenganzira',
 
   consent_euclName: 'EUCL Cash Power',

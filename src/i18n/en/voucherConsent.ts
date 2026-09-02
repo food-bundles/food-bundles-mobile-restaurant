@@ -15,6 +15,7 @@ export const voucherConsent = {
 
   consent_otpTitle: 'Confirm data access',
   consent_otpSubtitleAll: "Enter the 6-digit code sent to {{phone}} to authorize access for all selected sources for 30 days.",
+  consent_rememberChoice: "Remember my choice for these sources — don't ask again",
   consent_otpConfirm: 'Confirm access',
 
   consent_euclName: 'EUCL Cash Power',

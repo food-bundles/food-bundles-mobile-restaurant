@@ -1,6 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { hit, radius, shadow, space, text, useTheme } from '@/theme';
 import { Badge } from '@/components/primitives';
+import { QuantityStepper } from '@/components/product';
 import { formatRwf } from '@/lib';
 import { useCartStore } from '@/stores';
 import { COMMODITY_PRODUCT_ID, type BuyingAdviceItem } from '@/lib';
@@ -9,16 +10,20 @@ import { useT } from '@/i18n';
 
 export interface BuyNowCardProps {
   items: BuyingAdviceItem[];
+  onFeedback: (message: string) => void;
 }
 
 const PHOTO_HEIGHT = 120;
 const SOURCE_MARKETS = ['Kimironko', 'Musanze', 'FoodBundles'];
 
 /** Section A "Buy now": full-width vertical cards with a photo, savings badge, and 3-source price row. */
-export function BuyNowCard({ items }: BuyNowCardProps) {
+export function BuyNowCard({ items, onFeedback }: BuyNowCardProps) {
   const t = useT();
   const { colors } = useTheme();
   const addToCart = useCartStore((state) => state.add);
+  const incQty = useCartStore((state) => state.inc);
+  const decQty = useCartStore((state) => state.dec);
+  const cartLines = useCartStore((state) => state.lines);
 
   if (items.length === 0) return null;
 
@@ -34,6 +39,7 @@ export function BuyNowCard({ items }: BuyNowCardProps) {
           price: Math.round(item.todayPrice * row.priceMultiplier),
         }));
         const cheapestMarket = sourceRows.reduce((min, row) => (row.price < min.price ? row : min), sourceRows[0]);
+        const qty = cartLines.find((line) => line.productId === productId)?.qty ?? 0;
 
         return (
           <View key={item.commodityId} style={[styles.card, { backgroundColor: colors.paper }]}>
@@ -62,14 +68,27 @@ export function BuyNowCard({ items }: BuyNowCardProps) {
                   </Text>
                 ))}
               </View>
-              <Pressable
-                onPress={() => addToCart(productId)}
-                accessibilityRole="button"
-                accessibilityLabel={t('advisor_addToCart')}
-                style={[styles.addButton, { backgroundColor: colors.marigold }]}
-              >
-                <Text style={[styles.addLabel, { color: colors.pine }]}>{t('advisor_addToCart')}</Text>
-              </Pressable>
+              {qty > 0 ? (
+                <View style={styles.stepperRow}>
+                  <QuantityStepper
+                    qty={qty}
+                    onInc={() => incQty(productId)}
+                    onDec={() => decQty(productId)}
+                  />
+                </View>
+              ) : (
+                <Pressable
+                  onPress={() => {
+                    addToCart(productId);
+                    onFeedback(t('advisor_addedToCart', { name: item.name }));
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('advisor_addToCart')}
+                  style={[styles.addButton, { backgroundColor: colors.marigold }]}
+                >
+                  <Text style={[styles.addLabel, { color: colors.pine }]}>{t('advisor_addToCart')}</Text>
+                </Pressable>
+              )}
             </View>
           </View>
         );
@@ -98,4 +117,5 @@ const styles = StyleSheet.create({
     marginTop: space.sm,
   },
   addLabel: { ...text.bodySemi },
+  stepperRow: { alignSelf: 'flex-end', marginTop: space.sm },
 });

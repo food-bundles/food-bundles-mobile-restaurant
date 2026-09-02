@@ -28,6 +28,11 @@ export const subscription: Record<keyof typeof subscriptionEn, string> = {
   vouchers_expiresOn: 'Irangira {{date}}',
   vouchers_usedOn: 'Yakoreshejwe {{date}}',
   vouchers_startUsing: 'Tangira gukoresha inguzanyo',
+  vouchers_requestNew: 'Saba inguzanyo nshya',
+  vouchers_viewHistory: 'Amateka y’inguzanyo',
+  vouchers_historyTitle: 'Amateka y’inguzanyo',
+  vouchers_historyEmpty: 'Nta nguzanyo zirahaba.',
+  vouchers_viewOrder: 'Reba itumiza {{orderId}}',
 
   terms_title: 'Amabwiriza n’amasezerano',
   terms_intro: 'Mbere y’iyandikisha ryawe rya mbere ry’inguzanyo, soma kandi wemeze amabwiriza y’inguzanyo za FoodBundles.',

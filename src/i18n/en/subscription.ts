@@ -26,6 +26,11 @@ export const subscription = {
   vouchers_expiresOn: 'Expires {{date}}',
   vouchers_usedOn: 'Used {{date}}',
   vouchers_startUsing: 'Start using vouchers',
+  vouchers_requestNew: 'Request new voucher',
+  vouchers_viewHistory: 'Voucher history',
+  vouchers_historyTitle: 'Voucher history',
+  vouchers_historyEmpty: 'No vouchers yet.',
+  vouchers_viewOrder: 'View order {{orderId}}',
 
   terms_title: 'Terms & conditions',
   terms_intro: 'Before your first voucher subscription, please read and accept the FoodBundles voucher terms.',

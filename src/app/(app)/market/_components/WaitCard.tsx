@@ -8,15 +8,17 @@ import { useT } from '@/i18n';
 
 export interface WaitCardProps {
   items: BuyingAdviceItem[];
+  onFeedback: (message: string) => void;
 }
 
 const PHOTO_SIZE = 80;
 
 /** Section B "Wait if you can": a compact 2-column grid with a set-alert action per item. */
-export function WaitCard({ items }: WaitCardProps) {
+export function WaitCard({ items, onFeedback }: WaitCardProps) {
   const t = useT();
   const { colors } = useTheme();
   const setPriceAlert = useNotificationsStore((state) => state.setPriceAlert);
+  const priceAlerts = useNotificationsStore((state) => state.priceAlerts);
 
   if (items.length === 0) return null;
 
@@ -28,6 +30,7 @@ export function WaitCard({ items }: WaitCardProps) {
           const productId = COMMODITY_PRODUCT_ID[item.commodityId];
           const product = products.find((p) => p.id === productId);
           const deltaPct = `+${Math.abs(item.changeFraction * 100).toFixed(1)}%`;
+          const alertSet = priceAlerts.some((alert) => alert.productId === productId);
 
           return (
             <View key={item.commodityId} style={[styles.card, { backgroundColor: colors.paper }]}>
@@ -41,12 +44,20 @@ export function WaitCard({ items }: WaitCardProps) {
                 {formatRwf(item.todayPrice)} {deltaPct}
               </Text>
               <Pressable
-                onPress={() => setPriceAlert(productId, Math.round(item.weeklyAveragePrice), 'below')}
+                onPress={() => {
+                  if (alertSet) return;
+                  setPriceAlert(productId, Math.round(item.weeklyAveragePrice), 'below');
+                  onFeedback(t('advisor_priceAlertSet', { name: item.name }));
+                }}
+                disabled={alertSet}
                 accessibilityRole="button"
-                accessibilityLabel={t('advisor_setPriceAlert')}
+                accessibilityState={{ disabled: alertSet }}
+                accessibilityLabel={alertSet ? t('advisor_priceAlertSet', { name: item.name }) : t('advisor_setPriceAlert')}
                 style={styles.alertHit}
               >
-                <Text style={[styles.alertLabel, { color: colors.leaf }]}>{t('advisor_setPriceAlert')}</Text>
+                <Text style={[styles.alertLabel, { color: alertSet ? colors.secondary : colors.leaf }]}>
+                  {alertSet ? t('advisor_priceAlertActive') : t('advisor_setPriceAlert')}
+                </Text>
               </Pressable>
             </View>
           );

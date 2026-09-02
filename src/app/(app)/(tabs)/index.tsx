@@ -1,8 +1,10 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { useRef, useState } from 'react';
+import { BackHandler, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { SectionHeader } from '@/components/layout';
+import { Toast } from '@/components/primitives';
 import { CategoryChips, type CategoryOption } from '@/app/(public)/_components/CategoryChips';
 import { ShopHomeHeader } from '../shop/_components/ShopHomeHeader';
 import { SearchTrigger } from '../shop/_components/SearchTrigger';
@@ -12,6 +14,32 @@ import { SeeAllLink } from '../shop/_components/SeeAllLink';
 import { products } from '@/mocks';
 import { useT } from '@/i18n';
 import { hit, space, text, useTheme } from '@/theme';
+
+const EXIT_CONFIRM_WINDOW_MS = 2000;
+
+/** Android-only: first hardware back-press on this root screen shows a toast instead of exiting; a second press within the window lets it through. */
+function useExitConfirm(message: string): { toastMessage: string | null; hideToast: () => void } {
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const armedRef = useRef(false);
+
+  useFocusEffect(() => {
+    if (Platform.OS !== 'android') return;
+
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (armedRef.current) return false;
+      armedRef.current = true;
+      setToastMessage(message);
+      setTimeout(() => {
+        armedRef.current = false;
+      }, EXIT_CONFIRM_WINDOW_MS);
+      return true;
+    });
+
+    return () => subscription.remove();
+  });
+
+  return { toastMessage, hideToast: () => setToastMessage(null) };
+}
 
 const CATEGORY_OPTIONS: CategoryOption[] = [
   { key: 'ALL', label: 'All' },
@@ -25,9 +53,11 @@ export default function ShopHome() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
+  const { toastMessage, hideToast } = useExitConfirm(t('common_pressBackToExit'));
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
+      <Toast message={toastMessage} onHide={hideToast} />
       <View style={[styles.stickyHeader, { backgroundColor: colors.oat, paddingTop: insets.top }]}>
         <ShopHomeHeader />
         <View style={styles.searchGap}>
