@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { space, text, useTheme } from '@/theme';
@@ -13,6 +14,7 @@ import { orders as seedOrders } from '@/mocks';
 import { useUiStore } from '@/stores';
 import { useT } from '@/i18n';
 import { OrdersIcon } from '@/components/icons';
+import { useHideOnScroll } from '@/hooks';
 
 export default function OrdersList() {
   const t = useT();
@@ -22,6 +24,7 @@ export default function OrdersList() {
   const insets = useSafeAreaInsets();
   const [filter, setFilter] = useState<OrderFilter>('all');
   const [refreshing, setRefreshing] = useState(false);
+  const { onScroll } = useHideOnScroll();
 
   useEffect(() => {
     if (demoState === 'loading') {
@@ -72,9 +75,11 @@ export default function OrdersList() {
           />
         </View>
       ) : (
-        <ScrollView
+        <Animated.ScrollView
           contentContainerStyle={styles.listContent}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.leaf} />}
+          onScroll={onScroll}
+          scrollEventThrottle={16}
         >
           {activeOrder ? (
             <View style={styles.activeGap}>
@@ -87,7 +92,7 @@ export default function OrdersList() {
           {filteredOrders.map((order) => (
             <OrderCard key={order.id} order={order} />
           ))}
-        </ScrollView>
+        </Animated.ScrollView>
       )}
     </View>
   );

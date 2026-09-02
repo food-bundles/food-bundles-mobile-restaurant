@@ -10,6 +10,7 @@ import { VouchersActive } from './_components/VouchersActive';
 import { VouchersLocked } from './_components/VouchersLocked';
 import { useWalletStore, useSessionStore, isVouchersUnlocked } from '@/stores';
 import { useT } from '@/i18n';
+import { useHideOnScroll } from '@/hooks';
 
 export default function WalletBalance() {
   const t = useT();
@@ -21,6 +22,7 @@ export default function WalletBalance() {
   const fetch = useWalletStore((state) => state.fetch);
   const tier = useSessionStore((state) => state.tier);
   const unlocked = isVouchersUnlocked(tier);
+  const { onScroll } = useHideOnScroll();
 
   useEffect(() => {
     fetch();
@@ -32,7 +34,7 @@ export default function WalletBalance() {
   }, [tab]);
 
   return (
-    <ScreenScroll>
+    <ScreenScroll onScroll={onScroll}>
       <Text style={[styles.title, { color: colors.ink }]}>{t('wallet_title')}</Text>
       <View style={styles.switchGap}>
         <WalletTabSwitch active={pane} onSelect={setPane} />

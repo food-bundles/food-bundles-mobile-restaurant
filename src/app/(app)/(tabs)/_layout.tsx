@@ -5,6 +5,7 @@ import { hit, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 import { BasketIcon, OrdersIcon, WalletIcon, MoreIcon, type IconProps } from '@/components/icons';
 import { AvatarTabButton } from '@/components/navigation';
+import { AnimatedTabBar } from './_components/AnimatedTabBar';
 
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
   const { colors } = useTheme();
@@ -33,6 +34,7 @@ export default function TabsLayout() {
 
   return (
     <Tabs
+      tabBar={(props) => <AnimatedTabBar {...props} />}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.leaf,

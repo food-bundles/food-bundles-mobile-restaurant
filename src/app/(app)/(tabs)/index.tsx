@@ -14,6 +14,7 @@ import { SeeAllLink } from '../shop/_components/SeeAllLink';
 import { products } from '@/mocks';
 import { useT } from '@/i18n';
 import { hit, space, text, useTheme } from '@/theme';
+import { useHideOnScroll } from '@/hooks';
 
 const EXIT_CONFIRM_WINDOW_MS = 2000;
 
@@ -54,6 +55,7 @@ export default function ShopHome() {
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
   const { toastMessage, hideToast } = useExitConfirm(t('common_pressBackToExit'));
+  const { onScroll } = useHideOnScroll();
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
@@ -91,6 +93,7 @@ export default function ShopHome() {
       <ProductGrid
         products={products.slice(0, 4)}
         fill
+        onScroll={onScroll}
         contentContainerStyle={[styles.gridContent, { paddingBottom: tabBarHeight + space.xxl }]}
         ListHeaderComponent={
           <View style={styles.sectionGap}>
