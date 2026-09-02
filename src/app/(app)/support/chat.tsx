@@ -1,20 +1,18 @@
 import { useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { space, useTheme } from '@/theme';
-import { ChatBubble } from './_components/ChatBubble';
+import { MessageBubble, TypingIndicator, ChatComposer, CallScreen, type ComposerAttachment } from '@/components/chat';
 import { ChatHeader } from './_components/ChatHeader';
-import { ChatComposer } from './_components/ChatComposer';
-import { type Suggestion } from './_components/SuggestionChips';
+import { SuggestionChips, type Suggestion } from './_components/SuggestionChips';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
+import { useChatStore } from '@/stores';
+import { SUPPORT_ID, YOU_ID } from '@/mocks';
+import { simulateReply } from '@/lib';
+import type { CallKind } from '@/mocks';
 
-interface ChatMessage {
-  fromUser: boolean;
-  text: string;
-  imageUri?: string;
-}
+const CONVERSATION_ID = 'conv-support';
 
 const ANSWER_KEY: Record<string, TranslationKey> = {
   orderStatus: 'chat_answerOrderStatus',
@@ -22,14 +20,23 @@ const ANSWER_KEY: Record<string, TranslationKey> = {
   topUp: 'chat_answerTopUp',
 };
 
+function newMessageId(): string {
+  return `msg-${Date.now()}-${Math.round(Math.random() * 1000)}`;
+}
+
 export default function Chat() {
   const t = useT();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const messages = useChatStore((state) => state.messagesByConversation[CONVERSATION_ID] ?? []);
+  const typingConversationId = useChatStore((state) => state.typingConversationId);
+  const sendMessage = useChatStore((state) => state.sendMessage);
+  const receiveMessage = useChatStore((state) => state.receiveMessage);
+  const setTyping = useChatStore((state) => state.setTyping);
+  const simulateDeliveryThenRead = useChatStore((state) => state.simulateDeliveryThenRead);
   const [draft, setDraft] = useState('');
-  const [pendingImageUri, setPendingImageUri] = useState<string | null>(null);
+  const [activeCall, setActiveCall] = useState<CallKind | null>(null);
 
   const suggestions: Suggestion[] = [
     { key: 'orderStatus', label: t('chat_suggestion1') },
@@ -41,33 +48,65 @@ export default function Chat() {
     requestAnimationFrame(() => scrollRef.current?.scrollToEnd({ animated: true }));
   };
 
-  const appendReply = (userMessage: ChatMessage, answer: string) => {
-    setMessages((prev) => [...prev, userMessage, { fromUser: false, text: answer }]);
+  const respondWithAnswer = async (answerBody: string) => {
+    const replyBody = await simulateReply(answerBody, {
+      onTypingStart: () => setTyping(CONVERSATION_ID),
+      onTypingEnd: () => setTyping(null),
+    });
+    receiveMessage(CONVERSATION_ID, {
+      id: newMessageId(),
+      senderId: SUPPORT_ID,
+      kind: 'text',
+      body: replyBody,
+      sentAt: new Date().toISOString(),
+      deliveredAt: new Date().toISOString(),
+    });
     scrollToBottom();
   };
 
+  const pushUserMessage = (
+    kind: ComposerAttachment['kind'],
+    body: string,
+    attachment?: string,
+    durationMs?: number,
+  ) => {
+    const id = newMessageId();
+    sendMessage(CONVERSATION_ID, {
+      id,
+      senderId: YOU_ID,
+      kind,
+      body,
+      attachment,
+      durationMs,
+      sentAt: new Date().toISOString(),
+    });
+    scrollToBottom();
+    void simulateDeliveryThenRead(CONVERSATION_ID, id);
+    return id;
+  };
+
   const askSuggestion = (suggestion: Suggestion) => {
+    pushUserMessage('text', suggestion.label);
     const answerKey = ANSWER_KEY[suggestion.key];
-    appendReply({ fromUser: true, text: suggestion.label }, answerKey ? t(answerKey) : t('chat_fallbackAnswer'));
+    void respondWithAnswer(answerKey ? t(answerKey) : t('chat_fallbackAnswer'));
   };
 
   const sendDraft = () => {
     const trimmed = draft.trim();
-    if (!trimmed && !pendingImageUri) return;
-    appendReply(
-      { fromUser: true, text: trimmed, imageUri: pendingImageUri ?? undefined },
-      t('chat_fallbackAnswer'),
-    );
+    if (!trimmed) return;
+    pushUserMessage('text', trimmed);
     setDraft('');
-    setPendingImageUri(null);
+    void respondWithAnswer(t('chat_fallbackAnswer'));
   };
 
-  const onAttach = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) return;
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.85 });
-    if (!result.canceled && result.assets[0]) setPendingImageUri(result.assets[0].uri);
+  const sendAttachment = (attachment: ComposerAttachment) => {
+    pushUserMessage(attachment.kind, '', attachment.uri, attachment.durationMs);
+    void respondWithAnswer(t('chat_fallbackAnswer'));
   };
+
+  if (activeCall) {
+    return <CallScreen peerName={t('chat_title')} kind={activeCall} onEnd={() => setActiveCall(null)} />;
+  }
 
   return (
     <KeyboardAvoidingView
@@ -75,7 +114,7 @@ export default function Chat() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={insets.top}
     >
-      <ChatHeader topInset={insets.top} />
+      <ChatHeader topInset={insets.top} onStartCall={setActiveCall} />
       <ScrollView
         ref={scrollRef}
         style={[styles.scrollArea, { backgroundColor: colors.oat }]}
@@ -84,20 +123,18 @@ export default function Chat() {
         keyboardShouldPersistTaps="handled"
         onContentSizeChange={scrollToBottom}
       >
-        {messages.map((message, index) => (
-          <ChatBubble key={index} text={message.text} fromUser={message.fromUser} imageUri={message.imageUri} />
+        {messages.map((message) => (
+          <MessageBubble key={message.id} message={message} fromMe={message.senderId === YOU_ID} />
         ))}
+        {typingConversationId === CONVERSATION_ID ? <TypingIndicator /> : null}
       </ScrollView>
+      <SuggestionChips suggestions={suggestions} onSelect={askSuggestion} />
       <ChatComposer
         bottomInset={insets.bottom}
-        suggestions={suggestions}
-        onSelectSuggestion={askSuggestion}
         draft={draft}
         onDraftChange={setDraft}
-        pendingImageUri={pendingImageUri}
-        onAttach={onAttach}
-        onRemoveImage={() => setPendingImageUri(null)}
-        onSend={sendDraft}
+        onSendText={sendDraft}
+        onSendAttachment={sendAttachment}
       />
     </KeyboardAvoidingView>
   );

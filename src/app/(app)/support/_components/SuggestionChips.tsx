@@ -32,7 +32,7 @@ export function SuggestionChips({ suggestions, onSelect }: SuggestionChipsProps)
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: space.sm },
+  row: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.md, paddingBottom: space.sm },
   chip: {
     minHeight: hit.min,
     paddingHorizontal: space.md,
