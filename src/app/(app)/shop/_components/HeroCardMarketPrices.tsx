@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { signatureDuration, space, text, useTheme } from '@/theme';
-import { formatRwf } from '@/lib';
 import { HeroCardShell } from './HeroCardShell';
 import { HeroCardLink } from './HeroCardLink';
+import { HeroCardMarketRow } from './HeroCardMarketRow';
 
 export interface MarketRow {
   market: string;
@@ -53,19 +53,9 @@ export function HeroCardMarketPrices({
     >
       <View>
         <Text style={[styles.commodity, { color: colors.ink }]}>{commodity}</Text>
-        {rows.map((row) =>
-          row.best ? (
-            <Animated.View key={row.market} style={[styles.row, styles.bestRow, highlightStyle]}>
-              <Text style={[styles.marketBest, { color: colors.leaf }]}>{row.market}</Text>
-              <Text style={[styles.priceBest, { color: colors.leaf }]}>{formatRwf(row.price)}</Text>
-            </Animated.View>
-          ) : (
-            <View key={row.market} style={styles.row}>
-              <Text style={[styles.market, { color: colors.secondary }]}>{row.market}</Text>
-              <Text style={[styles.price, { color: colors.ink }]}>{formatRwf(row.price)}</Text>
-            </View>
-          ),
-        )}
+        {rows.map((row, index) => (
+          <HeroCardMarketRow key={row.market} row={row} index={index} highlightStyle={highlightStyle} />
+        ))}
       </View>
       <HeroCardLink label={linkLabel} tone="leaf" />
     </HeroCardShell>
@@ -74,10 +64,4 @@ export function HeroCardMarketPrices({
 
 const styles = StyleSheet.create({
   commodity: { ...text.bodySemi, marginBottom: space.xs },
-  row: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 1 },
-  bestRow: { paddingLeft: space.xs, borderLeftWidth: 2, borderLeftColor: 'transparent' },
-  market: { ...text.caption },
-  marketBest: { ...text.bodySemi },
-  price: { ...text.caption, fontVariant: ['tabular-nums'] },
-  priceBest: { ...text.bodySemi, fontVariant: ['tabular-nums'] },
 });

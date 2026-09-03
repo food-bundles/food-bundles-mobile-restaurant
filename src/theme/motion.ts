@@ -27,6 +27,7 @@ export const signatureDuration = {
   carouselPhaseFade: 400,
   carouselPulseScale: 260,
   carouselShimmerSweep: 900,
+  carouselPriceStagger: 90,
   avatarBlinkInterval: 4000,
   avatarBlink: 120,
   avatarEyeShiftInterval: 7000,
