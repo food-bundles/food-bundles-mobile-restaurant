@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { color, space } from '@/theme';
+import { space, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { WalletIcon } from '@/components/icons';
 import { EmptyState } from '@/components/primitives';
@@ -11,6 +11,7 @@ import { useT } from '@/i18n';
 
 export default function Transactions() {
   const t = useT();
+  const { colors } = useTheme();
   const transactions = useWalletStore((state) => state.transactions);
   const fetch = useWalletStore((state) => state.fetch);
   const [filter, setFilter] = useState<TransactionFilter>('all');
@@ -26,7 +27,7 @@ export default function Transactions() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={t('wallet_transactions')} />
       <ScreenScroll contentInsetBottom={40}>
         <View style={styles.filterGap}>
@@ -34,7 +35,7 @@ export default function Transactions() {
         </View>
         {filtered.length === 0 ? (
           <EmptyState
-            icon={<WalletIcon size={22} color={color.leaf} />}
+            icon={<WalletIcon size={22} color={colors.leaf} />}
             title={t('wallet_emptyTitle')}
             message={t('wallet_emptyMessage')}
           />
@@ -51,7 +52,7 @@ export default function Transactions() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   filterGap: { marginTop: space.md, marginBottom: space.sm },
   listGap: { marginTop: space.sm },
 });

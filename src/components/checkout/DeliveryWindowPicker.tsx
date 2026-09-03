@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 
 const WINDOWS = ['9:00 AM – 12:00 PM', '12:00 PM – 3:00 PM', '3:00 PM – 6:00 PM'];
@@ -12,10 +12,11 @@ export interface DeliveryWindowPickerProps {
 
 export function DeliveryWindowPicker({ selected, onSelect, hideLabel }: DeliveryWindowPickerProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <View>
-      {hideLabel ? null : <Text style={styles.label}>{t('checkout_deliveryWindow')}</Text>}
+      {hideLabel ? null : <Text style={[styles.label, { color: colors.ink }]}>{t('checkout_deliveryWindow')}</Text>}
       <View style={styles.list}>
         {WINDOWS.map((window, index) => {
           const active = index === selected;
@@ -26,9 +27,13 @@ export function DeliveryWindowPicker({ selected, onSelect, hideLabel }: Delivery
               accessibilityRole="radio"
               accessibilityState={{ selected: active }}
               accessibilityLabel={window}
-              style={[styles.option, active && styles.optionActive]}
+              style={[
+                styles.option,
+                { borderColor: colors.hairline },
+                active && { borderColor: colors.leaf, backgroundColor: colors.tintLeaf },
+              ]}
             >
-              <Text style={[styles.optionLabel, active && styles.optionLabelActive]}>{window}</Text>
+              <Text style={[styles.optionLabel, { color: active ? colors.pine : colors.body }]}>{window}</Text>
             </Pressable>
           );
         })}
@@ -38,17 +43,14 @@ export function DeliveryWindowPicker({ selected, onSelect, hideLabel }: Delivery
 }
 
 const styles = StyleSheet.create({
-  label: { ...text.label, color: color.ink, marginBottom: space.sm },
+  label: { ...text.label, marginBottom: space.sm },
   list: { gap: space.sm },
   option: {
     minHeight: hit.min,
     borderRadius: radius.md,
     borderWidth: 1.5,
-    borderColor: color.hairline,
     paddingHorizontal: space.md,
     justifyContent: 'center',
   },
-  optionActive: { borderColor: color.leaf, backgroundColor: color.tintLeaf },
-  optionLabel: { ...text.body, color: color.body },
-  optionLabelActive: { color: color.pine },
+  optionLabel: { ...text.body },
 });

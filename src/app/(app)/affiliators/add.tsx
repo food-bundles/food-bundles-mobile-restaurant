@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { PersonIcon } from '@/components/icons';
 import { Input } from '@/components/primitives';
@@ -10,6 +10,7 @@ import { useT } from '@/i18n';
 
 export default function AddAffiliator() {
   const t = useT();
+  const { colors } = useTheme();
   const [fullName, setFullName] = useState('Eric Niyonzima');
   const [email, setEmail] = useState('eric.niyonzima@kigalibistro.rw');
   const [role, setRole] = useState('Purchasing');
@@ -17,20 +18,25 @@ export default function AddAffiliator() {
   const [canRequestVouchers, setCanRequestVouchers] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={t('aff_addTitle')} />
       <ScreenScroll contentInsetBottom={80}>
-        <Text style={styles.label}>{t('aff_photo')}</Text>
+        <Text style={[styles.label, { color: colors.ink }]}>{t('aff_photo')}</Text>
         <View style={styles.photoRow}>
-          <View style={styles.photoPlaceholder}>
-            <PersonIcon size={22} color={color.muted} />
+          <View
+            style={[
+              styles.photoPlaceholder,
+              { backgroundColor: colors.neutral, borderColor: colors.disabledLine },
+            ]}
+          >
+            <PersonIcon size={22} color={colors.muted} />
           </View>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t('aff_uploadPhoto')}
-            style={styles.uploadButton}
+            style={[styles.uploadButton, { borderColor: colors.hairline }]}
           >
-            <Text style={styles.uploadLabel}>{t('aff_uploadPhoto')}</Text>
+            <Text style={[styles.uploadLabel, { color: colors.leaf }]}>{t('aff_uploadPhoto')}</Text>
           </Pressable>
         </View>
         <View style={styles.fields}>
@@ -39,7 +45,7 @@ export default function AddAffiliator() {
           <Input label={t('aff_role')} value={role} onChangeText={setRole} />
           <Input label={t('aff_phone')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
         </View>
-        <Text style={styles.permissionsLabel}>{t('aff_permissions')}</Text>
+        <Text style={[styles.permissionsLabel, { color: colors.secondary }]}>{t('aff_permissions')}</Text>
         <PermissionRow label={t('aff_placeOrders')} enabled />
         <PermissionRow
           label={t('aff_useVouchers')}
@@ -53,9 +59,9 @@ export default function AddAffiliator() {
           onPress={() => router.back()}
           accessibilityRole="button"
           accessibilityLabel={t('aff_sendInvite')}
-          style={styles.submitButton}
+          style={[styles.submitButton, { backgroundColor: colors.leaf }]}
         >
-          <Text style={styles.submitLabel}>{t('aff_sendInvite')}</Text>
+          <Text style={[styles.submitLabel, { color: colors.paper }]}>{t('aff_sendInvite')}</Text>
         </Pressable>
       </StickyFooter>
     </View>
@@ -63,16 +69,14 @@ export default function AddAffiliator() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
-  label: { ...text.label, color: color.ink, marginTop: space.md, marginBottom: space.sm },
+  container: { flex: 1 },
+  label: { ...text.label, marginTop: space.md, marginBottom: space.sm },
   photoRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   photoPlaceholder: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: color.neutral,
     borderWidth: 1.5,
-    borderColor: color.disabledLine,
     borderStyle: 'dashed',
     alignItems: 'center',
     justifyContent: 'center',
@@ -82,19 +86,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
     borderWidth: 1,
-    borderColor: color.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  uploadLabel: { ...text.label, color: color.leaf },
+  uploadLabel: { ...text.label },
   fields: { gap: space.md, marginTop: space.lg },
-  permissionsLabel: { ...text.overline, color: color.secondary, marginTop: space.lg, marginBottom: space.sm },
+  permissionsLabel: { ...text.overline, marginTop: space.lg, marginBottom: space.sm },
   submitButton: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  submitLabel: { ...text.bodySemi, color: color.paper },
+  submitLabel: { ...text.bodySemi },
 });

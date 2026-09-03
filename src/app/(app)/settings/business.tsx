@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { Input } from '@/components/primitives';
 import { useT } from '@/i18n';
@@ -9,6 +9,7 @@ import { account } from '@/mocks';
 
 export default function BusinessDetails() {
   const t = useT();
+  const { colors } = useTheme();
   const [businessName, setBusinessName] = useState(account.businessName);
   const [address, setAddress] = useState(account.address);
   const [tin, setTin] = useState(account.tin);
@@ -16,7 +17,7 @@ export default function BusinessDetails() {
   const [email, setEmail] = useState(account.email);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={t('business_title')} />
       <ScreenScroll contentInsetBottom={80}>
         <View style={styles.fields}>
@@ -32,9 +33,9 @@ export default function BusinessDetails() {
           onPress={() => router.back()}
           accessibilityRole="button"
           accessibilityLabel={t('business_saveChanges')}
-          style={styles.saveButton}
+          style={[styles.saveButton, { backgroundColor: colors.leaf }]}
         >
-          <Text style={styles.saveLabel}>{t('business_saveChanges')}</Text>
+          <Text style={[styles.saveLabel, { color: colors.paper }]}>{t('business_saveChanges')}</Text>
         </Pressable>
       </StickyFooter>
     </View>
@@ -42,14 +43,13 @@ export default function BusinessDetails() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   fields: { gap: space.md, marginTop: space.md },
   saveButton: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  saveLabel: { ...text.bodySemi, color: color.paper },
+  saveLabel: { ...text.bodySemi },
 });

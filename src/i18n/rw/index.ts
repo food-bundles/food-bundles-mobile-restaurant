@@ -11,6 +11,10 @@ import { more } from './more';
 import { affiliators } from './affiliators';
 import { settings } from './settings';
 import { notifications } from './notifications';
+import { market } from './market';
+import { voucherConsent } from './voucherConsent';
+import { menuGenerator } from './menuGenerator';
+import { chat } from './chat';
 
 export const rw = {
   ...common,
@@ -26,4 +30,8 @@ export const rw = {
   ...affiliators,
   ...settings,
   ...notifications,
+  ...market,
+  ...voucherConsent,
+  ...menuGenerator,
+  ...chat,
 };

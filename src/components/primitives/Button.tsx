@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, type GestureResponderEvent } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { color, duration, radius, text } from '@/theme';
+import { duration, radius, text, useTheme, type ColorPalette } from '@/theme';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'accent' | 'destructive';
 export type ButtonSize = 'md' | 'sm';
@@ -17,18 +17,18 @@ export interface ButtonProps {
   accessibilityLabel?: string;
 }
 
-const VARIANT_BG: Record<ButtonVariant, string> = {
-  primary: color.leaf,
-  secondary: color.paper,
-  accent: color.marigold,
-  destructive: color.chili,
+const VARIANT_BG: Record<ButtonVariant, keyof ColorPalette> = {
+  primary: 'leaf',
+  secondary: 'paper',
+  accent: 'marigold',
+  destructive: 'chili',
 };
 
-const VARIANT_TEXT: Record<ButtonVariant, string> = {
-  primary: color.paper,
-  secondary: color.ink,
-  accent: color.pine,
-  destructive: color.paper,
+const VARIANT_TEXT: Record<ButtonVariant, keyof ColorPalette> = {
+  primary: 'paper',
+  secondary: 'ink',
+  accent: 'pine',
+  destructive: 'paper',
 };
 
 export function Button({
@@ -41,6 +41,7 @@ export function Button({
   children,
   accessibilityLabel,
 }: ButtonProps) {
+  const { colors } = useTheme();
   const scale = useSharedValue(1);
   const isDisabled = disabled || loading;
 
@@ -61,6 +62,8 @@ export function Button({
 
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
+  const textColor = colors[VARIANT_TEXT[variant]];
+
   return (
     <Animated.View style={[fullWidth && styles.fullWidth, animatedStyle]}>
       <Pressable
@@ -74,16 +77,16 @@ export function Button({
         style={[
           styles.base,
           size === 'md' ? styles.md : styles.sm,
-          { backgroundColor: VARIANT_BG[variant] },
-          variant === 'secondary' && styles.secondaryBorder,
+          { backgroundColor: colors[VARIANT_BG[variant]] },
+          variant === 'secondary' && [styles.secondaryBorder, { borderColor: colors.hairline }],
           isDisabled && styles.disabled,
           fullWidth && styles.fullWidth,
         ]}
       >
         {loading ? (
-          <ActivityIndicator color={VARIANT_TEXT[variant]} />
+          <ActivityIndicator color={textColor} />
         ) : (
-          <Text style={[styles.label, { color: VARIANT_TEXT[variant] }]}>{children}</Text>
+          <Text style={[styles.label, { color: textColor }]}>{children}</Text>
         )}
       </Pressable>
     </Animated.View>
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
   md: { minHeight: 48 },
   sm: { minHeight: 44 },
   fullWidth: { width: '100%' },
-  secondaryBorder: { borderWidth: 1, borderColor: color.hairline },
+  secondaryBorder: { borderWidth: 1 },
   disabled: { opacity: 0.5 },
   label: { ...text.bodySemi },
 });

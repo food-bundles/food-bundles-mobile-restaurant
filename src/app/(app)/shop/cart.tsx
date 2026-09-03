@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { BasketIcon } from '@/components/icons';
 import { EmptyState } from '@/components/primitives';
@@ -12,15 +12,16 @@ import { useT } from '@/i18n';
 
 export default function Cart() {
   const t = useT();
+  const { colors } = useTheme();
   const itemCount = useCartStore((state) => state.itemCount());
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={t('shop_cart')} subtitle={`${account.businessName} · ${t('shop_tapToEdit')}`} />
       <ScreenScroll contentInsetBottom={80}>
         {itemCount === 0 ? (
           <EmptyState
-            icon={<BasketIcon size={22} color={color.leaf} />}
+            icon={<BasketIcon size={22} color={colors.leaf} />}
             title={t('shop_emptyCartTitle')}
             message={t('shop_emptyCartMessage')}
           />
@@ -39,9 +40,13 @@ export default function Cart() {
           disabled={itemCount === 0}
           accessibilityRole="button"
           accessibilityLabel={t('shop_checkout')}
-          style={[styles.checkoutButton, itemCount === 0 && styles.checkoutDisabled]}
+          style={[
+            styles.checkoutButton,
+            { backgroundColor: colors.leaf },
+            itemCount === 0 && styles.checkoutDisabled,
+          ]}
         >
-          <Text style={styles.checkoutLabel}>{t('shop_checkout')}</Text>
+          <Text style={[styles.checkoutLabel, { color: colors.paper }]}>{t('shop_checkout')}</Text>
         </Pressable>
       </StickyFooter>
     </View>
@@ -49,15 +54,14 @@ export default function Cart() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   totalsGap: { marginTop: space.md },
   checkoutButton: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
   checkoutDisabled: { opacity: 0.5 },
-  checkoutLabel: { ...text.bodySemi, color: color.paper },
+  checkoutLabel: { ...text.bodySemi },
 });

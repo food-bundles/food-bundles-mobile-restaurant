@@ -6,7 +6,7 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
-import { color, duration, easing, radius, space, text } from '@/theme';
+import { duration, easing, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 
 export interface SwipeRowProps {
@@ -20,6 +20,7 @@ const DELETE_THRESHOLD = -58;
 
 export function SwipeRow({ onDelete, deleteLabel, children }: SwipeRowProps) {
   const t = useT();
+  const { colors } = useTheme();
   const translateX = useSharedValue(0);
 
   const pan = Gesture.Pan()
@@ -42,14 +43,14 @@ export function SwipeRow({ onDelete, deleteLabel, children }: SwipeRowProps) {
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.deleteLayer}>
+      <View style={[styles.deleteLayer, { backgroundColor: colors.chili }]}>
         <Pressable
           onPress={onDelete}
           accessibilityRole="button"
           accessibilityLabel={deleteLabel}
           style={styles.deleteButton}
         >
-          <Text style={styles.deleteLabel}>{t('action_remove')}</Text>
+          <Text style={[styles.deleteLabel, { color: colors.paper }]}>{t('action_remove')}</Text>
         </Pressable>
       </View>
       <GestureDetector gesture={pan}>
@@ -67,10 +68,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: color.chili,
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
   deleteButton: { minHeight: 44, minWidth: 88, alignItems: 'center', justifyContent: 'center', paddingRight: space.lg },
-  deleteLabel: { ...text.label, color: color.paper },
+  deleteLabel: { ...text.label },
 });

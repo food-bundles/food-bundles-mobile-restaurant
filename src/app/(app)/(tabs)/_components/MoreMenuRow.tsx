@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ChevronRightIcon } from '@/components/icons';
 
 export interface MoreMenuRowProps {
@@ -11,15 +11,17 @@ export interface MoreMenuRowProps {
 }
 
 export function MoreMenuRow({ icon, label, trailing, onPress, isLast }: MoreMenuRowProps) {
+  const { colors } = useTheme();
+
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      style={[styles.row, !isLast && styles.rowBorder]}
+      style={[styles.row, !isLast && [styles.rowBorder, { borderBottomColor: colors.neutralLine }]]}
     >
-      <View style={styles.iconWrap}>{icon}</View>
-      <Text style={styles.label}>{label}</Text>
+      <View style={[styles.iconWrap, { backgroundColor: colors.tintLeaf }]}>{icon}</View>
+      <Text style={[styles.label, { color: colors.ink }]}>{label}</Text>
       {trailing}
       <ChevronRightIcon />
     </Pressable>
@@ -34,14 +36,13 @@ const styles = StyleSheet.create({
     minHeight: hit.min + 14,
     paddingHorizontal: space.md,
   },
-  rowBorder: { borderBottomWidth: 1, borderBottomColor: color.neutralLine },
+  rowBorder: { borderBottomWidth: 1 },
   iconWrap: {
     width: 34,
     height: 34,
     borderRadius: radius.sm + 1,
-    backgroundColor: color.tintLeaf,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  label: { ...text.body, color: color.ink, flex: 1 },
+  label: { ...text.body, flex: 1 },
 });

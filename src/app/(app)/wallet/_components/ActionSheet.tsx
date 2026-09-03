@@ -1,5 +1,5 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 
 export interface ActionSheetProps {
@@ -11,6 +11,7 @@ export interface ActionSheetProps {
 
 export function ActionSheet({ visible, onClose, title, message }: ActionSheetProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -21,18 +22,18 @@ export function ActionSheet({ visible, onClose, title, message }: ActionSheetPro
           accessibilityLabel={t('action_close')}
           style={styles.scrimTouchable}
         >
-          <View style={styles.scrim} />
+          <View style={[styles.scrim, { backgroundColor: colors.ink }]} />
         </Pressable>
-        <View style={styles.sheet}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.message}>{message}</Text>
+        <View style={[styles.sheet, { backgroundColor: colors.paper }]}>
+          <Text style={[styles.title, { color: colors.ink }]}>{title}</Text>
+          <Text style={[styles.message, { color: colors.secondary }]}>{message}</Text>
           <Pressable
             onPress={onClose}
             accessibilityRole="button"
             accessibilityLabel={t('action_close')}
-            style={styles.closeButton}
+            style={[styles.closeButton, { backgroundColor: colors.leaf }]}
           >
-            <Text style={styles.closeLabel}>{t('action_close')}</Text>
+            <Text style={[styles.closeLabel, { color: colors.paper }]}>{t('action_close')}</Text>
           </Pressable>
         </View>
       </View>
@@ -43,22 +44,20 @@ export function ActionSheet({ visible, onClose, title, message }: ActionSheetPro
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'flex-end' },
   scrimTouchable: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
-  scrim: { flex: 1, backgroundColor: color.ink, opacity: 0.4 },
+  scrim: { flex: 1, opacity: 0.4 },
   sheet: {
-    backgroundColor: color.paper,
     borderTopLeftRadius: radius.lg,
     borderTopRightRadius: radius.lg,
     padding: space.lg,
   },
-  title: { ...text.h2, color: color.ink },
-  message: { ...text.body, color: color.secondary, marginTop: space.sm },
+  title: { ...text.h2 },
+  message: { ...text.body, marginTop: space.sm },
   closeButton: {
     minHeight: hit.min,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: space.lg,
   },
-  closeLabel: { ...text.bodySemi, color: color.paper },
+  closeLabel: { ...text.bodySemi },
 });

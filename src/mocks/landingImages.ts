@@ -6,8 +6,6 @@ function unsplash(photoId: string, width: number, height: number): ImageSourcePr
 
 export const LANDING_IMAGES = {
   chefPreparing: unsplash('photo-1572715376701-98568319fd0b', 800, 600),
-  farmWorkersHarvesting: unsplash('photo-1605000797499-95a51c5269ae', 800, 400),
-  farmKinyinya: unsplash('photo-1509099381441-ea3c0cf98b94', 700, 400),
-  farmMusanze: unsplash('photo-1509100194014-d49809396daa', 700, 400),
-  farmNasho: unsplash('photo-1598871569630-f00343aad008', 700, 400),
+  restaurantMarket: unsplash('photo-1542838132-92c53300491e', 160, 160),
+  weeklyDealCrate: unsplash('photo-1610348725531-843dff563e2c', 600, 300),
 } as const;

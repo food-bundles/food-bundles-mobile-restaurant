@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native';
 import { space } from '@/theme';
 import { MobileMoneyTile, CardTile, WalletTile, VoucherTile } from '@/components/payment';
-import { useCheckoutStore, useSessionStore, isVouchersUnlocked } from '@/stores';
+import { useCheckoutStore, useSessionStore, isVouchersUnlocked, canRequestVouchers } from '@/stores';
 import { account } from '@/mocks';
 
 export function PaymentMethodPicker() {
@@ -10,7 +10,8 @@ export function PaymentMethodPicker() {
   const phone = useCheckoutStore((state) => state.phone);
   const setPhone = useCheckoutStore((state) => state.setPhone);
   const tier = useSessionStore((state) => state.tier);
-  const vouchersUnlocked = isVouchersUnlocked(tier);
+  const role = useSessionStore((state) => state.role);
+  const vouchersUnlocked = isVouchersUnlocked(tier) && canRequestVouchers(role);
 
   return (
     <View style={styles.list}>

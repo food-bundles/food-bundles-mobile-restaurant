@@ -1,6 +1,7 @@
+import { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { SearchField } from '@/app/(app)/shop/_components/SearchField';
 import { OrderingAsBanner } from './_components/OrderingAsBanner';
@@ -9,28 +10,43 @@ import { WalletTile, VoucherTile } from '@/components/payment';
 import { PriceText } from '@/components/product';
 import { account, products } from '@/mocks';
 import { useT } from '@/i18n';
+import { useSessionStore, canRequestVouchers } from '@/stores';
 
 export default function AffiliatorSession() {
   const t = useT();
+  const { colors } = useTheme();
   const featured = products[0];
+  const role = useSessionStore((state) => state.role);
+  const setRole = useSessionStore((state) => state.setRole);
+  const previousRole = useRef(role);
+  const vouchersAllowed = canRequestVouchers(role);
+
+  useEffect(() => {
+    previousRole.current = role;
+    setRole('AFFILIATOR');
+    return () => setRole(previousRole.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenScroll contentInsetBottom={0}>
         <View style={styles.headerRow}>
           <View>
-            <Text style={styles.signedInLabel}>{t('aff_signedInAs')}</Text>
-            <Text style={styles.name}>Jean-Paul K.</Text>
+            <Text style={[styles.signedInLabel, { color: colors.secondary }]}>{t('aff_signedInAs')}</Text>
+            <Text style={[styles.name, { color: colors.ink }]}>Jean-Paul K.</Text>
           </View>
           <View style={styles.headerRight}>
-            <View style={styles.affBadge}>
-              <Text style={styles.affBadgeLabel}>{t('aff_affiliatorBadge')}</Text>
+            <View style={[styles.affBadge, { backgroundColor: colors.tintMarigold }]}>
+              <Text style={[styles.affBadgeLabel, { color: colors.tintedAmberText }]}>
+                {t('aff_affiliatorBadge')}
+              </Text>
             </View>
             <Pressable
               onPress={() => router.back()}
               accessibilityRole="button"
               accessibilityLabel={t('aff_exitSessionLabel')}
-              style={styles.exitButton}
+              style={[styles.exitButton, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
             >
               <CloseIcon />
             </Pressable>
@@ -39,26 +55,26 @@ export default function AffiliatorSession() {
         <View style={styles.searchGap}>
           <SearchField value="" onChangeText={() => undefined} placeholder={t('shop_searchProduce')} />
         </View>
-        <View style={styles.dealCard}>
-          <Text style={styles.dealTitle}>{t('shop_weeklyDeal')}</Text>
-          <Text style={styles.dealSub}>{t('shop_orderByForNextDay')}</Text>
+        <View style={[styles.dealCard, { backgroundColor: colors.leaf }]}>
+          <Text style={[styles.dealTitle, { color: colors.paper }]}>{t('shop_weeklyDeal')}</Text>
+          <Text style={[styles.dealSub, { color: colors.onPine }]}>{t('shop_orderByForNextDay')}</Text>
         </View>
-        <Text style={styles.sectionLabel}>{t('shop_popularWeek')}</Text>
-        <View style={styles.productRow}>
-          <View style={styles.productThumb} />
+        <Text style={[styles.sectionLabel, { color: colors.ink }]}>{t('shop_popularWeek')}</Text>
+        <View style={[styles.productRow, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
+          <View style={[styles.productThumb, { backgroundColor: colors.neutral }]} />
           <View style={styles.productText}>
-            <Text style={styles.productName}>{featured.name}</Text>
-            <Text style={styles.productUnit}>{featured.unit}</Text>
+            <Text style={[styles.productName, { color: colors.ink }]}>{featured.name}</Text>
+            <Text style={[styles.productUnit, { color: colors.secondary }]}>{featured.unit}</Text>
           </View>
           <PriceText amount={featured.price} size="md" />
         </View>
-        <Text style={styles.sectionLabel}>{t('shop_paymentOptions')}</Text>
+        <Text style={[styles.sectionLabel, { color: colors.ink }]}>{t('shop_paymentOptions')}</Text>
         <WalletTile selected={false} onPress={() => undefined} balance={account.walletBalance} />
         <View style={styles.voucherGap}>
-          <VoucherTile selected={false} onPress={() => undefined} disabled />
+          <VoucherTile selected={false} onPress={() => undefined} disabled={!vouchersAllowed} />
         </View>
-        <View style={styles.noticeCard}>
-          <Text style={styles.noticeText}>
+        <View style={[styles.noticeCard, { backgroundColor: colors.tintMarigold }]}>
+          <Text style={[styles.noticeText, { color: colors.tintedAmberText }]}>
             {t('aff_voucherRestrictedNote', { manager: account.managerName })}
           </Text>
         </View>
@@ -69,43 +85,39 @@ export default function AffiliatorSession() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  signedInLabel: { ...text.caption, color: color.secondary },
-  name: { ...text.h2, color: color.ink },
+  signedInLabel: { ...text.caption },
+  name: { ...text.h2 },
   headerRight: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  affBadge: { backgroundColor: color.tintMarigold, borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 3 },
-  affBadgeLabel: { ...text.micro, color: color.tintedAmberText },
+  affBadge: { borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 3 },
+  affBadgeLabel: { ...text.micro },
   exitButton: {
     width: hit.min,
     height: hit.min,
     borderRadius: radius.md,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },
   searchGap: { marginTop: space.md },
-  dealCard: { backgroundColor: color.leaf, borderRadius: radius.lg, padding: space.md, marginTop: space.md },
-  dealTitle: { ...text.bodySemi, color: color.paper },
-  dealSub: { ...text.caption, color: color.onPine, marginTop: 2 },
-  sectionLabel: { ...text.h2, color: color.ink, marginTop: space.lg, marginBottom: space.sm },
+  dealCard: { borderRadius: radius.lg, padding: space.md, marginTop: space.md },
+  dealTitle: { ...text.bodySemi },
+  dealSub: { ...text.caption, marginTop: 2 },
+  sectionLabel: { ...text.h2, marginTop: space.lg, marginBottom: space.sm },
   productRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     borderRadius: radius.lg,
     padding: space.sm,
   },
-  productThumb: { width: 48, height: 48, borderRadius: radius.sm, backgroundColor: color.neutral },
+  productThumb: { width: 48, height: 48, borderRadius: radius.sm },
   productText: { flex: 1 },
-  productName: { ...text.bodySemi, color: color.ink },
-  productUnit: { ...text.caption, color: color.secondary },
+  productName: { ...text.bodySemi },
+  productUnit: { ...text.caption },
   voucherGap: { marginTop: space.sm },
-  noticeCard: { backgroundColor: color.tintMarigold, borderRadius: radius.md, padding: space.md, marginTop: space.md },
-  noticeText: { ...text.caption, color: color.tintedAmberText },
+  noticeCard: { borderRadius: radius.md, padding: space.md, marginTop: space.md },
+  noticeText: { ...text.caption },
 });

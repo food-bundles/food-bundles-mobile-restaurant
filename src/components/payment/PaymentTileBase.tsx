@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 
 export interface PaymentTileBaseProps {
   selected: boolean;
@@ -22,6 +22,8 @@ export function PaymentTileBase({
   subtitle,
   expandedContent,
 }: PaymentTileBaseProps) {
+  const { colors } = useTheme();
+
   return (
     <Pressable
       onPress={onPress}
@@ -29,17 +31,29 @@ export function PaymentTileBase({
       accessibilityRole="radio"
       accessibilityState={{ selected, disabled }}
       accessibilityLabel={accessibilityLabel}
-      style={[styles.container, selected && styles.selected, disabled && styles.disabled]}
+      style={[
+        styles.container,
+        { borderColor: selected ? colors.leaf : colors.hairline, backgroundColor: colors.paper },
+        disabled && styles.disabled,
+      ]}
     >
       <View style={styles.row}>
         {logos}
         <View style={styles.textCol}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtitle}>{subtitle}</Text>
+          <Text style={[styles.title, { color: colors.ink }]}>{title}</Text>
+          <Text style={[styles.subtitle, { color: colors.muted }]}>{subtitle}</Text>
         </View>
-        <View style={[styles.radio, selected && styles.radioSelected]} />
+        <View
+          style={[
+            styles.radio,
+            { borderColor: selected ? colors.leaf : colors.disabledLine },
+            selected && { backgroundColor: colors.leaf },
+          ]}
+        />
       </View>
-      {selected && expandedContent ? <View style={styles.expanded}>{expandedContent}</View> : null}
+      {selected && expandedContent ? (
+        <View style={[styles.expanded, { borderTopColor: colors.hairline }]}>{expandedContent}</View>
+      ) : null}
     </Pressable>
   );
 }
@@ -48,23 +62,18 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: radius.lg,
     borderWidth: 1.5,
-    borderColor: color.hairline,
-    backgroundColor: color.paper,
     padding: space.md,
   },
-  selected: { borderColor: color.leaf },
   disabled: { opacity: 0.5 },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   textCol: { flex: 1 },
-  title: { ...text.bodySemi, color: color.ink },
-  subtitle: { ...text.caption, color: color.muted, marginTop: 2 },
+  title: { ...text.bodySemi },
+  subtitle: { ...text.caption, marginTop: 2 },
   radio: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: color.disabledLine,
   },
-  radioSelected: { borderColor: color.leaf, backgroundColor: color.leaf },
-  expanded: { marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: color.hairline },
+  expanded: { marginTop: space.md, paddingTop: space.md, borderTopWidth: 1 },
 });

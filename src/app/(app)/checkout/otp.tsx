@@ -1,31 +1,44 @@
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { ChevronLeftIcon, VoucherIcon } from '@/components/icons';
-import { OtpBoxes } from './_components/OtpBoxes';
+import { OtpBoxes } from '@/components/checkout';
 import { sleep } from '@/lib';
-import { useT } from '@/i18n';
-import { useVouchersStore } from '@/stores';
+import { useT, translate } from '@/i18n';
+import { useCheckoutStore, useVouchersStore } from '@/stores';
+import { scheduleLocalNotification } from '@/services/notificationService';
+import { orders } from '@/mocks';
 import type { Href } from 'expo-router';
 
 const CODE_LENGTH = 6;
-const RESEND_SECONDS = 30;
+const RESEND_SECONDS = 24;
+const MOCK_PREFILL = '418';
 
-type Purpose = 'payment' | 'underwriting' | 'creditLine';
+function formatCountdown(totalSeconds: number): string {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${String(seconds).padStart(2, '0')}`;
+}
+
+type Purpose = 'payment' | 'underwriting';
 
 const DESTINATIONS: Record<Purpose, Href> = {
   payment: '/(app)/checkout/confirmation',
-  underwriting: { pathname: '/(app)/subscription/underwriting', params: { completed: '1' } },
-  creditLine: { pathname: '/(app)/vouchers/credit-line', params: { completed: '1' } },
+  underwriting: '/(app)/vouchers/score-result',
 };
 
+/** Shared OTP verification screen for payment, voucher redemption, and underwriting completion. */
 export default function Otp() {
   const t = useT();
+  const { colors } = useTheme();
   const { purpose } = useLocalSearchParams<{ purpose?: Purpose }>();
-  const submitCreditRequest = useVouchersStore((state) => state.submitRequest);
-  const [code, setCode] = useState('');
+  const redeemVoucher = useVouchersStore((state) => state.redeemVoucher);
+  const vouchers = useVouchersStore((state) => state.vouchers);
+  const selectedVoucherId = useCheckoutStore((state) => state.selectedVoucherId);
+  const activeOrder = orders.find((order) => order.id === 'FB-24815') ?? orders[0];
+  const [code, setCode] = useState(MOCK_PREFILL);
   const [seconds, setSeconds] = useState(RESEND_SECONDS);
   const [verifying, setVerifying] = useState(false);
 
@@ -37,10 +50,18 @@ export default function Otp() {
 
   const onVerify = async () => {
     setVerifying(true);
-    if (purpose === 'creditLine') {
-      await submitCreditRequest();
-    } else {
-      await sleep(1300);
+    await sleep(1300);
+    if ((purpose === undefined || purpose === 'payment') && selectedVoucherId) {
+      redeemVoucher(selectedVoucherId, activeOrder.id);
+      const voucher = vouchers.find((v) => v.id === selectedVoucherId);
+      if (voucher) {
+        await scheduleLocalNotification({
+          channel: 'voucher',
+          title: translate('notif_voucherApplied', { code: voucher.code, orderId: activeOrder.id }),
+          body: translate('notif_voucherAppliedBody'),
+          deepLink: '/(app)/(tabs)/wallet?tab=vouchers',
+        });
+      }
     }
     setVerifying(false);
     router.replace(DESTINATIONS[purpose ?? 'payment']);
@@ -56,15 +77,14 @@ export default function Otp() {
       >
         <ChevronLeftIcon />
       </Pressable>
-      <View style={styles.iconWrap}>
-        <VoucherIcon size={26} color={color.leaf} />
+      <View style={[styles.iconWrap, { backgroundColor: colors.tintLeaf }]}>
+        <VoucherIcon size={26} color={colors.leaf} />
       </View>
-      <Text style={styles.title}>{t('checkout_verifyTitle')}</Text>
-      <Text style={styles.subtitle}>{t('checkout_otpSub')}</Text>
+      <Text style={[styles.title, { color: colors.ink }]}>{t('checkout_verifyTitle')}</Text>
+      <Text style={[styles.subtitle, { color: colors.secondary }]}>
+        {purpose === 'underwriting' ? t('checkout_otpSubGeneric') : t('checkout_otpSub')}
+      </Text>
       <View style={styles.boxesWrap}>
-        <View style={styles.boxesVisual} pointerEvents="none">
-          <OtpBoxes value={code} length={CODE_LENGTH} />
-        </View>
         <TextInput
           value={code}
           onChangeText={(next) => setCode(next.replace(/\D/g, '').slice(0, CODE_LENGTH))}
@@ -73,9 +93,14 @@ export default function Otp() {
           accessibilityLabel={t('a11y_enterOtp')}
           style={styles.hiddenInput}
         />
+        <View style={styles.boxesVisual} pointerEvents="none">
+          <OtpBoxes value={code} length={CODE_LENGTH} />
+        </View>
       </View>
       {seconds > 0 ? (
-        <Text style={styles.resendText}>{t('checkout_resendIn', { seconds })}</Text>
+        <Text style={[styles.resendText, { color: colors.secondary }]}>
+          {t('checkout_resendIn', { time: formatCountdown(seconds) })}
+        </Text>
       ) : (
         <Pressable
           onPress={() => setSeconds(RESEND_SECONDS)}
@@ -83,17 +108,17 @@ export default function Otp() {
           accessibilityLabel={t('checkout_resendNow')}
           style={styles.resendButton}
         >
-          <Text style={styles.resendLabel}>{t('checkout_resendNow')}</Text>
+          <Text style={[styles.resendLabel, { color: colors.leaf }]}>{t('checkout_resendNow')}</Text>
         </Pressable>
       )}
       <Pressable
         onPress={onVerify}
-        disabled={code.length !== CODE_LENGTH || verifying}
+        disabled={verifying}
         accessibilityRole="button"
         accessibilityLabel={t('checkout_verifyPay')}
-        style={[styles.verifyButton, (code.length !== CODE_LENGTH || verifying) && styles.verifyDisabled]}
+        style={[styles.verifyButton, { backgroundColor: colors.leaf }]}
       >
-        <Text style={styles.verifyLabel}>{t('checkout_verifyPay')}</Text>
+        <Text style={[styles.verifyLabel, { color: colors.paper }]}>{t('checkout_verifyPay')}</Text>
       </Pressable>
     </ScreenScroll>
   );
@@ -105,26 +130,23 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: radius.lg,
-    backgroundColor: color.tintLeaf,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: space.lg,
   },
-  title: { ...text.h1, color: color.ink, marginTop: space.md },
-  subtitle: { ...text.body, color: color.secondary, marginTop: space.xs, marginBottom: space.lg },
-  boxesWrap: { position: 'relative' },
+  title: { ...text.h1, marginTop: space.md },
+  subtitle: { ...text.body, marginTop: space.xs, marginBottom: space.lg },
+  boxesWrap: { position: 'relative', height: 56 },
   boxesVisual: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
-  hiddenInput: { opacity: 0, height: 56 },
-  resendText: { ...text.caption, color: color.secondary, textAlign: 'center', marginTop: space.md },
+  hiddenInput: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0 },
+  resendText: { ...text.caption, textAlign: 'center', marginTop: space.md },
   resendButton: { minHeight: hit.min, alignItems: 'center', justifyContent: 'center', marginTop: space.md },
-  resendLabel: { ...text.label, color: color.leaf },
+  resendLabel: { ...text.label },
   verifyButton: {
-    minHeight: 48,
-    backgroundColor: color.leaf,
+    minHeight: hit.min,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  verifyDisabled: { opacity: 0.5 },
-  verifyLabel: { ...text.bodySemi, color: color.paper },
+  verifyLabel: { ...text.bodySemi },
 });

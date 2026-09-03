@@ -19,8 +19,9 @@ export const auth: Record<keyof typeof authEn, string> = {
   auth_restaurant: 'Iresitora',
   auth_hotel: 'Hoteli',
   auth_phone: 'Telefone',
-  auth_tin: 'TIN (bidasabwa)',
-  auth_tinHelper: 'Isabwa mu gutanga fagitire ya EBM — ushobora kuyongeramo nyuma.',
+  auth_tin: 'TIN (Nomero y’Umutero)',
+  auth_tinHelper: 'Isabwa mu gutanga fagitire ya EBM — ushobora kuyongeramo nyuma',
+  auth_tinError: 'Andika TIN yawe ya miterere 9',
   auth_createAccountBtn: 'Fungura konti',
   auth_staffNote:
     'Abakozi (affiliators) bongerwaho nyuma n’umuyobozi wawe muri apu — nta kwiyandikisha kw’abakozi kwihariye.',

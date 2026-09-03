@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 
 export interface ShareAccountantRowProps {
@@ -9,6 +9,7 @@ export interface ShareAccountantRowProps {
 
 export function ShareAccountantRow({ onShare, onAskAccountant }: ShareAccountantRowProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <View style={styles.row}>
@@ -16,17 +17,17 @@ export function ShareAccountantRow({ onShare, onAskAccountant }: ShareAccountant
         onPress={onShare}
         accessibilityRole="button"
         accessibilityLabel={t('a11y_shareTopUpLink')}
-        style={styles.action}
+        style={[styles.action, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
       >
-        <Text style={styles.label}>{t('wallet_shareLink')}</Text>
+        <Text style={[styles.label, { color: colors.leaf }]}>{t('wallet_shareLink')}</Text>
       </Pressable>
       <Pressable
         onPress={onAskAccountant}
         accessibilityRole="button"
         accessibilityLabel={t('a11y_askAccountantTopUp')}
-        style={styles.action}
+        style={[styles.action, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
       >
-        <Text style={styles.label}>{t('wallet_askAccountant')}</Text>
+        <Text style={[styles.label, { color: colors.leaf }]}>{t('wallet_askAccountant')}</Text>
       </Pressable>
     </View>
   );
@@ -37,12 +38,10 @@ const styles = StyleSheet.create({
   action: {
     flex: 1,
     minHeight: hit.min,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  label: { ...text.label, color: color.leaf },
+  label: { ...text.label },
 });

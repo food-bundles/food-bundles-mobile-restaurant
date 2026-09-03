@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { color } from '@/theme';
+import { useTheme } from '@/theme';
 import { VoucherIcon } from '@/components/icons';
 import { useT } from '@/i18n';
 import { PaymentTileBase } from './PaymentTileBase';
@@ -12,6 +12,7 @@ export interface VoucherTileProps {
 
 export function VoucherTile({ selected, onPress, disabled }: VoucherTileProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <PaymentTileBase
@@ -22,8 +23,8 @@ export function VoucherTile({ selected, onPress, disabled }: VoucherTileProps) {
       title={t('paymentTile_voucherTitle')}
       subtitle={t('paymentTile_voucherSubtitle')}
       logos={
-        <View style={styles.logo}>
-          <VoucherIcon size={18} color={color.pine} />
+        <View style={[styles.logo, { backgroundColor: colors.tintMarigold }]}>
+          <VoucherIcon size={18} color={colors.pine} />
         </View>
       }
     />
@@ -35,7 +36,6 @@ const styles = StyleSheet.create({
     width: 32,
     height: 24,
     borderRadius: 6,
-    backgroundColor: color.tintMarigold,
     alignItems: 'center',
     justifyContent: 'center',
   },

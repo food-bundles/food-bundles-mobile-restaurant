@@ -1,59 +1,105 @@
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { router } from 'expo-router';
-import { color, space } from '@/theme';
-import { HeroCard } from './HeroCard';
-import { useSessionStore } from '@/stores';
+import { hit, signatureDuration, space, useTheme } from '@/theme';
+import { HeroCardActiveOrder } from './HeroCardActiveOrder';
+import { HeroCardWallet } from './HeroCardWallet';
+import { HeroCardVouchers } from './HeroCardVouchers';
+import { HeroCardWeeklyDeal } from './HeroCardWeeklyDeal';
+import { HeroCardMarketPrices } from './HeroCardMarketPrices';
+import { HeroCardWeather } from './HeroCardWeather';
+import { useSessionStore, useVouchersStore } from '@/stores';
+import { useT } from '@/i18n';
 import { account, orders } from '@/mocks';
 
-const ADVANCE_MS = 2500;
+const ADVANCE_MS = 10000;
+const PHASE_SWITCH_MS = 5000;
+const MARKET_ROWS = [
+  { market: 'Kimironko', price: 8600 },
+  { market: 'Nyabugogo', price: 8900 },
+  { market: 'FoodBundles', price: 8200, best: true },
+];
 
 export function HeroCarousel() {
+  const t = useT();
+  const { colors } = useTheme();
   const [index, setIndex] = useState(0);
+  const [phase, setPhase] = useState<1 | 2>(1);
   const [paused, setPaused] = useState(false);
   const subscribed = useSessionStore((s) => s.subscribed);
+  const vouchers = useVouchersStore((s) => s.vouchers);
+  const availableVouchers = vouchers.filter((voucher) => voucher.status === 'AVAILABLE');
+  const availableVoucherValue = availableVouchers.reduce((sum, voucher) => sum + voucher.amount, 0);
   const activeOrder = orders.find((order) => order.status === 'IN_TRANSIT') ?? orders[0];
+  const entrance = useSharedValue(0);
 
   const cards = [
-    <HeroCard
+    <HeroCardActiveOrder
       key="active-order"
-      title="Active order"
-      subtitle={`${activeOrder.id} · In transit`}
-      amount={activeOrder.total}
+      order={activeOrder}
+      phase={phase}
+      overline={t('hero_activeOrderTitle')}
+      statusLabel={t('st_intransit')}
+      arrivingLabel={t('hero_activeOrderSubtitle', { id: activeOrder.id })}
+      etaLabel={t('hero_activeOrderEta')}
+      stepLabel={t('orders_stepOfTotal', { step: activeOrder.step, total: 6 })}
+      linkLabel={t('checkout_trackOrder')}
       onPress={() => router.push({ pathname: '/(app)/orders/[id]', params: { id: activeOrder.id } })}
     />,
-    <HeroCard
+    <HeroCardWallet
       key="wallet"
-      title="Wallet balance"
-      subtitle="Tap to top up"
-      dark
-      amount={account.walletBalance}
+      phase={phase}
+      overline={t('hero_walletTitle')}
+      balance={account.walletBalance}
+      subtitle={t('hero_walletSubtitle')}
+      lastTransactionLabel={t('hero_walletLastTransaction')}
+      linkLabel={t('wallet_topUp')}
       onPress={() => router.push('/(app)/(tabs)/wallet')}
     />,
-    <HeroCard
+    <HeroCardVouchers
       key="vouchers"
-      title="Vouchers"
-      subtitle={subscribed ? 'Manage your credit line' : 'Unlock credit vouchers'}
-      onPress={() => router.push('/(app)/(tabs)/vouchers')}
+      phase={phase}
+      overline={t('hero_vouchersTitle')}
+      subscribed={subscribed}
+      title={subscribed ? t('hero_vouchersTitle') : t('sub_unlockTitle')}
+      subtitle={subscribed ? t('hero_vouchersSubtitleActive') : t('hero_vouchersSubtitleLocked')}
+      availableFraction={vouchers.length > 0 ? availableVouchers.length / vouchers.length : 0}
+      availableValue={availableVoucherValue}
+      settlementLabel={t('hero_vouchersNextSettlement')}
+      unlockCta={t('hero_vouchersUnlockCta')}
+      linkLabel={subscribed ? t('vouchers_useAtCheckout') : t('sub_seePlans')}
+      onPress={() => router.push({ pathname: '/(app)/(tabs)/wallet', params: { tab: 'vouchers' } })}
     />,
-    <HeroCard
+    <HeroCardWeeklyDeal
       key="weekly-deal"
-      title="Weekly deal"
-      subtitle="Avocados — crate of 40"
-      amount={8900}
+      phase={phase}
+      overline={t('shop_weeklyDeal')}
+      title={t('shop_weeklyDeal')}
+      subtitle={t('shop_orderByForNextDay')}
+      closesInLabel={t('hero_weeklyDealClosesIn')}
+      linkLabel={t('hero_orderNow')}
       onPress={() => router.push('/(app)/shop/category')}
     />,
-    <HeroCard
+    <HeroCardMarketPrices
       key="market-prices"
-      title="Market prices"
-      subtitle="This week's produce"
-      onPress={() => router.push('/(app)/shop/category')}
+      phase={phase}
+      overline={t('hero_marketPricesTitle')}
+      badge={t('shop_premium')}
+      commodity={t('hero_marketCommodity')}
+      rows={MARKET_ROWS}
+      linkLabel={t('hero_compareMarkets')}
+      onPress={() => router.push('/(app)/market/market-prices')}
     />,
-    <HeroCard
+    <HeroCardWeather
       key="weather"
-      title="Weather"
-      subtitle="Sunny in Kigali, 24°"
-      onPress={() => undefined}
+      phase={phase}
+      overline={t('hero_weatherTitle')}
+      title={t('hero_weatherSubtitle')}
+      subtitle={t('hero_weatherLocation')}
+      restockPrompt={t('hero_restockPrompt')}
+      linkLabel={t('hero_browseProduce')}
+      onPress={() => router.push('/(app)/shop/category')}
     />,
   ];
 
@@ -64,16 +110,27 @@ export function HeroCarousel() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paused, cards.length]);
 
+  useEffect(() => {
+    if (paused) return;
+    const timer = setTimeout(() => setPhase(2), PHASE_SWITCH_MS);
+    return () => clearTimeout(timer);
+  }, [index, paused]);
+
+  useEffect(() => {
+    setPhase(1);
+    entrance.value = 0;
+    entrance.value = withTiming(1, { duration: signatureDuration.carouselCardEntrance });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
+  const entranceStyle = useAnimatedStyle(() => ({
+    opacity: entrance.value,
+    transform: [{ translateY: (1 - entrance.value) * 7 }],
+  }));
+
   return (
     <View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        onTouchStart={() => setPaused(true)}
-        contentContainerStyle={styles.row}
-      >
-        {cards[index]}
-      </ScrollView>
+      <Animated.View style={[styles.row, entranceStyle]}>{cards[index]}</Animated.View>
       <View style={styles.dots}>
         {cards.map((card, cardIndex) => (
           <Pressable
@@ -83,11 +140,16 @@ export function HeroCarousel() {
               setPaused(true);
             }}
             accessibilityRole="button"
-            accessibilityLabel={`Show carousel card ${cardIndex + 1}`}
-            hitSlop={8}
+            accessibilityLabel={t('a11y_showCarouselCard', { position: cardIndex + 1 })}
             style={styles.dotHit}
           >
-            <View style={[styles.dot, cardIndex === index && styles.dotActive]} />
+            <View
+              style={[
+                styles.dot,
+                { backgroundColor: colors.disabledLine },
+                cardIndex === index && { backgroundColor: colors.leaf, width: 20 },
+              ]}
+            />
           </Pressable>
         ))}
       </View>
@@ -98,7 +160,6 @@ export function HeroCarousel() {
 const styles = StyleSheet.create({
   row: { paddingHorizontal: space.lg },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: space.xs, marginTop: space.sm },
-  dotHit: { width: 24, height: 24, alignItems: 'center', justifyContent: 'center' },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: color.disabledLine },
-  dotActive: { backgroundColor: color.leaf, width: 18 },
+  dotHit: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
+  dot: { width: 7, height: 7, borderRadius: 4 },
 });

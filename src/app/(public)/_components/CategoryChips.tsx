@@ -1,5 +1,5 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import type { ProductCategory } from '@/mocks/types';
 
 export interface CategoryOption {
@@ -14,8 +14,14 @@ export interface CategoryChipsProps {
 }
 
 export function CategoryChips({ options, selected, onSelect }: CategoryChipsProps) {
+  const { colors } = useTheme();
+
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={[styles.row, styles.rowGrow]}
+    >
       {options.map((option) => {
         const active = option.key === selected;
         return (
@@ -25,9 +31,15 @@ export function CategoryChips({ options, selected, onSelect }: CategoryChipsProp
             accessibilityRole="button"
             accessibilityLabel={option.label}
             accessibilityState={{ selected: active }}
-            style={[styles.chip, active && styles.chipActive]}
+            style={[
+              styles.chip,
+              { backgroundColor: colors.paper, borderColor: colors.leaf },
+              active && { backgroundColor: colors.leaf, borderColor: colors.leaf },
+            ]}
           >
-            <Text style={[styles.label, active && styles.labelActive]}>{option.label}</Text>
+            <Text style={[styles.label, { color: colors.leaf }, active && { color: colors.paper }]}>
+              {option.label}
+            </Text>
           </Pressable>
         );
       })}
@@ -37,17 +49,14 @@ export function CategoryChips({ options, selected, onSelect }: CategoryChipsProp
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: space.sm },
+  rowGrow: { flexGrow: 1 },
   chip: {
     minHeight: hit.min,
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  chipActive: { backgroundColor: color.tintLeaf, borderColor: color.leaf },
-  label: { ...text.label, color: color.secondary },
-  labelActive: { color: color.leaf },
+  label: { ...text.label },
 });

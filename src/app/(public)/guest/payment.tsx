@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { MobileMoneyTile, CardTile } from '@/components/payment';
 import { GuestTotalsCard } from '../_components/GuestTotalsCard';
@@ -15,6 +15,7 @@ type Method = 'MOBILE_MONEY' | 'CARD';
 
 export default function GuestPayment() {
   const t = useT();
+  const { colors } = useTheme();
   const total = useGuestCartStore((state) => state.total());
   const [method, setMethod] = useState<Method>('MOBILE_MONEY');
   const [phone, setPhone] = useState(account.phone);
@@ -28,9 +29,9 @@ export default function GuestPayment() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <CheckoutStepHeader title={t('guest_payment')} step={2} />
-      <ScreenScroll contentInsetBottom={80}>
+      <ScreenScroll contentInsetBottom={80} applyTopInset={false}>
         <View style={styles.totalsGap}>
           <GuestTotalsCard />
         </View>
@@ -45,7 +46,7 @@ export default function GuestPayment() {
           />
           <CardTile selected={method === 'CARD'} onPress={() => setMethod('CARD')} />
         </View>
-        <Text style={styles.note}>{t('guest_walletVoucherNote')}</Text>
+        <Text style={[styles.note, { color: colors.muted }]}>{t('guest_walletVoucherNote')}</Text>
       </ScreenScroll>
       <StickyFooter>
         <Pressable
@@ -53,12 +54,14 @@ export default function GuestPayment() {
           disabled={processing}
           accessibilityRole="button"
           accessibilityLabel={t('guest_pay', { amount: formatRwf(total) })}
-          style={[styles.button, processing && styles.buttonDisabled]}
+          style={[styles.button, { backgroundColor: colors.leaf }, processing && styles.buttonDisabled]}
         >
           {processing ? (
-            <ActivityIndicator color={color.paper} />
+            <ActivityIndicator color={colors.paper} />
           ) : (
-            <Text style={styles.buttonLabel}>{t('guest_pay', { amount: formatRwf(total) })}</Text>
+            <Text style={[styles.buttonLabel, { color: colors.paper }]}>
+              {t('guest_pay', { amount: formatRwf(total) })}
+            </Text>
           )}
         </Pressable>
       </StickyFooter>
@@ -67,17 +70,16 @@ export default function GuestPayment() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   totalsGap: { marginTop: space.md },
   tiles: { gap: space.sm, marginTop: space.lg },
-  note: { ...text.caption, color: color.muted, marginTop: space.md },
+  note: { ...text.caption, marginTop: space.md },
   button: {
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonDisabled: { opacity: 0.7 },
-  buttonLabel: { ...text.bodySemi, color: color.paper },
+  buttonLabel: { ...text.bodySemi },
 });

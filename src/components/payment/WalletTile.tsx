@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { color } from '@/theme';
+import { useTheme } from '@/theme';
 import { WalletIcon } from '@/components/icons';
 import { formatRwf } from '@/lib';
 import { useT } from '@/i18n';
@@ -14,6 +14,7 @@ export interface WalletTileProps {
 
 export function WalletTile({ selected, onPress, balance, disabled }: WalletTileProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <PaymentTileBase
@@ -24,8 +25,8 @@ export function WalletTile({ selected, onPress, balance, disabled }: WalletTileP
       title={t('paymentTile_walletTitle')}
       subtitle={t('paymentTile_walletBalance', { amount: formatRwf(balance) })}
       logos={
-        <View style={styles.logo}>
-          <WalletIcon size={18} color={color.pine} />
+        <View style={[styles.logo, { backgroundColor: colors.tintLeaf }]}>
+          <WalletIcon size={18} color={colors.pine} />
         </View>
       }
     />
@@ -37,7 +38,6 @@ const styles = StyleSheet.create({
     width: 32,
     height: 24,
     borderRadius: 6,
-    backgroundColor: color.tintLeaf,
     alignItems: 'center',
     justifyContent: 'center',
   },

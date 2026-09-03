@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 import type { Affiliator } from '@/mocks/types';
 
@@ -9,6 +9,7 @@ export interface AffiliatorRowProps {
 
 export function AffiliatorRow({ affiliator }: AffiliatorRowProps) {
   const t = useT();
+  const { colors } = useTheme();
   const active = affiliator.status === 'ACTIVE';
   const initials = affiliator.name
     .split(' ')
@@ -16,16 +17,16 @@ export function AffiliatorRow({ affiliator }: AffiliatorRowProps) {
     .join('');
 
   return (
-    <View style={styles.row}>
-      <View style={[styles.avatar, !active && styles.avatarInactive]}>
-        <Text style={[styles.avatarLabel, !active && styles.avatarLabelInactive]}>{initials}</Text>
+    <View style={[styles.row, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
+      <View style={[styles.avatar, { backgroundColor: active ? colors.tintLeaf : colors.neutral }]}>
+        <Text style={[styles.avatarLabel, { color: active ? colors.pine : colors.secondary }]}>{initials}</Text>
       </View>
       <View style={styles.textCol}>
-        <Text style={styles.name}>{affiliator.name}</Text>
-        <Text style={styles.role}>{affiliator.role}</Text>
+        <Text style={[styles.name, { color: colors.ink }]}>{affiliator.name}</Text>
+        <Text style={[styles.role, { color: colors.secondary }]}>{affiliator.role}</Text>
       </View>
-      <View style={[styles.badge, !active && styles.badgeInactive]}>
-        <Text style={[styles.badgeLabel, !active && styles.badgeLabelInactive]}>
+      <View style={[styles.badge, { backgroundColor: active ? colors.tintRipe : colors.neutral }]}>
+        <Text style={[styles.badgeLabel, { color: active ? colors.tintedGreenText : colors.secondary }]}>
           {active ? t('aff_statusActive') : t('aff_statusInvited')}
         </Text>
       </View>
@@ -38,9 +39,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     borderRadius: radius.lg,
     padding: space.md,
     marginBottom: space.sm,
@@ -49,18 +48,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: color.tintLeaf,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarInactive: { backgroundColor: color.neutral },
-  avatarLabel: { ...text.bodySemi, color: color.pine },
-  avatarLabelInactive: { color: color.secondary },
+  avatarLabel: { ...text.bodySemi },
   textCol: { flex: 1 },
-  name: { ...text.bodySemi, color: color.ink },
-  role: { ...text.caption, color: color.secondary, marginTop: 2 },
-  badge: { backgroundColor: color.tintRipe, borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 3 },
-  badgeInactive: { backgroundColor: color.neutral },
-  badgeLabel: { ...text.micro, color: color.tintedGreenText },
-  badgeLabelInactive: { color: color.secondary },
+  name: { ...text.bodySemi },
+  role: { ...text.caption, marginTop: 2 },
+  badge: { borderRadius: radius.pill, paddingHorizontal: space.sm, paddingVertical: 3 },
+  badgeLabel: { ...text.micro },
 });

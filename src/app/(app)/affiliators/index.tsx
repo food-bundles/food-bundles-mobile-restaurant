@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { PlusIcon } from '@/components/icons';
 import { AffiliatorRow } from './_components/AffiliatorRow';
@@ -9,9 +9,10 @@ import { useT } from '@/i18n';
 
 export default function AffiliatorsList() {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader
         title={t('aff_title')}
         trailing={
@@ -19,14 +20,16 @@ export default function AffiliatorsList() {
             onPress={() => router.push('/(app)/affiliators/add')}
             accessibilityRole="button"
             accessibilityLabel={t('aff_addTitle')}
-            style={styles.addButton}
+            style={[styles.addButton, { backgroundColor: colors.leaf }]}
           >
-            <PlusIcon color={color.paper} />
+            <PlusIcon color={colors.paper} />
           </Pressable>
         }
       />
       <ScreenScroll contentInsetBottom={40}>
-        <Text style={styles.subtitle}>{t('aff_subtitle', { business: account.businessName })}</Text>
+        <Text style={[styles.subtitle, { color: colors.secondary }]}>
+          {t('aff_subtitle', { business: account.businessName })}
+        </Text>
         <View style={styles.listGap}>
           {affiliators.map((affiliator) => (
             <AffiliatorRow key={affiliator.id} affiliator={affiliator} />
@@ -36,9 +39,9 @@ export default function AffiliatorsList() {
           onPress={() => router.push('/(app)/affiliators/session')}
           accessibilityRole="button"
           accessibilityLabel={t('aff_previewStaff')}
-          style={styles.previewButton}
+          style={[styles.previewButton, { backgroundColor: colors.paper, borderColor: colors.leaf }]}
         >
-          <Text style={styles.previewLabel}>{t('aff_previewStaff')}</Text>
+          <Text style={[styles.previewLabel, { color: colors.leaf }]}>{t('aff_previewStaff')}</Text>
         </Pressable>
       </ScreenScroll>
     </View>
@@ -46,26 +49,23 @@ export default function AffiliatorsList() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   addButton: {
     width: hit.min,
     height: hit.min,
     borderRadius: radius.md,
-    backgroundColor: color.leaf,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  subtitle: { ...text.caption, color: color.secondary, marginTop: space.sm },
+  subtitle: { ...text.caption, marginTop: space.sm },
   listGap: { marginTop: space.md },
   previewButton: {
     minHeight: 44,
-    backgroundColor: color.paper,
     borderWidth: 1.5,
-    borderColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: space.sm,
   },
-  previewLabel: { ...text.bodySemi, color: color.leaf },
+  previewLabel: { ...text.bodySemi },
 });

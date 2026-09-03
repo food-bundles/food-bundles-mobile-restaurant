@@ -9,6 +9,8 @@ export interface CartLine {
 interface CartState {
   lines: CartLine[];
   add: (productId: string) => void;
+  /** Adds a specific quantity of a product in one call, merging with any existing line. */
+  addQty: (productId: string, qty: number) => void;
   inc: (productId: string) => void;
   dec: (productId: string) => void;
   remove: (productId: string) => void;
@@ -30,6 +32,18 @@ export const useCartStore = create<CartState>((set, get) => ({
         };
       }
       return { lines: [...state.lines, { productId, qty: 1 }] };
+    }),
+  addQty: (productId, qty) =>
+    set((state) => {
+      const existing = state.lines.find((line) => line.productId === productId);
+      if (existing) {
+        return {
+          lines: state.lines.map((line) =>
+            line.productId === productId ? { ...line, qty: line.qty + qty } : line,
+          ),
+        };
+      }
+      return { lines: [...state.lines, { productId, qty }] };
     }),
   inc: (productId) =>
     set((state) => ({

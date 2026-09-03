@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { PersonIcon, ChevronLeftIcon, BasketIcon } from '@/components/icons';
 import { CategoryChips, type CategoryOption } from '../_components/CategoryChips';
@@ -22,6 +23,8 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
 
 export default function GuestShop() {
   const t = useT();
+  const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
   const [category, setCategory] = useState<CategoryOption['key']>('ALL');
   const itemCount = useGuestCartStore((state) => state.itemCount());
   const total = useGuestCartStore((state) => state.total());
@@ -32,27 +35,27 @@ export default function GuestShop() {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
+      <View style={[styles.header, { borderBottomColor: colors.hairline, paddingTop: insets.top + space.sm }]}>
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
           accessibilityLabel={t('action_back')}
-          style={styles.iconButton}
+          style={[styles.iconButton, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
         >
           <ChevronLeftIcon />
         </Pressable>
-        <Text style={styles.title}>{t('guest_shopTitle')}</Text>
+        <Text style={[styles.title, { color: colors.ink }]}>{t('guest_shopTitle')}</Text>
         <Pressable
           onPress={() => router.push('/(public)/guest/cart')}
           accessibilityRole="button"
           accessibilityLabel={`Open guest basket, ${itemCount} items`}
-          style={styles.iconButton}
+          style={[styles.iconButton, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
         >
           <BasketIcon />
           {itemCount > 0 ? (
-            <View style={styles.badge}>
-              <Text style={styles.badgeLabel}>{itemCount}</Text>
+            <View style={[styles.badge, { backgroundColor: colors.marigold }]}>
+              <Text style={[styles.badgeLabel, { color: colors.pine }]}>{itemCount}</Text>
             </View>
           ) : null}
         </Pressable>
@@ -60,15 +63,16 @@ export default function GuestShop() {
           onPress={() => router.push('/(auth)/login')}
           accessibilityRole="button"
           accessibilityLabel={t('landing_login')}
-          style={styles.iconButtonTint}
+          style={[styles.iconButtonTint, { backgroundColor: colors.tintLeaf }]}
         >
-          <PersonIcon color={color.pine} />
+          <PersonIcon color={colors.pine} />
         </Pressable>
       </View>
-      <ScreenScroll contentInsetBottom={80}>
-        <View style={styles.banner}>
-          <Text style={styles.bannerText}>
-            <Text style={styles.bannerBold}>{t('guest_bannerTitle')}</Text> — {t('guest_bannerBody')}
+      <ScreenScroll contentInsetBottom={80} applyTopInset={false}>
+        <View style={[styles.banner, { backgroundColor: colors.tintMarigoldSoft, borderColor: colors.marigoldLine }]}>
+          <Text style={[styles.bannerText, { color: colors.tintedAmberText }]}>
+            <Text style={[styles.bannerBold, { color: colors.tintedAmberText }]}>{t('guest_bannerTitle')}</Text> —{' '}
+            {t('guest_bannerBody')}
           </Text>
         </View>
         <View style={styles.chips}>
@@ -81,16 +85,16 @@ export default function GuestShop() {
       <StickyFooter>
         <View style={styles.footerRow}>
           <View>
-            <Text style={styles.footerCount}>{itemCount} items</Text>
-            <Text style={styles.footerTotal}>{formatRwf(total)}</Text>
+            <Text style={[styles.footerCount, { color: colors.secondary }]}>{itemCount} items</Text>
+            <Text style={[styles.footerTotal, { color: colors.ink }]}>{formatRwf(total)}</Text>
           </View>
           <Pressable
             onPress={() => router.push('/(public)/guest/cart')}
             accessibilityRole="button"
             accessibilityLabel={t('guest_viewBasket')}
-            style={styles.footerButton}
+            style={[styles.footerButton, { backgroundColor: colors.leaf }]}
           >
-            <Text style={styles.footerButtonLabel}>{t('guest_viewBasket')}</Text>
+            <Text style={[styles.footerButtonLabel, { color: colors.paper }]}>{t('guest_viewBasket')}</Text>
           </Pressable>
         </View>
       </StickyFooter>
@@ -99,7 +103,7 @@ export default function GuestShop() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -107,16 +111,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     paddingBottom: space.sm,
     borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
   },
-  title: { ...text.h2, color: color.ink, flex: 1 },
+  title: { ...text.h2, flex: 1 },
   iconButton: {
     width: hit.min,
     height: hit.min,
     borderRadius: radius.md,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -124,7 +125,6 @@ const styles = StyleSheet.create({
     width: hit.min,
     height: hit.min,
     borderRadius: radius.md,
-    backgroundColor: color.tintLeaf,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -135,34 +135,30 @@ const styles = StyleSheet.create({
     minWidth: 18,
     height: 18,
     borderRadius: radius.pill,
-    backgroundColor: color.marigold,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 3,
   },
-  badgeLabel: { ...text.micro, color: color.pine },
+  badgeLabel: { ...text.micro },
   banner: {
-    backgroundColor: color.tintMarigoldSoft,
     borderWidth: 1,
-    borderColor: color.marigoldLine,
     borderRadius: radius.md,
     padding: space.md,
     marginTop: space.md,
   },
-  bannerText: { ...text.caption, color: color.tintedAmberText, lineHeight: 18 },
-  bannerBold: { ...text.bodySemi, color: color.tintedAmberText },
+  bannerText: { ...text.caption, lineHeight: 18 },
+  bannerBold: { ...text.bodySemi },
   chips: { marginTop: space.md },
   grid: { marginTop: space.md },
   footerRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
-  footerCount: { ...text.caption, color: color.secondary },
-  footerTotal: { ...text.h2, color: color.ink, fontVariant: ['tabular-nums'] },
+  footerCount: { ...text.caption },
+  footerTotal: { ...text.h2, fontVariant: ['tabular-nums'] },
   footerButton: {
     flex: 1,
     minHeight: 48,
-    backgroundColor: color.leaf,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  footerButtonLabel: { ...text.bodySemi, color: color.paper },
+  footerButtonLabel: { ...text.bodySemi },
 });

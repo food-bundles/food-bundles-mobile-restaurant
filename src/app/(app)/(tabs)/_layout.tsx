@@ -1,12 +1,15 @@
 import { Tabs } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
-import { BasketIcon, OrdersIcon, WalletIcon, VoucherIcon, MoreIcon, type IconProps } from '@/components/icons';
+import { BasketIcon, OrdersIcon, WalletIcon, MoreIcon, type IconProps } from '@/components/icons';
+import { AvatarTabButton } from '@/components/navigation';
+import { AnimatedTabBar } from './_components/AnimatedTabBar';
 
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
-  return <Text style={[styles.label, focused && styles.labelActive]}>{label}</Text>;
+  const { colors } = useTheme();
+  return <Text style={[styles.label, { color: focused ? colors.leaf : colors.muted }]}>{label}</Text>;
 }
 
 function TabIconPill({
@@ -16,9 +19,10 @@ function TabIconPill({
   Icon: (props: IconProps) => React.JSX.Element;
   focused: boolean;
 }) {
+  const { colors } = useTheme();
   return (
-    <View style={[styles.pill, focused && styles.pillActive]}>
-      <Icon size={20} color={focused ? color.leaf : color.muted} />
+    <View style={[styles.pill, focused && { backgroundColor: colors.tintLeaf }]}>
+      <Icon size={20} color={focused ? colors.leaf : colors.muted} />
     </View>
   );
 }
@@ -26,13 +30,15 @@ function TabIconPill({
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <Tabs
+      tabBar={(props) => <AnimatedTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: color.leaf,
-        tabBarInactiveTintColor: color.muted,
+        tabBarActiveTintColor: colors.leaf,
+        tabBarInactiveTintColor: colors.muted,
         tabBarStyle: { height: hit.min + space.lg + insets.bottom, paddingBottom: insets.bottom },
       }}
     >
@@ -53,19 +59,18 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="support"
+        options={{
+          title: t('nav_aiSupport'),
+          tabBarButton: () => <AvatarTabButton />,
+        }}
+      />
+      <Tabs.Screen
         name="wallet"
         options={{
           title: t('tab_wallet'),
           tabBarLabel: ({ focused }) => <TabLabel label={t('tab_wallet')} focused={focused} />,
           tabBarIcon: ({ focused }) => <TabIconPill Icon={WalletIcon} focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="vouchers"
-        options={{
-          title: t('tab_vouchers'),
-          tabBarLabel: ({ focused }) => <TabLabel label={t('tab_vouchers')} focused={focused} />,
-          tabBarIcon: ({ focused }) => <TabIconPill Icon={VoucherIcon} focused={focused} />,
         }}
       />
       <Tabs.Screen
@@ -81,8 +86,7 @@ export default function TabsLayout() {
 }
 
 const styles = StyleSheet.create({
-  label: { ...text.micro, color: color.muted },
-  labelActive: { color: color.leaf },
+  label: { ...text.micro },
   pill: {
     width: 40,
     height: 32,
@@ -90,5 +94,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: radius.sm,
   },
-  pillActive: { backgroundColor: color.tintLeaf },
 });

@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, space, text } from '@/theme';
+import { space, text, useTheme } from '@/theme';
 import { SwipeRow } from '@/components/layout';
-import { QuantityStepper, PriceText } from '@/components/product';
+import { QuantityStepper, PriceText, ProductLineImage } from '@/components/product';
 import { useGuestCartStore } from '@/stores';
 import { products } from '@/mocks';
 
 export function GuestCartList() {
+  const { colors } = useTheme();
   const lines = useGuestCartStore((state) => state.lines);
   const inc = useGuestCartStore((state) => state.inc);
   const dec = useGuestCartStore((state) => state.dec);
@@ -22,10 +23,11 @@ export function GuestCartList() {
             onDelete={() => remove(line.productId)}
             deleteLabel={`Remove ${product.name} from basket`}
           >
-            <View style={styles.row}>
+            <View style={[styles.row, { backgroundColor: colors.paper }]}>
+              <ProductLineImage source={product.image} label={product.name} />
               <View style={styles.textCol}>
-                <Text style={styles.name}>{product.name}</Text>
-                <Text style={styles.unit}>{product.unit}</Text>
+                <Text style={[styles.name, { color: colors.ink }]}>{product.name}</Text>
+                <Text style={[styles.unit, { color: colors.muted }]}>{product.unit}</Text>
               </View>
               <QuantityStepper qty={line.qty} onInc={() => inc(line.productId)} onDec={() => dec(line.productId)} />
               <PriceText amount={product.price * line.qty} size="md" />
@@ -42,10 +44,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
-    backgroundColor: color.paper,
     padding: space.md,
   },
   textCol: { flex: 1 },
-  name: { ...text.bodySemi, color: color.ink },
-  unit: { ...text.caption, color: color.muted },
+  name: { ...text.bodySemi },
+  unit: { ...text.caption },
 });

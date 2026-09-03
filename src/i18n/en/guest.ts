@@ -28,4 +28,5 @@ export const guest = {
   guest_convertPrompt: 'Create an account to track this order and reorder in one tap.',
   guest_emptyBasketTitle: 'Your basket is empty',
   guest_emptyBasketMessage: 'Browse produce and add items to see them here.',
+  a11y_openGuestBasket: 'Open guest basket, {{count}} items',
 } as const;

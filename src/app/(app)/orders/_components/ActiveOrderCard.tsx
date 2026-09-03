@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { OrderProgressTrack } from '@/components/order';
 import { PriceText } from '@/components/product';
 import type { Order } from '@/mocks/types';
@@ -22,19 +22,23 @@ export interface ActiveOrderCardProps {
 
 export function ActiveOrderCard({ order }: ActiveOrderCardProps) {
   const t = useT();
+  const { colors } = useTheme();
 
   return (
     <Pressable
       onPress={() => router.push({ pathname: '/(app)/orders/[id]', params: { id: order.id } })}
       accessibilityRole="button"
-      accessibilityLabel={`Active order ${order.id}, ${order.status}`}
-      style={styles.card}
+      accessibilityLabel={t('a11y_activeOrderCard', {
+        orderId: order.id,
+        status: t(STATUS_KEY[order.status] ?? 'st_pending'),
+      })}
+      style={[styles.card, { backgroundColor: colors.pine }]}
     >
       <View style={styles.topRow}>
-        <Text style={styles.id}>{order.id}</Text>
-        <Text style={styles.status}>{t(STATUS_KEY[order.status] ?? 'st_pending')}</Text>
+        <Text style={[styles.id, { color: colors.paper }]}>{order.id}</Text>
+        <Text style={[styles.status, { color: colors.marigold }]}>{t(STATUS_KEY[order.status] ?? 'st_pending')}</Text>
       </View>
-      <PriceText amount={order.total} size="lg" colorOverride={color.paper} />
+      <PriceText amount={order.total} size="lg" colorOverride={colors.paper} />
       <View style={styles.trackGap}>
         <OrderProgressTrack step={order.step} />
       </View>
@@ -43,9 +47,9 @@ export function ActiveOrderCard({ order }: ActiveOrderCardProps) {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: color.pine, borderRadius: radius.lg, padding: space.lg },
+  card: { borderRadius: radius.lg, padding: space.lg },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: space.sm },
-  id: { ...text.bodySemi, color: color.paper },
-  status: { ...text.label, color: color.marigold },
+  id: { ...text.bodySemi },
+  status: { ...text.label },
   trackGap: { marginTop: space.md },
 });

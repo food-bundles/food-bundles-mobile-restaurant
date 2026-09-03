@@ -19,8 +19,9 @@ export const auth: Record<keyof typeof authEn, string> = {
   auth_restaurant: 'Restaurant',
   auth_hotel: 'Hôtel',
   auth_phone: 'Téléphone',
-  auth_tin: 'NIF (facultatif)',
-  auth_tinHelper: 'Requis pour la facturation liée à l’EBM — vous pouvez l’ajouter plus tard.',
+  auth_tin: 'NIF (Numéro d’Identification Fiscale)',
+  auth_tinHelper: 'Requis pour la facturation liée à l’EBM — vous pouvez l’ajouter plus tard',
+  auth_tinError: 'Saisissez votre NIF à 9 chiffres',
   auth_createAccountBtn: 'Créer un compte',
   auth_staffNote:
     'Le personnel (affiliés) est ajouté plus tard par votre gestionnaire dans l’application — il n’y a pas d’inscription distincte pour le personnel.',

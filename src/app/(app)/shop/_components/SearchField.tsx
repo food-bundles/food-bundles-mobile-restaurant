@@ -1,5 +1,5 @@
 import { TextInput, StyleSheet, View } from 'react-native';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { SearchIcon } from '@/components/icons';
 
 export interface SearchFieldProps {
@@ -9,17 +9,19 @@ export interface SearchFieldProps {
 }
 
 export function SearchField({ value, onChangeText, placeholder }: SearchFieldProps) {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.container}>
-      <SearchIcon color={color.leaf} />
+    <View style={[styles.container, { backgroundColor: colors.paper, borderColor: colors.leaf }]}>
+      <SearchIcon color={colors.leaf} />
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor={color.muted}
+        placeholderTextColor={colors.muted}
         accessibilityLabel={placeholder}
         autoFocus
-        style={styles.input}
+        style={[styles.input, { color: colors.ink }]}
       />
     </View>
   );
@@ -32,11 +34,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: space.sm,
     minHeight: hit.min,
-    backgroundColor: color.paper,
     borderWidth: 1.5,
-    borderColor: color.leaf,
     borderRadius: radius.md,
     paddingHorizontal: space.md,
   },
-  input: { ...text.body, color: color.ink, flex: 1, paddingVertical: space.sm },
+  input: { ...text.body, flex: 1, paddingVertical: space.sm },
 });

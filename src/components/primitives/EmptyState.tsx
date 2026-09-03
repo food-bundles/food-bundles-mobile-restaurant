@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { Button } from './Button';
 
 export interface EmptyStateAction {
@@ -15,11 +15,13 @@ export interface EmptyStateProps {
 }
 
 export function EmptyState({ icon, title, message, action }: EmptyStateProps) {
+  const { colors } = useTheme();
+
   return (
     <View style={styles.container}>
-      <View style={styles.iconWrap}>{icon}</View>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.message}>{message}</Text>
+      <View style={[styles.iconWrap, { backgroundColor: colors.tintLeaf }]}>{icon}</View>
+      <Text style={[styles.title, { color: colors.ink }]}>{title}</Text>
+      <Text style={[styles.message, { color: colors.muted }]}>{message}</Text>
       {action ? (
         <View style={styles.action}>
           <Button variant="secondary" size="sm" onPress={action.onPress}>
@@ -37,11 +39,10 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: radius.lg,
-    backgroundColor: color.tintLeaf,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: { ...text.h2, color: color.ink, marginTop: space.md, textAlign: 'center' },
-  message: { ...text.caption, color: color.muted, marginTop: space.xs, textAlign: 'center' },
+  title: { ...text.h2, marginTop: space.md, textAlign: 'center' },
+  message: { ...text.caption, marginTop: space.xs, textAlign: 'center' },
   action: { marginTop: space.lg },
 });

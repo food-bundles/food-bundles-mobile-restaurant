@@ -5,7 +5,7 @@
     "scheme": "foodbundles",
     "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
@@ -16,7 +16,29 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "FoodBundles uses your location to set an accurate delivery pin."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "FoodBundles needs access to your photos to set your restaurant's profile picture."
+        }
+      ],
+      "expo-task-manager",
+      "expo-notifications",
+      "expo-background-task",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "FoodBundles needs microphone access to record voice notes in chat."
+        }
+      ],
+      "expo-document-picker"
     ],
     "experiments": {
       "typedRoutes": true

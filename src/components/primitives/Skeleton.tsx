@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { StyleSheet, type DimensionValue } from 'react-native';
+import type { DimensionValue } from 'react-native';
 import Animated, {
   cancelAnimation,
   useAnimatedStyle,
@@ -7,7 +7,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { color, radius } from '@/theme';
+import { radius, signatureDuration, useTheme } from '@/theme';
 
 export interface SkeletonProps {
   width: DimensionValue;
@@ -16,10 +16,11 @@ export interface SkeletonProps {
 }
 
 export function Skeleton({ width, height, radius: cornerRadius = radius.sm }: SkeletonProps) {
+  const { colors } = useTheme();
   const progress = useSharedValue(0);
 
   useEffect(() => {
-    progress.value = withRepeat(withTiming(1, { duration: 1400 }), -1, false);
+    progress.value = withRepeat(withTiming(1, { duration: signatureDuration.skeletonSweep }), -1, false);
     return () => cancelAnimation(progress);
   }, [progress]);
 
@@ -30,15 +31,7 @@ export function Skeleton({ width, height, radius: cornerRadius = radius.sm }: Sk
   return (
     <Animated.View
       accessible={false}
-      style={[
-        styles.base,
-        { width, height, borderRadius: cornerRadius },
-        animatedStyle,
-      ]}
+      style={[{ backgroundColor: colors.neutral, width, height, borderRadius: cornerRadius }, animatedStyle]}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  base: { backgroundColor: color.neutral },
-});

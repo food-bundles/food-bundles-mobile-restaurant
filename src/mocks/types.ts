@@ -50,6 +50,8 @@ export interface OrderLine {
   unit: string;
   qty: number;
   each: number;
+  /** RWF/kg paid at order time, for tracked commodities only — used by the price-comparison screen. */
+  pricePerUnitAtOrderTime?: number;
 }
 
 export interface Order {
@@ -76,13 +78,26 @@ export interface Transaction {
   note: string;
 }
 
-export interface NotificationItem {
+export type NotificationChannel =
+  | 'order'
+  | 'wallet'
+  | 'voucher'
+  | 'marketPrice'
+  | 'priceAlert'
+  | 'consent'
+  | 'repayment'
+  | 'system';
+
+export interface AppNotification {
   id: string;
+  channel: NotificationChannel;
   title: string;
   body: string;
-  date: string;
+  imageUri?: string;
+  deepLink?: string;
+  timestamp: string;
   read: boolean;
-  orderId?: string;
+  actionLabel?: string;
 }
 
 export interface Address {
@@ -101,13 +116,8 @@ export interface Affiliator {
   name: string;
   role: string;
   status: AffiliatorStatus;
-}
-
-export interface Farm {
-  id: string;
-  name: string;
-  category: ProductCategory;
-  image: ImageSourcePropType;
+  /** Links this affiliator to a peer-chat conversation; absent until a conversation has started. */
+  conversationId?: string;
 }
 
 export interface Plan {
@@ -116,4 +126,58 @@ export interface Plan {
   monthly: number;
   weekly: number;
   features: string[];
+}
+
+export type VoucherStatus = 'AVAILABLE' | 'USED' | 'EXPIRED';
+
+export interface Voucher {
+  id: string;
+  code: string;
+  amount: number;
+  status: VoucherStatus;
+  issuedAt: string;
+  expiresAt: string;
+  usedAt?: string;
+  orderId?: string;
+}
+
+export type DataConsentSource = 'eucl' | 'rra' | 'vubaVuba' | 'kayko' | 'foodbundles' | 'creditBureau';
+
+export interface DataConsent {
+  source: DataConsentSource;
+  granted: boolean;
+  grantedAt: string | null;
+  expiresAt: string | null;
+}
+
+export type CreditTier = 'A' | 'B' | 'C' | 'D';
+
+export interface ScoreContribution {
+  source: DataConsentSource;
+  weight: number;
+  contribution: number;
+}
+
+export interface CreditScore {
+  tier: CreditTier;
+  limitRwf: number;
+  scoreBreakdown: ScoreContribution[];
+}
+
+export type CuisineType = 'AFRICAN' | 'INDIAN' | 'WESTERN' | 'ASIAN' | 'MEDITERRANEAN' | 'FUSION';
+export type MealType = 'BREAKFAST' | 'LUNCH' | 'DINNER' | 'ALL_DAY';
+
+export interface MenuIngredient {
+  productId: string;
+  qty: number;
+}
+
+export interface MenuDish {
+  id: string;
+  name: string;
+  cuisine: CuisineType;
+  mealTypes: MealType[];
+  source: string;
+  ingredients: MenuIngredient[];
+  image: ImageSourcePropType;
 }

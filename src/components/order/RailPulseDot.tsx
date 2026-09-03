@@ -8,9 +8,10 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { color } from '@/theme';
+import { signatureDuration, useTheme } from '@/theme';
 
 export function RailPulseDot() {
+  const { colors } = useTheme();
   const scale = useSharedValue(1);
   const opacity = useSharedValue(0.5);
   const [reduceMotion, setReduceMotion] = useState(false);
@@ -29,8 +30,16 @@ export function RailPulseDot() {
       opacity.value = 0;
       return;
     }
-    scale.value = withRepeat(withTiming(2.2, { duration: 2000, easing: Easing.out(Easing.ease) }), -1, false);
-    opacity.value = withRepeat(withTiming(0, { duration: 2000, easing: Easing.out(Easing.ease) }), -1, false);
+    scale.value = withRepeat(
+      withTiming(2.2, { duration: signatureDuration.railPulse, easing: Easing.out(Easing.ease) }),
+      -1,
+      false,
+    );
+    opacity.value = withRepeat(
+      withTiming(0, { duration: signatureDuration.railPulse, easing: Easing.out(Easing.ease) }),
+      -1,
+      false,
+    );
     return () => {
       cancelAnimation(scale);
       cancelAnimation(opacity);
@@ -44,8 +53,8 @@ export function RailPulseDot() {
 
   return (
     <Animated.View style={styles.wrap}>
-      <Animated.View style={[styles.ring, pulseStyle]} />
-      <Animated.View style={styles.core} />
+      <Animated.View style={[styles.ring, { backgroundColor: colors.marigold }, pulseStyle]} />
+      <Animated.View style={[styles.core, { backgroundColor: colors.marigold, borderColor: colors.paper }]} />
     </Animated.View>
   );
 }
@@ -57,14 +66,11 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: color.marigold,
   },
   core: {
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: color.marigold,
     borderWidth: 3,
-    borderColor: color.paper,
   },
 });

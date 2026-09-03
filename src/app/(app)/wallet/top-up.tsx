@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, radius, space, text } from '@/theme';
+import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { MobileMoneyTile, CardTile } from '@/components/payment';
 import { TopupAmountInput } from './_components/TopupAmountInput';
@@ -9,12 +9,15 @@ import { QuickAmountChips } from './_components/QuickAmountChips';
 import { ShareAccountantRow } from './_components/ShareAccountantRow';
 import { ActionSheet } from './_components/ActionSheet';
 import { useWalletStore } from '@/stores';
-import { useT } from '@/i18n';
+import { scheduleLocalNotification } from '@/services/notificationService';
+import { useT, translate } from '@/i18n';
 import { formatRwf } from '@/lib';
 import { account } from '@/mocks';
 
+/** Top-up screen: pick an amount and a payment method, then confirm to add it to the wallet balance. */
 export default function TopUp() {
   const t = useT();
+  const { colors } = useTheme();
   const topUp = useWalletStore((state) => state.topUp);
   const [amount, setAmount] = useState(200000);
   const [method, setMethod] = useState<'MOBILE_MONEY' | 'CARD'>('MOBILE_MONEY');
@@ -26,20 +29,26 @@ export default function TopUp() {
     setSubmitting(true);
     await topUp(amount);
     setSubmitting(false);
+    await scheduleLocalNotification({
+      channel: 'wallet',
+      title: translate('notif_walletToppedUp', { amount: formatRwf(amount) }),
+      body: translate('notif_walletToppedUpBody'),
+      deepLink: '/(app)/(tabs)/wallet',
+    });
     router.back();
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenHeader title={t('wallet_topUpWallet')} />
-      <ScreenScroll contentInsetBottom={80}>
+      <ScreenScroll contentInsetBottom={80} applyTopInset={false}>
         <View style={styles.amountGap}>
           <TopupAmountInput amount={amount} onChangeAmount={setAmount} />
         </View>
         <View style={styles.chipsGap}>
           <QuickAmountChips selected={amount} onSelect={setAmount} />
         </View>
-        <Text style={styles.sectionLabel}>{t('wallet_payFrom')}</Text>
+        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('wallet_payFrom')}</Text>
         <View style={styles.tilesGap}>
           <MobileMoneyTile
             selected={method === 'MOBILE_MONEY'}
@@ -73,12 +82,18 @@ export default function TopUp() {
           disabled={amount === 0 || submitting}
           accessibilityRole="button"
           accessibilityLabel={t('wallet_topUpAmount', { amount: formatRwf(amount) })}
-          style={[styles.button, (amount === 0 || submitting) && styles.buttonDisabled]}
+          style={[
+            styles.button,
+            { backgroundColor: colors.marigold },
+            (amount === 0 || submitting) && styles.buttonDisabled,
+          ]}
         >
           {submitting ? (
-            <ActivityIndicator color={color.pine} />
+            <ActivityIndicator color={colors.pine} />
           ) : (
-            <Text style={styles.buttonLabel}>{t('wallet_topUpAmount', { amount: formatRwf(amount) })}</Text>
+            <Text style={[styles.buttonLabel, { color: colors.pine }]}>
+              {t('wallet_topUpAmount', { amount: formatRwf(amount) })}
+            </Text>
           )}
         </Pressable>
       </StickyFooter>
@@ -87,19 +102,18 @@ export default function TopUp() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
+  container: { flex: 1 },
   amountGap: { marginTop: space.xl },
   chipsGap: { marginTop: space.lg },
-  sectionLabel: { ...text.overline, color: color.secondary, marginTop: space.xl, marginBottom: space.sm },
+  sectionLabel: { ...text.overline, marginTop: space.xl, marginBottom: space.sm },
   tilesGap: { gap: space.sm },
   shareGap: { marginTop: space.md },
   button: {
     minHeight: 48,
-    backgroundColor: color.marigold,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonDisabled: { opacity: 0.5 },
-  buttonLabel: { ...text.bodySemi, color: color.pine },
+  buttonLabel: { ...text.bodySemi },
 });

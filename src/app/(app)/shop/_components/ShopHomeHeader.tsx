@@ -1,23 +1,45 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
-import { color, hit, radius, space, text } from '@/theme';
+import { hit, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 import { account } from '@/mocks';
-import { useCartStore, useNotificationsStore } from '@/stores';
+import { useCartStore, useNotificationsStore, useSessionStore } from '@/stores';
 import { BellIcon, BasketIcon } from '@/components/icons';
+
+function initialsOf(name: string): string {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase();
+}
 
 export function ShopHomeHeader() {
   const t = useT();
+  const { colors } = useTheme();
   const itemCount = useCartStore((state) => state.itemCount());
   const unreadCount = useNotificationsStore((state) => state.unreadCount());
+  const restaurantImageUri = useSessionStore((state) => state.restaurantImageUri);
 
   return (
     <View style={styles.row}>
       <View style={styles.venueRow}>
-        <View style={styles.venueLogo} />
+        {restaurantImageUri ? (
+          <Image
+            source={{ uri: restaurantImageUri }}
+            accessible={false}
+            style={[styles.venueLogo, { backgroundColor: colors.tintLeaf }]}
+          />
+        ) : (
+          <View style={[styles.venueLogo, { backgroundColor: colors.tintLeaf }]}>
+            <Text style={[styles.venueInitials, { color: colors.leaf }]}>{initialsOf(account.businessName)}</Text>
+          </View>
+        )}
         <View>
-          <Text style={styles.orderingFor}>{t('shop_orderingFor')}</Text>
-          <Text style={styles.venueName}>{account.businessName}</Text>
+          <Text style={[styles.orderingFor, { color: colors.secondary }]}>{t('shop_orderingFor')}</Text>
+          <Text style={[styles.venueName, { color: colors.ink }]}>{account.businessName}</Text>
         </View>
       </View>
       <View style={styles.actions}>
@@ -25,12 +47,12 @@ export function ShopHomeHeader() {
           onPress={() => router.push('/(app)/notifications')}
           accessibilityRole="button"
           accessibilityLabel={t('shop_notifications', { count: unreadCount })}
-          style={styles.iconButton}
+          style={[styles.iconButton, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
         >
           <BellIcon />
           {unreadCount > 0 ? (
-            <View style={styles.badge}>
-              <Text style={styles.badgeLabel}>{unreadCount}</Text>
+            <View style={[styles.badge, { backgroundColor: colors.chili }]}>
+              <Text style={[styles.badgeLabel, { color: colors.paper }]}>{unreadCount}</Text>
             </View>
           ) : null}
         </Pressable>
@@ -38,12 +60,12 @@ export function ShopHomeHeader() {
           onPress={() => router.push('/(app)/shop/cart')}
           accessibilityRole="button"
           accessibilityLabel={t('shop_openCart')}
-          style={styles.iconButton}
+          style={[styles.iconButton, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
         >
           <BasketIcon />
           {itemCount > 0 ? (
-            <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeLabel}>{itemCount}</Text>
+            <View style={[styles.cartBadge, { backgroundColor: colors.marigold }]}>
+              <Text style={[styles.cartBadgeLabel, { color: colors.pine }]}>{itemCount}</Text>
             </View>
           ) : null}
         </Pressable>
@@ -61,17 +83,23 @@ const styles = StyleSheet.create({
     paddingTop: space.sm,
   },
   venueRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
-  venueLogo: { width: 38, height: 38, borderRadius: radius.md, backgroundColor: color.tintLeaf },
-  orderingFor: { ...text.caption, color: color.secondary },
-  venueName: { ...text.h2, color: color.ink },
+  venueLogo: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  venueInitials: { ...text.label },
+  orderingFor: { ...text.caption },
+  venueName: { ...text.h2 },
   actions: { flexDirection: 'row', gap: space.sm },
   iconButton: {
     width: hit.min,
     height: hit.min,
     borderRadius: radius.md,
-    backgroundColor: color.paper,
     borderWidth: 1,
-    borderColor: color.hairline,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -82,11 +110,10 @@ const styles = StyleSheet.create({
     minWidth: 16,
     height: 16,
     borderRadius: radius.pill,
-    backgroundColor: color.chili,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeLabel: { ...text.micro, color: color.paper, fontSize: 10 },
+  badgeLabel: { ...text.micro, fontSize: 10 },
   cartBadge: {
     position: 'absolute',
     top: -6,
@@ -94,10 +121,9 @@ const styles = StyleSheet.create({
     minWidth: 18,
     height: 18,
     borderRadius: radius.pill,
-    backgroundColor: color.marigold,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 3,
   },
-  cartBadgeLabel: { ...text.micro, color: color.pine },
+  cartBadgeLabel: { ...text.micro },
 });

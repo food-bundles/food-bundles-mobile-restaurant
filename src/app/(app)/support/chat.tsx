@@ -1,131 +1,147 @@
-import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
+import { useRef, useState } from 'react';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { color, hit, radius, space, text } from '@/theme';
-import { ScreenScroll } from '@/components/layout';
-import { ChevronLeftIcon, SendIcon } from '@/components/icons';
-import { ChatBubble } from './_components/ChatBubble';
-import { SuggestionChips } from './_components/SuggestionChips';
+import { space, useTheme } from '@/theme';
+import { MessageBubble, TypingIndicator, ChatComposer, CallScreen, type ComposerAttachment } from '@/components/chat';
+import { ChatHeader } from './_components/ChatHeader';
+import { SuggestionChips, type Suggestion } from './_components/SuggestionChips';
 import { useT } from '@/i18n';
+import type { TranslationKey } from '@/i18n';
+import { useChatStore } from '@/stores';
+import { SUPPORT_ID, YOU_ID } from '@/mocks';
+import { simulateReply } from '@/lib';
+import type { CallKind } from '@/mocks';
 
-interface ChatMessage {
-  fromUser: boolean;
-  text: string;
-}
+const CONVERSATION_ID = 'conv-support';
 
-const ANSWERS: Record<string, string> = {
-  'Where is my order?':
-    'Order FB-24815 is In transit, arriving around 10:30. You can track every step on the order screen.',
-  'How do vouchers work?':
-    'On Premium you get a credit line — order now and settle by the due date. Each voucher payment is confirmed with a one-time code.',
-  'Top up my wallet':
-    'Open Wallet → Top up and choose MTN MoMo, Airtel Money, or card. You can also share a top-up link with your accountant.',
+const ANSWER_KEY: Record<string, TranslationKey> = {
+  orderStatus: 'chat_answerOrderStatus',
+  vouchers: 'chat_answerVouchers',
+  topUp: 'chat_answerTopUp',
 };
+
+function newMessageId(): string {
+  return `msg-${Date.now()}-${Math.round(Math.random() * 1000)}`;
+}
 
 export default function Chat() {
   const t = useT();
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const scrollRef = useRef<ScrollView>(null);
+  const messages = useChatStore((state) => state.messagesByConversation[CONVERSATION_ID] ?? []);
+  const typingConversationId = useChatStore((state) => state.typingConversationId);
+  const sendMessage = useChatStore((state) => state.sendMessage);
+  const receiveMessage = useChatStore((state) => state.receiveMessage);
+  const setTyping = useChatStore((state) => state.setTyping);
+  const simulateDeliveryThenRead = useChatStore((state) => state.simulateDeliveryThenRead);
   const [draft, setDraft] = useState('');
+  const [activeCall, setActiveCall] = useState<CallKind | null>(null);
 
-  const ask = (question: string) => {
-    const answer = ANSWERS[question] ?? 'Thanks — a FoodBundles specialist will follow up shortly.';
-    setMessages((prev) => [...prev, { fromUser: true, text: question }, { fromUser: false, text: answer }]);
-    setDraft('');
+  const suggestions: Suggestion[] = [
+    { key: 'orderStatus', label: t('chat_suggestion1') },
+    { key: 'vouchers', label: t('chat_suggestion2') },
+    { key: 'topUp', label: t('chat_suggestion3') },
+  ];
+
+  const scrollToBottom = () => {
+    requestAnimationFrame(() => scrollRef.current?.scrollToEnd({ animated: true }));
   };
 
+  const respondWithAnswer = async (answerBody: string) => {
+    const replyBody = await simulateReply(answerBody, {
+      onTypingStart: () => setTyping(CONVERSATION_ID),
+      onTypingEnd: () => setTyping(null),
+    });
+    receiveMessage(CONVERSATION_ID, {
+      id: newMessageId(),
+      senderId: SUPPORT_ID,
+      kind: 'text',
+      body: replyBody,
+      sentAt: new Date().toISOString(),
+      deliveredAt: new Date().toISOString(),
+    });
+    scrollToBottom();
+  };
+
+  const pushUserMessage = (
+    kind: ComposerAttachment['kind'],
+    body: string,
+    attachment?: string,
+    durationMs?: number,
+  ) => {
+    const id = newMessageId();
+    sendMessage(CONVERSATION_ID, {
+      id,
+      senderId: YOU_ID,
+      kind,
+      body,
+      attachment,
+      durationMs,
+      sentAt: new Date().toISOString(),
+    });
+    scrollToBottom();
+    void simulateDeliveryThenRead(CONVERSATION_ID, id);
+    return id;
+  };
+
+  const askSuggestion = (suggestion: Suggestion) => {
+    pushUserMessage('text', suggestion.label);
+    const answerKey = ANSWER_KEY[suggestion.key];
+    void respondWithAnswer(answerKey ? t(answerKey) : t('chat_fallbackAnswer'));
+  };
+
+  const sendDraft = () => {
+    const trimmed = draft.trim();
+    if (!trimmed) return;
+    pushUserMessage('text', trimmed);
+    setDraft('');
+    void respondWithAnswer(t('chat_fallbackAnswer'));
+  };
+
+  const sendAttachment = (attachment: ComposerAttachment) => {
+    pushUserMessage(attachment.kind, '', attachment.uri, attachment.durationMs);
+    void respondWithAnswer(t('chat_fallbackAnswer'));
+  };
+
+  if (activeCall) {
+    return <CallScreen peerName={t('chat_title')} kind={activeCall} onEnd={() => setActiveCall(null)} />;
+  }
+
   return (
-    <View style={styles.container}>
-      <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={styles.backButton}
-        >
-          <ChevronLeftIcon />
-        </Pressable>
-        <View style={styles.avatar} />
-        <View>
-          <Text style={styles.title}>{t('chat_title')}</Text>
-          <Text style={styles.status}>● {t('chat_onlineNow')}</Text>
-        </View>
-      </View>
-      <ScreenScroll contentInsetBottom={0}>
-        {messages.map((message, index) => (
-          <ChatBubble key={index} text={message.text} fromUser={message.fromUser} />
+    <KeyboardAvoidingView
+      style={[styles.container, { backgroundColor: colors.oat }]}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={insets.top}
+    >
+      <ChatHeader topInset={insets.top} onStartCall={setActiveCall} />
+      <ScrollView
+        ref={scrollRef}
+        style={[styles.scrollArea, { backgroundColor: colors.oat }]}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        onContentSizeChange={scrollToBottom}
+      >
+        {messages.map((message) => (
+          <MessageBubble key={message.id} message={message} fromMe={message.senderId === YOU_ID} />
         ))}
-      </ScreenScroll>
-      <View style={styles.composer}>
-        <SuggestionChips
-          suggestions={[t('chat_suggestion1'), t('chat_suggestion2'), t('chat_suggestion3')]}
-          onSelect={ask}
-        />
-        <View style={styles.inputRow}>
-          <TextInput
-            value={draft}
-            onChangeText={setDraft}
-            placeholder={t('chat_typeMessage')}
-            placeholderTextColor={color.muted}
-            accessibilityLabel={t('chat_typeMessage')}
-            style={styles.input}
-          />
-          <Pressable
-            onPress={() => draft.trim() && ask(draft.trim())}
-            accessibilityRole="button"
-            accessibilityLabel={t('chat_send')}
-            style={styles.sendButton}
-          >
-            <SendIcon />
-          </Pressable>
-        </View>
-      </View>
-    </View>
+        {typingConversationId === CONVERSATION_ID ? <TypingIndicator /> : null}
+      </ScrollView>
+      <SuggestionChips suggestions={suggestions} onSelect={askSuggestion} />
+      <ChatComposer
+        bottomInset={insets.bottom}
+        draft={draft}
+        onDraftChange={setDraft}
+        onSendText={sendDraft}
+        onSendAttachment={sendAttachment}
+      />
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: color.oat },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    paddingHorizontal: space.md,
-    paddingBottom: space.md,
-    borderBottomWidth: 1,
-    borderBottomColor: color.hairline,
-  },
-  backButton: { width: hit.min, height: hit.min, alignItems: 'center', justifyContent: 'center' },
-  avatar: { width: 34, height: 34, borderRadius: 17, backgroundColor: color.tintLeaf },
-  title: { ...text.h2, color: color.ink },
-  status: { ...text.caption, color: color.ripe, marginTop: 2 },
-  composer: {
-    borderTopWidth: 1,
-    borderTopColor: color.hairline,
-    backgroundColor: color.paper,
-    paddingHorizontal: space.md,
-    paddingTop: space.sm,
-    paddingBottom: space.md,
-  },
-  inputRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.sm },
-  input: {
-    flex: 1,
-    ...text.body,
-    color: color.ink,
-    backgroundColor: color.oat,
-    borderWidth: 1.5,
-    borderColor: color.hairline,
-    borderRadius: radius.pill,
-    paddingHorizontal: space.md,
-    minHeight: hit.min,
-  },
-  sendButton: {
-    width: hit.min,
-    height: hit.min,
-    borderRadius: hit.min / 2,
-    backgroundColor: color.leaf,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  container: { flex: 1 },
+  scrollArea: { flex: 1 },
+  scrollContent: { paddingHorizontal: space.lg, paddingTop: space.lg },
 });

@@ -5,7 +5,7 @@ import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
 import { CheckIcon } from '@/components/icons';
 import { RailPulseDot } from './RailPulseDot';
-import { color, space, text } from '@/theme';
+import { space, text, useTheme } from '@/theme';
 
 const STEP_KEY: Record<(typeof ORDER_STEPS)[number], TranslationKey> = {
   PENDING: 'st_pending',
@@ -23,6 +23,7 @@ export interface OrderStatusRailProps {
 
 export function OrderStatusRail({ step, timestamps = [] }: OrderStatusRailProps) {
   const t = useT();
+  const { colors } = useTheme();
   const scrollRef = useRef<ScrollView>(null);
   const itemOffsets = useRef<number[]>([]);
   const containerWidth = useRef(0);
@@ -54,7 +55,7 @@ export function OrderStatusRail({ step, timestamps = [] }: OrderStatusRailProps)
       onLayout={onContainerLayout}
       contentContainerStyle={styles.content}
       accessibilityRole="progressbar"
-      accessibilityLabel={`Order status: step ${step} of ${ORDER_STEPS.length}`}
+      accessibilityLabel={t('a11y_orderStatusStep', { step, total: ORDER_STEPS.length })}
     >
       {ORDER_STEPS.map((statusKey, index) => {
         const stepNumber = index + 1;
@@ -63,25 +64,31 @@ export function OrderStatusRail({ step, timestamps = [] }: OrderStatusRailProps)
         return (
           <View key={statusKey} style={styles.item} onLayout={onItemLayout(index)}>
             {done ? (
-              <View style={styles.doneDot}>
+              <View style={[styles.doneDot, { backgroundColor: colors.leaf }]}>
                 <CheckIcon size={12} />
               </View>
             ) : current ? (
               <RailPulseDot />
             ) : (
-              <View style={styles.upcomingDot} />
+              <View style={[styles.upcomingDot, { borderColor: colors.disabledLine, backgroundColor: colors.paper }]} />
             )}
             <Text
               style={[
                 styles.label,
-                done && styles.doneLabel,
-                current && styles.currentLabel,
-                !done && !current && styles.upcomingLabel,
+                {
+                  color: done
+                    ? colors.ink
+                    : current
+                      ? colors.tintedAmberText
+                      : colors.disabledText,
+                },
               ]}
             >
               {t(STEP_KEY[statusKey])}
             </Text>
-            {timestamps[index] ? <Text style={styles.time}>{timestamps[index]}</Text> : null}
+            {timestamps[index] ? (
+              <Text style={[styles.time, { color: colors.muted }]}>{timestamps[index]}</Text>
+            ) : null}
           </View>
         );
       })}
@@ -96,7 +103,6 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: color.leaf,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -105,12 +111,7 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 11,
     borderWidth: 2,
-    borderColor: color.disabledLine,
-    backgroundColor: color.paper,
   },
   label: { ...text.label, marginTop: space.sm, textAlign: 'center' },
-  doneLabel: { color: color.ink },
-  currentLabel: { color: color.tintedAmberText },
-  upcomingLabel: { color: color.disabledText },
-  time: { ...text.caption, color: color.muted, marginTop: 2 },
+  time: { ...text.caption, marginTop: 2 },
 });

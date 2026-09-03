@@ -20,3 +20,9 @@ export const useT = () => {
   const table = tables[language];
   return (key: TranslationKey, vars?: Vars): string => interpolate(table[key], vars);
 };
+
+/** Non-hook translator for use outside components (e.g. background tasks). */
+export const translate = (key: TranslationKey, vars?: Vars): string => {
+  const table = tables[useLanguageStore.getState().language];
+  return interpolate(table[key], vars);
+};
