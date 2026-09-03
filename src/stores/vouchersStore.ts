@@ -22,8 +22,8 @@ interface VouchersState {
   isConsentExpired: (source: DataConsentSource) => boolean;
   /** Stores the outcome of a scoring run, shown on the score-result screen. */
   setCreditScore: (score: CreditScore) => void;
-  /** Issues a new AVAILABLE voucher for the approved amount, valid for 30 days. */
-  requestVoucher: (amountRwf: number) => void;
+  /** Issues a new AVAILABLE voucher for the approved amount, valid for 30 days. Returns the new voucher. */
+  requestVoucher: (amountRwf: number) => Voucher;
 }
 
 /** Voucher pool, monthly grant schedule, and data-consent/credit-score state for the voucher application flow. */
@@ -60,21 +60,21 @@ export const useVouchersStore = create<VouchersState>((set, get) => ({
     return new Date(consent.expiresAt).getTime() < Date.now();
   },
   setCreditScore: (creditScore) => set({ creditScore }),
-  requestVoucher: (amountRwf) =>
-    set((state) => {
-      const issuedAt = new Date();
-      const expiresAt = new Date(issuedAt);
-      expiresAt.setDate(expiresAt.getDate() + VOUCHER_WINDOW_DAYS);
-      const voucher: Voucher = {
-        id: `VC-${1000 + state.vouchers.length + 1}`,
-        code: `FB-${randomCodeSegment()}-${randomCodeSegment()}`,
-        amount: amountRwf,
-        status: 'AVAILABLE',
-        issuedAt: issuedAt.toISOString(),
-        expiresAt: expiresAt.toISOString(),
-      };
-      return { vouchers: [...state.vouchers, voucher] };
-    }),
+  requestVoucher: (amountRwf) => {
+    const issuedAt = new Date();
+    const expiresAt = new Date(issuedAt);
+    expiresAt.setDate(expiresAt.getDate() + VOUCHER_WINDOW_DAYS);
+    const voucher: Voucher = {
+      id: `VC-${1000 + get().vouchers.length + 1}`,
+      code: `FB-${randomCodeSegment()}-${randomCodeSegment()}`,
+      amount: amountRwf,
+      status: 'AVAILABLE',
+      issuedAt: issuedAt.toISOString(),
+      expiresAt: expiresAt.toISOString(),
+    };
+    set((state) => ({ vouchers: [...state.vouchers, voucher] }));
+    return voucher;
+  },
 }));
 
 /** True once the restaurant has subscribed to any paid tier — vouchers require an active subscription. */

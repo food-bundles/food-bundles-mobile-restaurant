@@ -6,8 +6,9 @@ import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { ScoreCircle } from './_components/ScoreCircle';
 import { CreditLineCard } from './_components/CreditLineCard';
 import { useVouchersStore } from '@/stores';
+import { scheduleLocalNotification } from '@/services/notificationService';
 import { computeScore, formatRwf, TOGGLEABLE_SOURCES } from '@/lib';
-import { useT } from '@/i18n';
+import { useT, translate } from '@/i18n';
 
 const RENEWS_AT_ISO = '2026-09-24';
 const SUPPLIER_NAME = 'FoodBundles';
@@ -31,7 +32,14 @@ export default function ScoreResult() {
 
   const onAuthorizeMore = () => router.push('/(app)/vouchers/consent');
   const onClaim = () => {
-    requestVoucher(score.limitRwf);
+    const voucher = requestVoucher(score.limitRwf);
+    void scheduleLocalNotification({
+      channel: 'voucher',
+      title: translate('notif_newVoucherReady', { code: voucher.code, amount: formatRwf(voucher.amount) }),
+      body: translate('notif_newVoucherReadyBody'),
+      deepLink: '/(app)/(tabs)/wallet?tab=vouchers',
+      actionLabel: translate('notif_viewVoucherAction'),
+    });
     router.replace({ pathname: '/(app)/subscription/underwriting', params: { completed: '1' } });
   };
 
