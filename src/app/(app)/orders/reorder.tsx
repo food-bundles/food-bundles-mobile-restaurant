@@ -4,30 +4,41 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { PriceText } from '@/components/product';
-import { useCartStore } from '@/stores';
-import { orders, products } from '@/mocks';
+import { useCartStore, useOrdersStore, useProductsStore } from '@/stores';
 import { useT } from '@/i18n';
 
 export default function Reorder() {
   const t = useT();
   const { colors } = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const order = useMemo(() => orders.find((o) => o.id === id) ?? orders[0], [id]);
+  const orders = useOrdersStore((state) => state.orders);
+  const products = useProductsStore((state) => state.products);
   const add = useCartStore((state) => state.add);
+  const syncAdd = useCartStore((state) => state.syncAdd);
 
-  const reorderLines = order.lines.map((line) => ({
-    line,
-    product: products.find((p) => p.id === line.productId),
-  }));
-  const inStockCount = reorderLines.filter(({ product }) => product).length;
+  const order = useMemo(() => orders.find((o) => o.id === id) ?? orders[0], [orders, id]);
+
+  const reorderLines = useMemo(
+    () =>
+      order?.lines.map((line) => ({
+        line,
+        product: products.find((p) => p.id === line.productId),
+      })) ?? [],
+    [order, products],
+  );
+
+  const inStockCount = reorderLines.filter(({ product }) => !!product).length;
 
   const onAddAll = () => {
     reorderLines.forEach(({ line, product }) => {
       if (!product) return;
       for (let i = 0; i < line.qty; i += 1) add(line.productId);
+      syncAdd(line.productId, line.qty).catch(() => {});
     });
     router.push('/(app)/shop/cart');
   };
+
+  if (!order) return null;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
@@ -67,11 +78,7 @@ export default function Reorder() {
         disabled={inStockCount === 0}
         accessibilityRole="button"
         accessibilityLabel={t('orders_addItemsToCart', { count: inStockCount })}
-        style={[
-          styles.addButton,
-          { backgroundColor: colors.leaf },
-          inStockCount === 0 && styles.addDisabled,
-        ]}
+        style={[styles.addButton, { backgroundColor: colors.leaf }, inStockCount === 0 && styles.addDisabled]}
       >
         <Text style={[styles.addLabel, { color: colors.paper }]}>{t('orders_addItemsToCart', { count: inStockCount })}</Text>
       </Pressable>
@@ -81,11 +88,7 @@ export default function Reorder() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  card: {
-    borderRadius: radius.lg,
-    overflow: 'hidden',
-    marginBottom: space.md,
-  },
+  card: { borderRadius: radius.lg, overflow: 'hidden', marginBottom: space.md },
   image: { width: '100%', height: 132 },
   imagePlaceholder: { opacity: 0.5 },
   rowBottom: {

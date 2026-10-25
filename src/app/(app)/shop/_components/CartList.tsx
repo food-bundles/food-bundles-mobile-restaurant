@@ -1,9 +1,12 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { space, text, useTheme } from '@/theme';
-import { SwipeRow } from '@/components/layout';
-import { QuantityStepper, PriceText, ProductLineImage } from '@/components/product';
-import { useCartStore } from '@/stores';
-import { products } from '@/mocks';
+import { StyleSheet, Text, View } from "react-native";
+import { space, text, useTheme } from "@/theme";
+import { SwipeRow } from "@/components/layout";
+import {
+  QuantityStepper,
+  PriceText,
+  ProductLineImage,
+} from "@/components/product";
+import { useCartStore } from "@/stores";
 
 export function CartList() {
   const { colors } = useTheme();
@@ -15,22 +18,29 @@ export function CartList() {
   return (
     <View>
       {lines.map((line) => {
-        const product = products.find((p) => p.id === line.productId);
-        if (!product) return null;
+        const name = line.name ?? "Product";
+        const unit = line.unit ?? "";
+        const unitPrice = line.unitPrice ?? 0;
         return (
           <SwipeRow
             key={line.productId}
             onDelete={() => remove(line.productId)}
-            deleteLabel={`Remove ${product.name} from cart`}
+            deleteLabel={`Remove ${name} from cart`}
           >
             <View style={[styles.row, { backgroundColor: colors.paper }]}>
-              <ProductLineImage source={product.image} label={product.name} />
+              <ProductLineImage source={undefined} label={name} />
               <View style={styles.textCol}>
-                <Text style={[styles.name, { color: colors.ink }]}>{product.name}</Text>
-                <Text style={[styles.unit, { color: colors.muted }]}>{product.unit}</Text>
+                <Text style={[styles.name, { color: colors.ink }]}>{name}</Text>
+                <Text style={[styles.unit, { color: colors.muted }]}>
+                  {unit}
+                </Text>
               </View>
-              <QuantityStepper qty={line.qty} onInc={() => inc(line.productId)} onDec={() => dec(line.productId)} />
-              <PriceText amount={product.price * line.qty} size="md" />
+              <QuantityStepper
+                qty={line.qty}
+                onInc={() => inc(line.productId)}
+                onDec={() => dec(line.productId)}
+              />
+              <PriceText amount={unitPrice * line.qty} size="md" />
             </View>
           </SwipeRow>
         );
@@ -41,8 +51,8 @@ export function CartList() {
 
 const styles = StyleSheet.create({
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: space.md,
     padding: space.md,
   },

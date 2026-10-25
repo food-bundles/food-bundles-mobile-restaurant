@@ -8,7 +8,6 @@ import { AppearanceRow } from './_components/AppearanceRow';
 import { useSessionStore } from '@/stores';
 import { useLanguage } from '@/stores';
 import { useT } from '@/i18n';
-import { account } from '@/mocks';
 import { clearAllCache } from '@/lib';
 import type { Language } from '@/i18n';
 
@@ -25,10 +24,14 @@ export default function Account() {
   const restaurantImageUri = useSessionStore((state) => state.restaurantImageUri);
   const setRestaurantImage = useSessionStore((state) => state.setRestaurantImage);
   const twoFactorEnabled = useSessionStore((state) => state.twoFactorEnabled);
+  const profile = useSessionStore((state) => state.profile);
   const [language, setLanguage] = useLanguage();
 
-  const onLogout = () => {
-    logout();
+  const businessName = profile?.name ?? 'My Restaurant';
+  const managerRole = profile?.role ?? 'RESTAURANT';
+
+  const onLogout = async () => {
+    await logout();
     clearAllCache();
     router.replace('/(auth)/login');
   };
@@ -50,9 +53,9 @@ export default function Account() {
             accessibilityLabel={t('settings_changeProfilePhoto')}
             onPicked={setRestaurantImage}
           />
-          <Text style={[styles.heroName, { color: colors.ink }]}>{account.businessName}</Text>
+          <Text style={[styles.heroName, { color: colors.ink }]}>{businessName}</Text>
           <Text style={[styles.heroRole, { color: colors.secondary }]}>
-            {t('more_managerLabel', { business: account.businessName })}
+            {t('more_managerLabel', { business: businessName })}
           </Text>
           <View style={[styles.restaurantChip, { backgroundColor: colors.tintLeaf }]}>
             <Text style={[styles.restaurantChipLabel, { color: colors.leaf }]}>

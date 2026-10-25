@@ -7,7 +7,6 @@ import { OrderStatusBadge, OrderItemsCard } from '@/components/order';
 import { ConfirmationCheck } from '@/components/checkout';
 import { useCartStore, useCheckoutStore } from '@/stores';
 import { useT } from '@/i18n';
-import { orders } from '@/mocks';
 
 const PAYMENT_LABELS: Record<string, string> = {
   MOBILE_MONEY: 'Mobile Money',
@@ -20,15 +19,30 @@ export default function CheckoutConfirmation() {
   const t = useT();
   const { colors } = useTheme();
   const method = useCheckoutStore((state) => state.method);
-  const activeOrder = orders.find((order) => order.id === 'FB-24815') ?? orders[0];
+  const placedOrder = useCheckoutStore((state) => state.placedOrder);
+  const resetCheckout = useCheckoutStore((state) => state.reset);
+
+  const orderRef = placedOrder?.orderNumber ?? placedOrder?.id ?? '—';
+  const total = placedOrder?.totalAmount ?? 0;
+  const itemCount = placedOrder?.orderItems?.length ?? 0;
+
+  const orderLines = (placedOrder?.orderItems ?? []).map((item) => ({
+    productId: item.productId,
+    name: item.productName,
+    unit: '',
+    qty: item.quantity,
+    each: item.unitPrice,
+  }));
 
   const onTrackOrder = () => {
     useCartStore.getState().clear();
-    router.replace({ pathname: '/(app)/orders/[id]', params: { id: activeOrder.id } });
+    resetCheckout();
+    router.replace({ pathname: '/(app)/orders/[id]', params: { id: orderRef } });
   };
 
   const onContinueShopping = () => {
     useCartStore.getState().clear();
+    resetCheckout();
     router.replace('/(app)/(tabs)');
   };
 
@@ -43,19 +57,19 @@ export default function CheckoutConfirmation() {
       </View>
       <View style={[styles.card, { backgroundColor: colors.pine }]}>
         <View style={styles.cardTopRow}>
-          <Text style={[styles.orderRef, { color: colors.onPine }]}>Order {activeOrder.id}</Text>
+          <Text style={[styles.orderRef, { color: colors.onPine }]}>Order {orderRef}</Text>
           <OrderStatusBadge status="PENDING" />
         </View>
         <View style={styles.priceGap}>
-          <PriceText amount={activeOrder.total} size="hero" colorOverride={colors.paper} />
+          <PriceText amount={total} size="hero" colorOverride={colors.paper} />
         </View>
         <View style={[styles.divider, { backgroundColor: colors.onPine }]} />
         <View style={styles.metaRow}>
           <Text style={[styles.metaText, { color: colors.onPineSoft }]}>
-            {t('checkout_itemsCount', { count: activeOrder.lines.length })}
+            {t('checkout_itemsCount', { count: itemCount })}
           </Text>
           <Text style={[styles.metaText, { color: colors.onPineSoft }]}>
-            {t('checkout_paidVia', { method: PAYMENT_LABELS[method] })}
+            {t('checkout_paidVia', { method: PAYMENT_LABELS[method] ?? method })}
           </Text>
         </View>
         <View style={styles.metaRow}>
@@ -63,9 +77,11 @@ export default function CheckoutConfirmation() {
           <Text style={[styles.metaTextBold, { color: colors.paper }]}>{t('checkout_deliveryLine')}</Text>
         </View>
       </View>
-      <View style={styles.itemsGap}>
-        <OrderItemsCard lines={activeOrder.lines} />
-      </View>
+      {orderLines.length > 0 && (
+        <View style={styles.itemsGap}>
+          <OrderItemsCard lines={orderLines} />
+        </View>
+      )}
       <Pressable
         onPress={onTrackOrder}
         accessibilityRole="button"
@@ -91,11 +107,7 @@ const styles = StyleSheet.create({
   headerText: { flex: 1 },
   title: { ...text.h1 },
   subtitle: { ...text.caption, marginTop: space.xs },
-  card: {
-    borderRadius: radius.lg,
-    padding: space.lg,
-    marginTop: space.lg,
-  },
+  card: { borderRadius: radius.lg, padding: space.lg, marginTop: space.lg },
   cardTopRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   orderRef: { ...text.caption },
   priceGap: { marginTop: space.sm },

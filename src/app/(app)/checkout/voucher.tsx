@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
@@ -6,22 +6,29 @@ import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { CheckoutStepHeader } from '@/components/checkout';
 import { CheckIcon } from '@/components/icons';
 import { PriceText } from '@/components/product';
-import { useCheckoutStore, useVouchersStore } from '@/stores';
+import { useCheckoutStore, useVouchersStore, useCartStore } from '@/stores';
 import { useT } from '@/i18n';
 import { formatDate, formatRwf } from '@/lib';
-import { orders } from '@/mocks';
 
 export default function VoucherStep() {
   const t = useT();
   const { colors } = useTheme();
   const vouchers = useVouchersStore((state) => state.vouchers);
   const setSelectedVoucherId = useCheckoutStore((state) => state.setSelectedVoucherId);
-  const activeOrder = orders.find((order) => order.id === 'FB-24815') ?? orders[0];
-  const available = vouchers.filter((voucher) => voucher.status === 'AVAILABLE');
+  const fetchLoanSessions = useCheckoutStore((state) => state.fetchLoanSessions);
+  const subtotal = useCartStore((state) => state.subtotal());
+  const DELIVERY_FEE = 3000;
+  const total = subtotal + DELIVERY_FEE;
+
+  const available = vouchers.filter((v) => v.status === 'AVAILABLE');
   const [selectedId, setSelectedId] = useState<string | null>(available[0]?.id ?? null);
 
-  const selected = available.find((voucher) => voucher.id === selectedId) ?? null;
-  const remainingAfter = selected ? selected.amount - activeOrder.total : 0;
+  useEffect(() => {
+    fetchLoanSessions();
+  }, [fetchLoanSessions]);
+
+  const selected = available.find((v) => v.id === selectedId) ?? null;
+  const remainingAfter = selected ? selected.amount - total : 0;
 
   const onContinue = () => {
     if (!selectedId) return;
@@ -35,7 +42,7 @@ export default function VoucherStep() {
       <ScreenScroll contentInsetBottom={80}>
         <View style={styles.row}>
           <Text style={[styles.label, { color: colors.secondary }]}>{t('checkout_orderTotal')}</Text>
-          <PriceText amount={activeOrder.total} size="md" />
+          <PriceText amount={total} size="md" />
         </View>
         <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('checkout_chooseVoucher')}</Text>
         {available.length === 0 ? (
@@ -86,11 +93,7 @@ export default function VoucherStep() {
           disabled={!selectedId}
           accessibilityRole="button"
           accessibilityLabel={t('checkout_voucherContinueBtn')}
-          style={[
-            styles.button,
-            { backgroundColor: colors.marigold },
-            !selectedId && { backgroundColor: colors.disabledLine },
-          ]}
+          style={[styles.button, { backgroundColor: colors.marigold }, !selectedId && { backgroundColor: colors.disabledLine }]}
         >
           <Text style={[styles.buttonLabel, { color: colors.pine }]}>{t('checkout_voucherContinueBtn')}</Text>
         </Pressable>
@@ -117,24 +120,9 @@ const styles = StyleSheet.create({
   },
   optionAmount: { ...text.bodySemi },
   optionExpiry: { ...text.caption, marginTop: 2 },
-  card: {
-    borderWidth: 1,
-    borderRadius: radius.lg,
-    padding: space.lg,
-    marginTop: space.md,
-  },
-  notice: {
-    flexDirection: 'row',
-    borderRadius: radius.md,
-    padding: space.md,
-    marginTop: space.md,
-  },
+  card: { borderWidth: 1, borderRadius: radius.lg, padding: space.lg, marginTop: space.md },
+  notice: { flexDirection: 'row', borderRadius: radius.md, padding: space.md, marginTop: space.md },
   noticeText: { ...text.caption, flex: 1 },
-  button: {
-    minHeight: 48,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  button: { minHeight: 48, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   buttonLabel: { ...text.bodySemi },
 });

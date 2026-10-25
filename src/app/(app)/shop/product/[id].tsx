@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -6,8 +6,7 @@ import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { ChevronLeftIcon, BasketIcon } from '@/components/icons';
 import { PriceText, QuantityStepper } from '@/components/product';
-import { products } from '@/mocks';
-import { useCartStore } from '@/stores';
+import { useProductsStore, useCartStore } from '@/stores';
 import { useT } from '@/i18n';
 
 export default function ProductDetail() {
@@ -15,15 +14,23 @@ export default function ProductDetail() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const product = useMemo(() => products.find((p) => p.id === id), [id]);
+  const allProducts = useProductsStore((state) => state.products);
+  const getById = useProductsStore((state) => state.getById);
+  const product = useMemo(() => allProducts.find((p) => p.id === id), [allProducts, id]);
   const cartItemCount = useCartStore((state) => state.itemCount());
   const add = useCartStore((state) => state.add);
+  const syncAdd = useCartStore((state) => state.syncAdd);
   const [qty, setQty] = useState(1);
+
+  useEffect(() => {
+    if (!product && id) getById(id);
+  }, [id, product, getById]);
 
   if (!product) return null;
 
   const onAddToCart = () => {
     for (let i = 0; i < qty; i += 1) add(product.id);
+    syncAdd(product.id, qty).catch(() => {/* best-effort */});
     router.back();
   };
 

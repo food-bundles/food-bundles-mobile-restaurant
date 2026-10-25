@@ -1,7 +1,13 @@
-import { create } from 'zustand';
-import { vouchers as seedVouchers } from '@/mocks/vouchers';
-import { dataConsentSeed } from '@/mocks/dataConsent';
-import type { CreditScore, DataConsent, DataConsentSource, Tier, Voucher } from '@/mocks/types';
+import { create } from "zustand";
+import { dataConsentSeed } from "@/mocks/dataConsent";
+import type {
+  CreditScore,
+  DataConsent,
+  DataConsentSource,
+  Tier,
+  Voucher,
+} from "@/mocks/types";
+import { getVouchersApi } from "@/api/vouchers.api";
 
 const CONSENT_WINDOW_DAYS = 30;
 const VOUCHER_WINDOW_DAYS = 30;
@@ -11,13 +17,19 @@ const randomCodeSegment = (): string =>
 
 interface VouchersState {
   vouchers: Voucher[];
+  status: "idle" | "loading" | "ready" | "error";
+  fetchVouchers: () => Promise<void>;
   nextGrantDate: string;
   consentList: DataConsent[];
   creditScore: CreditScore | null;
   /** Marks one voucher as used against an order; no-op if it's already spent or missing. */
   redeemVoucher: (voucherId: string, orderId: string) => void;
   /** Grants or revokes a data source. When granting with `remember`, the consent never expires and won't be re-asked. */
-  setConsent: (source: DataConsentSource, granted: boolean, remember?: boolean) => void;
+  setConsent: (
+    source: DataConsentSource,
+    granted: boolean,
+    remember?: boolean,
+  ) => void;
   /** True once a previously granted source's 30-day window has elapsed. */
   isConsentExpired: (source: DataConsentSource) => boolean;
   /** Stores the outcome of a scoring run, shown on the score-result screen. */
@@ -28,15 +40,30 @@ interface VouchersState {
 
 /** Voucher pool, monthly grant schedule, and data-consent/credit-score state for the voucher application flow. */
 export const useVouchersStore = create<VouchersState>((set, get) => ({
-  vouchers: seedVouchers,
-  nextGrantDate: '2026-09-01',
+  vouchers: [],
+  status: "idle",
+  nextGrantDate: "",
   consentList: dataConsentSeed,
   creditScore: null,
+  fetchVouchers: async () => {
+    set({ status: "loading" });
+    try {
+      const vouchers = await getVouchersApi();
+      set({ vouchers, status: "ready" });
+    } catch {
+      set({ vouchers: [], status: "error" });
+    }
+  },
   redeemVoucher: (voucherId, orderId) =>
     set((state) => ({
       vouchers: state.vouchers.map((voucher) =>
-        voucher.id === voucherId && voucher.status === 'AVAILABLE'
-          ? { ...voucher, status: 'USED', usedAt: new Date().toISOString(), orderId }
+        voucher.id === voucherId && voucher.status === "AVAILABLE"
+          ? {
+              ...voucher,
+              status: "USED",
+              usedAt: new Date().toISOString(),
+              orderId,
+            }
           : voucher,
       ),
     })),
@@ -44,14 +71,30 @@ export const useVouchersStore = create<VouchersState>((set, get) => ({
     set((state) => ({
       consentList: state.consentList.map((consent) => {
         if (consent.source !== source) return consent;
-        if (!granted) return { ...consent, granted: false, grantedAt: null, expiresAt: null };
+        if (!granted)
+          return {
+            ...consent,
+            granted: false,
+            grantedAt: null,
+            expiresAt: null,
+          };
         const grantedAt = new Date();
         if (remember) {
-          return { ...consent, granted: true, grantedAt: grantedAt.toISOString(), expiresAt: null };
+          return {
+            ...consent,
+            granted: true,
+            grantedAt: grantedAt.toISOString(),
+            expiresAt: null,
+          };
         }
         const expiresAt = new Date(grantedAt);
         expiresAt.setDate(expiresAt.getDate() + CONSENT_WINDOW_DAYS);
-        return { ...consent, granted: true, grantedAt: grantedAt.toISOString(), expiresAt: expiresAt.toISOString() };
+        return {
+          ...consent,
+          granted: true,
+          grantedAt: grantedAt.toISOString(),
+          expiresAt: expiresAt.toISOString(),
+        };
       }),
     })),
   isConsentExpired: (source) => {
@@ -68,7 +111,7 @@ export const useVouchersStore = create<VouchersState>((set, get) => ({
       id: `VC-${1000 + get().vouchers.length + 1}`,
       code: `FB-${randomCodeSegment()}-${randomCodeSegment()}`,
       amount: amountRwf,
-      status: 'AVAILABLE',
+      status: "AVAILABLE",
       issuedAt: issuedAt.toISOString(),
       expiresAt: expiresAt.toISOString(),
     };
@@ -78,4 +121,4 @@ export const useVouchersStore = create<VouchersState>((set, get) => ({
 }));
 
 /** True once the restaurant has subscribed to any paid tier — vouchers require an active subscription. */
-export const isVouchersUnlocked = (tier: Tier): boolean => tier !== 'NONE';
+export const isVouchersUnlocked = (tier: Tier): boolean => tier !== "NONE";
