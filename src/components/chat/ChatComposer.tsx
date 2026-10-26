@@ -6,7 +6,7 @@ import { useAudioRecorder, useAudioRecorderState, RecordingPresets, requestRecor
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { AttachIcon, DocumentIcon, CameraIcon, MicIcon, SendIcon } from '@/components/icons';
 import { useT } from '@/i18n';
-import type { MessageKind } from '@/mocks/chat';
+import type { MessageKind } from '@/api/chat.api';
 
 const MAX_MESSAGE_LENGTH = 500;
 

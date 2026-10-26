@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
-import type { DataConsentSource } from '@/mocks/types';
+import type { DataConsentSource } from '@/types';
 
 const NAME_KEY: Record<DataConsentSource, TranslationKey> = {
   eucl: 'consent_euclName',

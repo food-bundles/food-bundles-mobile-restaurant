@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet, View } from 'react-native';
-import type { Product } from '@/mocks/types';
+import type { Product } from '@/types';
 import { ProductCard } from '@/components/product';
 import { useGuestCartStore } from '@/stores';
 import { space } from '@/theme';

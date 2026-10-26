@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { radius, space, text, useTheme } from '@/theme';
 import { PriceText } from '@/components/product';
 import { useT } from '@/i18n';
-import type { Plan, BillingCycle } from '@/mocks/types';
+import type { Plan, BillingCycle } from '@/types';
 
 export interface PlanSelectCardProps {
   plan: Plan;

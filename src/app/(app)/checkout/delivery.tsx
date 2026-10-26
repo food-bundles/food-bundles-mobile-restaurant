@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 import { hit, radius, space, text, useTheme } from "@/theme";
@@ -10,7 +10,7 @@ import {
   CheckoutStepHeader,
   DeliveryWindowPicker,
 } from "@/components/checkout";
-import { useCheckoutStore, useSessionStore, useCartStore } from "@/stores";
+import { useCheckoutStore, useSessionStore, useCartStore, useAddressesStore } from "@/stores";
 import { useT } from "@/i18n";
 
 export default function CheckoutDelivery() {
@@ -23,17 +23,28 @@ export default function CheckoutDelivery() {
   const setCartId = useCheckoutStore((state) => state.setCartId);
   const profile = useSessionStore((state) => state.profile);
   const serverCart = useCartStore((state) => state.serverCart);
+  const addresses = useAddressesStore((s) => s.addresses);
+  const fetchAddresses = useAddressesStore((s) => s.fetch);
+  const addressStatus = useAddressesStore((s) => s.status);
   const [manual, setManual] = useState(false);
   const [street, setStreet] = useState("");
   const [landmark, setLandmark] = useState("");
 
   const businessName = profile?.name ?? "My Restaurant";
 
+  useEffect(() => {
+    if (addressStatus === 'idle') fetchAddresses();
+  }, [addressStatus, fetchAddresses]);
+
+  const defaultAddress = addresses.find((a) => a.isDefault) ?? addresses[0];
+
   const onContinue = () => {
     // Persist cart ID into checkout store so payment step can use it
     if (serverCart?.id) setCartId(serverCart.id);
     if (manual && street.trim())
       setAddress(`${street.trim()}${landmark ? ", " + landmark : ""}`);
+    else if (defaultAddress && !address)
+      setAddress(`${defaultAddress.street}${defaultAddress.landmark ? ', ' + defaultAddress.landmark : ''}`);
     router.push("/(app)/checkout/payment");
   };
 
@@ -61,6 +72,7 @@ export default function CheckoutDelivery() {
           </Text>
         </View>
         <Pressable
+          onPress={() => router.push('/(app)/settings/addresses')}
           accessibilityRole="button"
           accessibilityLabel={t("checkout_addAddress")}
           style={styles.linkRow}

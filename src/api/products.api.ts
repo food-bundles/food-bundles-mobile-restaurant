@@ -1,5 +1,5 @@
 import { request } from './client';
-import type { Product, ProductCategory } from '@/mocks/types';
+import type { Product, ProductCategory } from '@/types';
 
 interface ApiProduct {
   id: string;
@@ -37,7 +37,7 @@ function toMobileProduct(p: ApiProduct): Product {
     wasPrice: p.discountedPrice ? p.unitPrice : undefined,
     rating: 4.5,
     category: mapCategory(p.category?.name ?? ''),
-    image: p.images?.[0] ? { uri: p.images[0] } : require('@/mocks/productImages').PRODUCT_IMAGES.irishPotatoes,
+    image: p.images?.[0] ? { uri: p.images[0] } : { uri: '' },
   };
 }
 

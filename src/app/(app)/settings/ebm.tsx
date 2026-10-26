@@ -1,17 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { EbmInvoiceRow } from './_components/EbmInvoiceRow';
 import { EbmPreviewSheet } from './_components/EbmPreviewSheet';
-import { orders } from '@/mocks';
+import { useOrdersStore } from '@/stores';
 import { useT } from '@/i18n';
-import type { Order } from '@/mocks/types';
+import type { Order } from '@/types';
 
 export default function EbmInvoices() {
   const t = useT();
   const { colors } = useTheme();
   const [previewOrder, setPreviewOrder] = useState<Order | null>(null);
+  const orders = useOrdersStore((s) => s.orders);
+  const fetch = useOrdersStore((s) => s.fetch);
+  const status = useOrdersStore((s) => s.status);
+
+  useEffect(() => {
+    if (status === 'idle') fetch();
+  }, [status, fetch]);
+
   const eligibleOrders = orders.filter((order) => order.ebmAvailable);
 
   return (

@@ -2,14 +2,21 @@ import { StyleSheet, Text, View } from 'react-native';
 import { radius, shadow, space, text, useTheme } from '@/theme';
 import { PercentileBar } from './PercentileBar';
 import { formatRwf, computePercentile } from '@/lib';
-import { PEER_MONTHLY_VOLUMES, YOUR_MONTHLY_VOLUME, PEER_AVG_ORDER_SIZE, YOUR_AVG_ORDER_SIZE } from '@/mocks';
+import { useMarketStore } from '@/stores';
 import { useT } from '@/i18n';
+
+const PEER_VOLUMES_FALLBACK = [400000, 500000, 600000, 700000, 800000, 900000, 1000000];
 
 /** Ranks the restaurant's monthly purchase volume against anonymous Kigali peers. */
 export function PurchasingPowerCard() {
   const t = useT();
   const { colors } = useTheme();
-  const percentile = computePercentile(YOUR_MONTHLY_VOLUME, PEER_MONTHLY_VOLUMES);
+  const ranking = useMarketStore((s) => s.ranking);
+  const yourVolume = ranking?.yourMonthlyVolume ?? 0;
+  const peerVolumes = PEER_VOLUMES_FALLBACK;
+  const yourAvgOrder = ranking?.yourAvgOrderSize ?? 0;
+  const peerAvgOrder = ranking?.peerAvgOrderSize ?? 0;
+  const percentile = computePercentile(yourVolume, peerVolumes);
   const topPercent = 100 - percentile;
 
   return (
@@ -21,11 +28,11 @@ export function PurchasingPowerCard() {
       </Text>
       <View style={[styles.compareRow, { borderTopColor: colors.hairline }]}>
         <Text style={[styles.compareLabel, { color: colors.secondary }]}>{t('ranking_yourAvgOrder')}</Text>
-        <Text style={[styles.compareValue, { color: colors.ink }]}>{formatRwf(YOUR_AVG_ORDER_SIZE)}</Text>
+        <Text style={[styles.compareValue, { color: colors.ink }]}>{formatRwf(yourAvgOrder)}</Text>
       </View>
       <View style={styles.compareRow}>
         <Text style={[styles.compareLabel, { color: colors.secondary }]}>{t('ranking_peerAvgOrder')}</Text>
-        <Text style={[styles.compareValue, { color: colors.secondary }]}>{formatRwf(PEER_AVG_ORDER_SIZE)}</Text>
+        <Text style={[styles.compareValue, { color: colors.secondary }]}>{formatRwf(peerAvgOrder)}</Text>
       </View>
     </View>
   );

@@ -10,7 +10,7 @@ import { EbmInvoiceTotals } from './EbmInvoiceTotals';
 import { EbmQrBlock } from './EbmQrBlock';
 import { deriveFiscalIds } from './ebmFiscalIds';
 import { useT } from '@/i18n';
-import type { Order } from '@/mocks/types';
+import type { Order } from '@/types';
 
 export interface EbmPreviewSheetProps {
   order: Order | null;

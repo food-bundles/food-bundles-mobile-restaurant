@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ORDER_STEPS, type Order } from "@/mocks/types";
+import { ORDER_STEPS, type Order } from "@/types";
 import { getCache, setCache, clearCache } from "@/lib";
 import {
   getOrdersApi,

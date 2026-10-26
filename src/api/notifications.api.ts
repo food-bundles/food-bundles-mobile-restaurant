@@ -1,5 +1,5 @@
 import { request } from './client';
-import type { AppNotification, NotificationChannel } from '@/mocks/types';
+import type { AppNotification, NotificationChannel } from '@/types';
 
 interface ApiNotification {
   id: string;
@@ -61,4 +61,26 @@ export async function markNotificationReadApi(notificationId: string): Promise<v
 
 export async function markAllNotificationsReadApi(): Promise<void> {
   await request('/notifications/mark-all-read', { method: 'PATCH' });
+}
+
+export interface PriceAlertPayload {
+  productId: string;
+  thresholdRwf: number;
+  direction: 'above' | 'below';
+}
+
+export async function getPriceAlertsApi(): Promise<PriceAlertPayload[]> {
+  const res = await request<{ data: PriceAlertPayload[] }>('/notifications/price-alerts');
+  return res.data;
+}
+
+export async function upsertPriceAlertApi(alert: PriceAlertPayload): Promise<void> {
+  await request(`/notifications/price-alerts/${alert.productId}`, {
+    method: 'PUT',
+    body: { thresholdRwf: alert.thresholdRwf, direction: alert.direction },
+  });
+}
+
+export async function deletePriceAlertApi(productId: string): Promise<void> {
+  await request(`/notifications/price-alerts/${productId}`, { method: 'DELETE' });
 }

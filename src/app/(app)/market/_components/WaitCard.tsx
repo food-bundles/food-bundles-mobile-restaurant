@@ -3,8 +3,9 @@ import { hit, radius, shadow, space, text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
 import { useNotificationsStore } from '@/stores';
 import { COMMODITY_PRODUCT_ID, type BuyingAdviceItem } from '@/lib';
-import { products } from '@/mocks';
+import { PRODUCT_IMAGES } from '@/constants/productImages';
 import { useT } from '@/i18n';
+import type { CommodityId } from '@/api/market.api';
 
 export interface WaitCardProps {
   items: BuyingAdviceItem[];
@@ -12,6 +13,14 @@ export interface WaitCardProps {
 }
 
 const PHOTO_SIZE = 80;
+
+const COMMODITY_IMAGE: Partial<Record<CommodityId, any>> = {
+  irishPotatoes: PRODUCT_IMAGES.irishPotatoes,
+  tomatoes: PRODUCT_IMAGES.freshTomatoes,
+  redOnions: PRODUCT_IMAGES.redOnions,
+  cabbage: PRODUCT_IMAGES.cabbage,
+  carrots: PRODUCT_IMAGES.carrots,
+};
 
 /** Section B "Wait if you can": a compact 2-column grid with a set-alert action per item. */
 export function WaitCard({ items, onFeedback }: WaitCardProps) {
@@ -28,21 +37,17 @@ export function WaitCard({ items, onFeedback }: WaitCardProps) {
       <View style={styles.grid}>
         {items.slice(0, 4).map((item) => {
           const productId = COMMODITY_PRODUCT_ID[item.commodityId];
-          const product = products.find((p) => p.id === productId);
+          const image = COMMODITY_IMAGE[item.commodityId as CommodityId];
           const deltaPct = `+${Math.abs(item.changeFraction * 100).toFixed(1)}%`;
           const alertSet = priceAlerts.some((alert) => alert.productId === productId);
 
           return (
             <View key={item.commodityId} style={[styles.card, { backgroundColor: colors.paper }]}>
-              {product ? (
-                <Image source={product.image} style={styles.photo} accessibilityLabel={item.name} resizeMode="cover" />
+              {image ? (
+                <Image source={image} style={styles.photo} accessibilityLabel={item.name} resizeMode="cover" />
               ) : null}
-              <Text style={[styles.name, { color: colors.ink }]} numberOfLines={1}>
-                {item.name}
-              </Text>
-              <Text style={[styles.price, { color: colors.chili }]}>
-                {formatRwf(item.todayPrice)} {deltaPct}
-              </Text>
+              <Text style={[styles.name, { color: colors.ink }]} numberOfLines={1}>{item.name}</Text>
+              <Text style={[styles.price, { color: colors.chili }]}>{formatRwf(item.todayPrice)} {deltaPct}</Text>
               <Pressable
                 onPress={() => {
                   if (alertSet) return;

@@ -4,7 +4,7 @@ import type { ColorPalette } from '@/theme';
 import { formatDate, formatRwf } from '@/lib';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
-import type { Voucher, VoucherStatus } from '@/mocks/types';
+import type { Voucher, VoucherStatus } from '@/types';
 
 export interface VoucherListItemProps {
   voucher: Voucher;

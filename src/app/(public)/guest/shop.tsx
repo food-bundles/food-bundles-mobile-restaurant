@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -7,8 +7,7 @@ import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { PersonIcon, ChevronLeftIcon, BasketIcon } from '@/components/icons';
 import { CategoryChips, type CategoryOption } from '../_components/CategoryChips';
 import { GuestProductGrid } from '../_components/GuestProductGrid';
-import { useGuestCartStore } from '@/stores';
-import { products } from '@/mocks';
+import { useGuestCartStore, useProductsStore } from '@/stores';
 import { formatRwf } from '@/lib';
 import { useT } from '@/i18n';
 
@@ -28,30 +27,24 @@ export default function GuestShop() {
   const [category, setCategory] = useState<CategoryOption['key']>('ALL');
   const itemCount = useGuestCartStore((state) => state.itemCount());
   const total = useGuestCartStore((state) => state.total());
+  const products = useProductsStore((s) => s.products);
+  const fetchProducts = useProductsStore((s) => s.fetch);
+
+  useEffect(() => { void fetchProducts(); }, [fetchProducts]);
 
   const visibleProducts = useMemo(
-    () => (category === 'ALL' ? products : products.filter((p) => p.category === category)),
-    [category],
+    () => category === 'ALL' ? products : products.filter((p) => p.category === category),
+    [category, products],
   );
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <View style={[styles.header, { borderBottomColor: colors.hairline, paddingTop: insets.top + space.sm }]}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_back')}
-          style={[styles.iconButton, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
-        >
+        <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={t('action_back')} style={[styles.iconButton, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
           <ChevronLeftIcon />
         </Pressable>
         <Text style={[styles.title, { color: colors.ink }]}>{t('guest_shopTitle')}</Text>
-        <Pressable
-          onPress={() => router.push('/(public)/guest/cart')}
-          accessibilityRole="button"
-          accessibilityLabel={`Open guest basket, ${itemCount} items`}
-          style={[styles.iconButton, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
-        >
+        <Pressable onPress={() => router.push('/(public)/guest/cart')} accessibilityRole="button" accessibilityLabel={`Open guest basket, ${itemCount} items`} style={[styles.iconButton, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
           <BasketIcon />
           {itemCount > 0 ? (
             <View style={[styles.badge, { backgroundColor: colors.marigold }]}>
@@ -59,12 +52,7 @@ export default function GuestShop() {
             </View>
           ) : null}
         </Pressable>
-        <Pressable
-          onPress={() => router.push('/(auth)/login')}
-          accessibilityRole="button"
-          accessibilityLabel={t('landing_login')}
-          style={[styles.iconButtonTint, { backgroundColor: colors.tintLeaf }]}
-        >
+        <Pressable onPress={() => router.push('/(auth)/login')} accessibilityRole="button" accessibilityLabel={t('landing_login')} style={[styles.iconButtonTint, { backgroundColor: colors.tintLeaf }]}>
           <PersonIcon color={colors.pine} />
         </Pressable>
       </View>
@@ -88,12 +76,7 @@ export default function GuestShop() {
             <Text style={[styles.footerCount, { color: colors.secondary }]}>{itemCount} items</Text>
             <Text style={[styles.footerTotal, { color: colors.ink }]}>{formatRwf(total)}</Text>
           </View>
-          <Pressable
-            onPress={() => router.push('/(public)/guest/cart')}
-            accessibilityRole="button"
-            accessibilityLabel={t('guest_viewBasket')}
-            style={[styles.footerButton, { backgroundColor: colors.leaf }]}
-          >
+          <Pressable onPress={() => router.push('/(public)/guest/cart')} accessibilityRole="button" accessibilityLabel={t('guest_viewBasket')} style={[styles.footerButton, { backgroundColor: colors.leaf }]}>
             <Text style={[styles.footerButtonLabel, { color: colors.paper }]}>{t('guest_viewBasket')}</Text>
           </Pressable>
         </View>
@@ -104,48 +87,13 @@ export default function GuestShop() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: space.sm,
-    paddingHorizontal: space.md,
-    paddingBottom: space.sm,
-    borderBottomWidth: 1,
-  },
+  header: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.md, paddingBottom: space.sm, borderBottomWidth: 1 },
   title: { ...text.h2, flex: 1 },
-  iconButton: {
-    width: hit.min,
-    height: hit.min,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconButtonTint: {
-    width: hit.min,
-    height: hit.min,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badge: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    minWidth: 18,
-    height: 18,
-    borderRadius: radius.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 3,
-  },
+  iconButton: { width: hit.min, height: hit.min, borderRadius: radius.md, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  iconButtonTint: { width: hit.min, height: hit.min, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+  badge: { position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 },
   badgeLabel: { ...text.micro },
-  banner: {
-    borderWidth: 1,
-    borderRadius: radius.md,
-    padding: space.md,
-    marginTop: space.md,
-  },
+  banner: { borderWidth: 1, borderRadius: radius.md, padding: space.md, marginTop: space.md },
   bannerText: { ...text.caption, lineHeight: 18 },
   bannerBold: { ...text.bodySemi },
   chips: { marginTop: space.md },
@@ -153,12 +101,6 @@ const styles = StyleSheet.create({
   footerRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   footerCount: { ...text.caption },
   footerTotal: { ...text.h2, fontVariant: ['tabular-nums'] },
-  footerButton: {
-    flex: 1,
-    minHeight: 48,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  footerButton: { flex: 1, minHeight: 48, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   footerButtonLabel: { ...text.bodySemi },
 });

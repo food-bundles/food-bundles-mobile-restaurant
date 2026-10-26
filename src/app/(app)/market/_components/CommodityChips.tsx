@@ -1,6 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { hit, radius, space, text, useTheme } from '@/theme';
-import type { CommodityId, CommodityInfo } from '@/mocks';
+import type { CommodityId, CommodityInfo } from '@/api/market.api';
 
 export interface CommodityChipsProps {
   options: CommodityInfo[];

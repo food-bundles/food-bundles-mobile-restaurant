@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { radius, space, text, useTheme } from '@/theme';
 import { PriceText } from '@/components/product';
-import { plans } from '@/mocks';
+import { useSubscriptionsStore } from '@/stores';
 import { useT } from '@/i18n';
-import type { Tier } from '@/mocks/types';
+import type { Tier } from '@/types';
 
 export interface CurrentPlanCardProps {
   tier: Tier;
@@ -12,6 +12,7 @@ export interface CurrentPlanCardProps {
 export function CurrentPlanCard({ tier }: CurrentPlanCardProps) {
   const t = useT();
   const { colors } = useTheme();
+  const plans = useSubscriptionsStore((s) => s.plans);
   const plan = plans.find((p) => p.id === tier);
 
   return (

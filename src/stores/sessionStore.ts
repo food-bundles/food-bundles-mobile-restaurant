@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Role, Tier } from '@/mocks/types';
+import type { Role, Tier } from '@/types';
 import { loginApi, getMeApi, logoutApi, forgotPasswordApi, resetPasswordApi } from '@/api/auth.api';
 import type { LoginPayload, MeResponse } from '@/api/auth.api';
 

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { space, text, useTheme } from '@/theme';
 import { formatRwfNumber } from '@/lib';
 import { useT } from '@/i18n';
-import type { OrderLine } from '@/mocks/types';
+import type { OrderLine } from '@/types';
 
 export interface EbmLineItemsTableProps {
   lines: OrderLine[];

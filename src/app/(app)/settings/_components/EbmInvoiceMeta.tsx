@@ -2,8 +2,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { space, text, useTheme } from '@/theme';
 import { formatTin } from '@/lib';
 import { useT } from '@/i18n';
-import { account } from '@/mocks';
-import type { Order } from '@/mocks/types';
+import { useSessionStore } from '@/stores';
+import type { Order } from '@/types';
 
 export interface EbmInvoiceMetaProps {
   order: Order;
@@ -13,10 +13,14 @@ export function EbmInvoiceMeta({ order }: EbmInvoiceMetaProps) {
   const t = useT();
   const { colors } = useTheme();
 
+  const profile = useSessionStore((state) => state.profile);
+  const businessName = profile?.name ?? '';
+  const tin = profile?.tin ?? '';
+
   const rows: [string, string][] = [
     [t('ebm_order'), order.id],
-    [t('ebm_customer'), account.businessName],
-    [t('ebm_customerTin'), formatTin(account.tin)],
+    [t('ebm_customer'), businessName],
+    [t('ebm_customerTin'), formatTin(tin)],
   ];
 
   return (

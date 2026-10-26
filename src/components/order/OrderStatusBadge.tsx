@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { radius, space, text, useTheme } from '@/theme';
 import type { ColorPalette } from '@/theme';
-import type { OrderStatus } from '@/mocks/types';
+import type { OrderStatus } from '@/types';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
 

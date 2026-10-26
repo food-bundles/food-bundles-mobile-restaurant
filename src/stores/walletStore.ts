@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Transaction } from "@/mocks/types";
+import type { Transaction } from "@/types";
 import { getCache, setCache, clearCache } from "@/lib";
 import {
   getWalletApi,

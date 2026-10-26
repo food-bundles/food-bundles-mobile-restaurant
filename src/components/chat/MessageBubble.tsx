@@ -4,7 +4,7 @@ import { DoubleCheckIcon, DocumentIcon } from '@/components/icons';
 import { formatTime } from '@/lib';
 import { useT } from '@/i18n';
 import { VoiceNoteBubble } from './VoiceNoteBubble';
-import type { ChatMessage } from '@/mocks/chat';
+import type { ChatMessage } from '@/api/chat.api';
 
 export interface MessageBubbleProps {
   message: ChatMessage;

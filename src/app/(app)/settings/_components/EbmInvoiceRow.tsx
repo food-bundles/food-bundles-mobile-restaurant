@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { formatRwf, formatDate } from '@/lib';
 import { useT } from '@/i18n';
-import type { Order } from '@/mocks/types';
+import type { Order } from '@/types';
 
 export interface EbmInvoiceRowProps {
   order: Order;

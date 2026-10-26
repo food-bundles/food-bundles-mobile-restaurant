@@ -4,7 +4,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import { signatureDuration, space, text, useTheme } from '@/theme';
 import { HeroCardShell } from './HeroCardShell';
 import { HeroCardLink } from './HeroCardLink';
-import { LANDING_IMAGES } from '@/mocks/landingImages';
+import { LANDING_IMAGES } from '@/constants/landingImages';
 
 export interface HeroCardWeeklyDealProps {
   phase: 1 | 2;

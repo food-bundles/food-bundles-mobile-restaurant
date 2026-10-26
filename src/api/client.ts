@@ -13,7 +13,7 @@ export class ApiError extends Error {
   }
 }
 
-async function getToken(): Promise<string | null> {
+export async function getToken(): Promise<string | null> {
   return AsyncStorage.getItem('auth_token');
 }
 

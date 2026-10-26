@@ -1,5 +1,5 @@
 import { request } from './client';
-import type { Order, OrderStatus, PaymentMethod } from '@/mocks/types';
+import type { Order, OrderStatus, PaymentMethod } from '@/types';
 
 interface ApiOrderItem {
   id: string;

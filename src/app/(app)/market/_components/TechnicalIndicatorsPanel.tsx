@@ -4,7 +4,7 @@ import { hit, radius, shadow, space, text, useTheme } from '@/theme';
 import { RsiGauge } from './RsiGauge';
 import { MomentumIndicator } from './MomentumIndicator';
 import { ChevronRightIcon } from '@/components/icons';
-import type { MomentumReading } from '@/mocks';
+import type { MomentumReading } from '@/api/market.api';
 import { useT } from '@/i18n';
 
 export interface TechnicalIndicatorsPanelProps {

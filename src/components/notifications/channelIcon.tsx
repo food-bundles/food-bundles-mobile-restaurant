@@ -8,7 +8,7 @@ import {
   CalendarIcon,
   InfoCircleIcon,
 } from '@/components/icons';
-import type { NotificationChannel } from '@/mocks/types';
+import type { NotificationChannel } from '@/types';
 
 /** Returns the chrome icon for a notification channel, tinted with the given colour. */
 export function renderChannelIcon(channel: NotificationChannel, color: string, size = 18) {

@@ -7,7 +7,7 @@ import { CallEndIcon, MicIcon, MicOffIcon, SpeakerIcon } from '@/components/icon
 import { useT } from '@/i18n';
 import { sleep } from '@/lib';
 import { CallWaveform } from './CallWaveform';
-import type { CallKind, CallState } from '@/mocks/chat';
+import type { CallKind, CallState } from '@/api/chat.api';
 
 export interface CallScreenProps {
   peerName: string;

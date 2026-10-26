@@ -3,7 +3,7 @@ import { space, text, useTheme } from '@/theme';
 import { formatDate, formatTime } from '@/lib';
 import { useT } from '@/i18n';
 import { deriveFiscalIds } from './ebmFiscalIds';
-import type { Order } from '@/mocks/types';
+import type { Order } from '@/types';
 
 export interface EbmFiscalBlockProps {
   order: Order;

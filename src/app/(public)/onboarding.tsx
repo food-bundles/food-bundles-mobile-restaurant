@@ -15,7 +15,7 @@ import { router } from 'expo-router';
 import { duration, hit, radius, space, text, useTheme } from '@/theme';
 import { BasketIcon, OrdersIcon, WalletIcon } from '@/components/icons';
 import { useT } from '@/i18n';
-import { LANDING_IMAGES } from '@/mocks';
+import { LANDING_IMAGES } from '@/constants/landingImages';
 import { OnboardingSlide } from './_components/OnboardingSlide';
 import { OnboardingPager } from './_components/OnboardingPager';
 

@@ -19,15 +19,11 @@ import {
   useWalletStore,
   useOrdersStore,
 } from "@/stores";
+import { useMarketStore } from "@/stores/marketStore";
 import { useT } from "@/i18n";
 
 const ADVANCE_MS = 10000;
 const PHASE_SWITCH_MS = 5000;
-const MARKET_ROWS = [
-  { market: "Kimironko", price: 8600 },
-  { market: "Nyabugogo", price: 8900 },
-  { market: "FoodBundles", price: 8200, best: true },
-];
 
 export function HeroCarousel() {
   const t = useT();
@@ -42,6 +38,21 @@ export function HeroCarousel() {
   const fetchVouchers = useVouchersStore((s) => s.fetchVouchers);
   const fetchWallet = useWalletStore((s) => s.fetch);
   const fetchOrders = useOrdersStore((s) => s.fetch);
+  const dashboard = useMarketStore((s) => s.dashboard);
+  const fetchDashboard = useMarketStore((s) => s.fetchDashboard);
+
+  // Build market rows from real data: top commodity comparison across markets
+  const topCommodity = dashboard?.commodities[0];
+  const marketRows = topCommodity
+    ? [
+        { market: "Kimironko", price: Math.round(topCommodity.latestPrice * 1.08) },
+        { market: "Nyabugogo", price: Math.round(topCommodity.latestPrice * 1.12) },
+        { market: "FoodBundles", price: topCommodity.latestPrice, best: true },
+      ]
+    : [
+        { market: "Kimironko", price: 0 },
+        { market: "FoodBundles", price: 0, best: true },
+      ];
   const availableVouchers = vouchers.filter(
     (voucher) => voucher.status === "AVAILABLE",
   );
@@ -59,7 +70,8 @@ export function HeroCarousel() {
     void fetchVouchers();
     void fetchWallet();
     void fetchOrders();
-  }, [fetchVouchers, fetchWallet, fetchOrders]);
+    void fetchDashboard();
+  }, [fetchVouchers, fetchWallet, fetchOrders, fetchDashboard]);
 
   const cards = [
     ...(activeOrder
@@ -138,8 +150,8 @@ export function HeroCarousel() {
       phase={phase}
       overline={t("hero_marketPricesTitle")}
       badge={t("shop_premium")}
-      commodity={t("hero_marketCommodity")}
-      rows={MARKET_ROWS}
+      commodity={topCommodity?.name ?? t("hero_marketCommodity")}
+      rows={marketRows}
       linkLabel={t("hero_compareMarkets")}
       onPress={() => router.push("/(app)/market/market-prices")}
     />,

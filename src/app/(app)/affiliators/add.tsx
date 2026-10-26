@@ -1,21 +1,36 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { PersonIcon } from '@/components/icons';
 import { Input } from '@/components/primitives';
 import { PermissionRow } from './_components/PermissionRow';
+import { useAffiliatorsStore } from '@/stores';
 import { useT } from '@/i18n';
 
 export default function AddAffiliator() {
   const t = useT();
   const { colors } = useTheme();
-  const [fullName, setFullName] = useState('Eric Niyonzima');
-  const [email, setEmail] = useState('eric.niyonzima@kigalibistro.rw');
-  const [role, setRole] = useState('Purchasing');
-  const [phone, setPhone] = useState('+250 788 555 012');
+  const createAffiliator = useAffiliatorsStore((s) => s.create);
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [canRequestVouchers, setCanRequestVouchers] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const onSubmit = async () => {
+    if (!fullName || (!email && !phone)) return;
+    setSaving(true);
+    try {
+      await createAffiliator({ name: fullName, email: email || undefined, phone: phone || undefined });
+      router.back();
+    } catch {
+      // stay on screen
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
@@ -42,7 +57,6 @@ export default function AddAffiliator() {
         <View style={styles.fields}>
           <Input label={t('aff_fullName')} value={fullName} onChangeText={setFullName} />
           <Input label={t('aff_emailCredentials')} value={email} onChangeText={setEmail} keyboardType="email-address" />
-          <Input label={t('aff_role')} value={role} onChangeText={setRole} />
           <Input label={t('aff_phone')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
         </View>
         <Text style={[styles.permissionsLabel, { color: colors.secondary }]}>{t('aff_permissions')}</Text>
@@ -56,12 +70,15 @@ export default function AddAffiliator() {
       </ScreenScroll>
       <StickyFooter>
         <Pressable
-          onPress={() => router.back()}
+          onPress={onSubmit}
+          disabled={saving}
           accessibilityRole="button"
           accessibilityLabel={t('aff_sendInvite')}
-          style={[styles.submitButton, { backgroundColor: colors.leaf }]}
+          style={[styles.submitButton, { backgroundColor: colors.leaf }, saving && { opacity: 0.5 }]}
         >
-          <Text style={[styles.submitLabel, { color: colors.paper }]}>{t('aff_sendInvite')}</Text>
+          {saving
+            ? <ActivityIndicator color={colors.paper} />
+            : <Text style={[styles.submitLabel, { color: colors.paper }]}>{t('aff_sendInvite')}</Text>}
         </Pressable>
       </StickyFooter>
     </View>

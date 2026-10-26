@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Product } from "@/mocks/types";
+import type { Product } from "@/types";
 import { getProductsApi, getProductByIdApi } from "@/api/products.api";
 
 export type AsyncStatus = "idle" | "loading" | "ready" | "error";

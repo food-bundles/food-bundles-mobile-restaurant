@@ -1,10 +1,14 @@
 import { create } from "zustand";
-import type { AppNotification, NotificationChannel } from "@/mocks/types";
+import type { AppNotification, NotificationChannel } from "@/types";
 import {
   getNotificationsApi,
   markNotificationReadApi,
   markAllNotificationsReadApi,
+  getPriceAlertsApi,
+  upsertPriceAlertApi,
+  deletePriceAlertApi,
 } from "@/api/notifications.api";
+import type { PriceAlertPayload } from "@/api/notifications.api";
 export interface PriceAlert {
   productId: string;
   thresholdRwf: number;
@@ -39,6 +43,8 @@ interface NotificationsState {
     thresholdRwf: number,
     direction: PriceAlert["direction"],
   ) => void;
+  removePriceAlert: (productId: string) => void;
+  syncPriceAlerts: () => Promise<void>;
 }
 
 export const useNotificationsStore = create<NotificationsState>((set, get) => ({
@@ -99,11 +105,28 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
       channelPrefs: { ...state.channelPrefs, [channel]: enabled },
     })),
 
-  setPriceAlert: (productId, thresholdRwf, direction) =>
+  setPriceAlert: (productId, thresholdRwf, direction) => {
+    const alert: PriceAlert = { productId, thresholdRwf, direction };
     set((state) => ({
       priceAlerts: [
         ...state.priceAlerts.filter((a) => a.productId !== productId),
-        { productId, thresholdRwf, direction },
+        alert,
       ],
-    })),
+    }));
+    upsertPriceAlertApi({ productId, thresholdRwf, direction } as PriceAlertPayload).catch(() => {});
+  },
+
+  removePriceAlert: (productId) => {
+    set((state) => ({ priceAlerts: state.priceAlerts.filter((a) => a.productId !== productId) }));
+    deletePriceAlertApi(productId).catch(() => {});
+  },
+
+  syncPriceAlerts: async () => {
+    try {
+      const alerts = await getPriceAlertsApi();
+      set({ priceAlerts: alerts });
+    } catch {
+      // non-fatal — local state remains
+    }
+  },
 }));

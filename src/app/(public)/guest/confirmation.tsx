@@ -7,12 +7,13 @@ import { ConfirmationCheck } from '@/components/checkout';
 import { ConvertPrompt } from '../_components/ConvertPrompt';
 import { useGuestCartStore } from '@/stores';
 import { useT } from '@/i18n';
-import { guestOrder } from '@/mocks';
 
 export default function GuestConfirmation() {
   const t = useT();
   const { colors } = useTheme();
   const total = useGuestCartStore((state) => state.total());
+  const orderId = `FB-G-${Math.floor(1000 + Math.random() * 9000)}`;
+  const window = 'Tomorrow, 9:00 AM – 12:00 PM';
 
   const onContinueBrowsing = () => {
     useGuestCartStore.getState().clear();
@@ -24,12 +25,12 @@ export default function GuestConfirmation() {
       <View style={styles.center}>
         <ConfirmationCheck />
         <Text style={[styles.title, { color: colors.ink }]}>{t('guest_orderPlaced')}</Text>
-        <Text style={[styles.reference, { color: colors.secondary }]}>{guestOrder.id}</Text>
+        <Text style={[styles.reference, { color: colors.secondary }]}>{orderId}</Text>
       </View>
       <View style={[styles.totalCard, { backgroundColor: colors.pine }]}>
         <Text style={[styles.totalLabel, { color: colors.onPine }]}>{t('guest_total')}</Text>
         <PriceText amount={total} size="hero" colorOverride={colors.paper} />
-        <Text style={[styles.window, { color: colors.onPineSoft }]}>{guestOrder.window}</Text>
+        <Text style={[styles.window, { color: colors.onPineSoft }]}>{window}</Text>
       </View>
       <View style={styles.promptGap}>
         <ConvertPrompt />

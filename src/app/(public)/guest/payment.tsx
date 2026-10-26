@@ -9,7 +9,6 @@ import { CheckoutStepHeader } from '@/components/checkout';
 import { useGuestCartStore } from '@/stores';
 import { sleep, formatRwf } from '@/lib';
 import { useT } from '@/i18n';
-import { account } from '@/mocks';
 
 type Method = 'MOBILE_MONEY' | 'CARD';
 
@@ -18,7 +17,7 @@ export default function GuestPayment() {
   const { colors } = useTheme();
   const total = useGuestCartStore((state) => state.total());
   const [method, setMethod] = useState<Method>('MOBILE_MONEY');
-  const [phone, setPhone] = useState(account.phone);
+  const [phone, setPhone] = useState('');
   const [processing, setProcessing] = useState(false);
 
   const onPay = async () => {
@@ -40,9 +39,7 @@ export default function GuestPayment() {
             selected={method === 'MOBILE_MONEY'}
             onPress={() => setMethod('MOBILE_MONEY')}
             phone={phone}
-            onChangeNumber={() =>
-              setPhone((current) => (current === account.phone ? account.altPhone : account.phone))
-            }
+            onChangeNumber={() => setPhone('')}
           />
           <CardTile selected={method === 'CARD'} onPress={() => setMethod('CARD')} />
         </View>

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
@@ -5,12 +6,18 @@ import { PurchasingPowerCard } from './_components/PurchasingPowerCard';
 import { LocationRankCard } from './_components/LocationRankCard';
 import { CostEfficiencyCard } from './_components/CostEfficiencyCard';
 import { MenuPricingTable } from './_components/MenuPricingTable';
+import { useMarketStore } from '@/stores';
 import { useT } from '@/i18n';
 
 /** Anonymous peer benchmarking across purchasing power, location access and ingredient cost efficiency. */
 export default function RestaurantRanking() {
   const t = useT();
   const { colors } = useTheme();
+  const fetchRanking = useMarketStore((s) => s.fetchRanking);
+
+  useEffect(() => {
+    void fetchRanking();
+  }, [fetchRanking]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>

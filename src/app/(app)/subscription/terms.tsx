@@ -6,7 +6,7 @@ import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
 import { CheckIcon } from '@/components/icons';
 import { useSessionStore } from '@/stores';
 import { useT } from '@/i18n';
-import type { Tier } from '@/mocks/types';
+import type { Tier } from '@/types';
 
 export default function Terms() {
   const t = useT();

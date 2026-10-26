@@ -6,7 +6,7 @@ import { SwipeRow } from '@/components/layout';
 import { renderChannelIcon } from '@/components/notifications/channelIcon';
 import { computeRelativeTime } from '@/lib';
 import { useT } from '@/i18n';
-import type { AppNotification } from '@/mocks/types';
+import type { AppNotification } from '@/types';
 
 export interface NotificationRowProps {
   notification: AppNotification;

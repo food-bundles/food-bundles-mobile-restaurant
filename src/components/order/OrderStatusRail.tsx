@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { ScrollView, StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
-import { ORDER_STEPS } from '@/mocks/types';
+import { ORDER_STEPS } from '@/types';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
 import { CheckIcon } from '@/components/icons';

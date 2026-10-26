@@ -8,16 +8,18 @@ import { OrderingAsBanner } from "./_components/OrderingAsBanner";
 import { CloseIcon } from "@/components/icons";
 import { WalletTile, VoucherTile } from "@/components/payment";
 import { PriceText } from "@/components/product";
-import { account, products } from "@/mocks";
 import { useT } from "@/i18n";
-import { useSessionStore, useWalletStore, canRequestVouchers } from "@/stores";
+import { useSessionStore, useWalletStore, useProductsStore, canRequestVouchers } from "@/stores";
 
 export default function AffiliatorSession() {
   const t = useT();
   const { colors } = useTheme();
+  const products = useProductsStore((s) => s.products);
   const featured = products[0];
   const role = useSessionStore((state) => state.role);
   const setRole = useSessionStore((state) => state.setRole);
+  const profile = useSessionStore((state) => state.profile);
+  const managerName = profile?.name ?? '';
   const previousRole = useRef(role);
   const vouchersAllowed = canRequestVouchers(role);
   const walletBalance = useWalletStore((state) => state.balance);
@@ -99,13 +101,13 @@ export default function AffiliatorSession() {
           />
           <View style={styles.productText}>
             <Text style={[styles.productName, { color: colors.ink }]}>
-              {featured.name}
+              {featured?.name ?? ''}
             </Text>
             <Text style={[styles.productUnit, { color: colors.secondary }]}>
-              {featured.unit}
+              {featured?.unit ?? ''}
             </Text>
           </View>
-          <PriceText amount={featured.price} size="md" />
+          {featured ? <PriceText amount={featured.price} size="md" /> : null}
         </View>
         <Text style={[styles.sectionLabel, { color: colors.ink }]}>
           {t("shop_paymentOptions")}
@@ -126,7 +128,7 @@ export default function AffiliatorSession() {
           style={[styles.noticeCard, { backgroundColor: colors.tintMarigold }]}
         >
           <Text style={[styles.noticeText, { color: colors.tintedAmberText }]}>
-            {t("aff_voucherRestrictedNote", { manager: account.managerName })}
+            {t("aff_voucherRestrictedNote", { manager: managerName })}
           </Text>
         </View>
       </ScreenScroll>

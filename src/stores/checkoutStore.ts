@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { PaymentMethod } from '@/mocks/types';
+import type { PaymentMethod } from '@/types';
 import {
   initiateCheckoutApi,
   verifyCheckoutOtpApi,

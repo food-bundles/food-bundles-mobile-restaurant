@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { space, useTheme } from '@/theme';
@@ -7,21 +7,24 @@ import { MarketScreenHeader } from './_components/MarketScreenHeader';
 import { MarketTopTabSwitch } from './_components/MarketTopTabSwitch';
 import { DashboardTab } from './_components/DashboardTab';
 import { ChartsTab } from './_components/ChartsTab';
-import { momentumChangePct } from '@/mocks';
+import { useMarketStore } from '@/stores';
 import { useT } from '@/i18n';
-
-const UPDATED_MINUTES_AGO = 3;
 
 type MarketTopTab = 'dashboard' | 'charts' | 'priceHistory';
 
-/** Market Prices screen: a Dashboard portfolio view, a Charts deep-dive view, and a Price History link. */
 export default function MarketPrices() {
   const t = useT();
   const { colors } = useTheme();
   const [topTab, setTopTab] = useState<MarketTopTab>('dashboard');
   const [refreshKey, setRefreshKey] = useState(0);
+  const dashboard = useMarketStore((s) => s.dashboard);
+  const fetchDashboard = useMarketStore((s) => s.fetchDashboard);
 
-  const changePct = momentumChangePct('irishPotatoes');
+  useEffect(() => {
+    void fetchDashboard();
+  }, [fetchDashboard]);
+
+  const changePct = dashboard?.commodities.find((c) => c.id === 'irishPotatoes')?.changePct ?? 0;
 
   const onSelectTab = (tab: MarketTopTab) => {
     if (tab === 'priceHistory') {
@@ -35,8 +38,12 @@ export default function MarketPrices() {
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <ScreenScroll contentInsetBottom={space.xl}>
         <MarketScreenHeader
-          minutesAgo={UPDATED_MINUTES_AGO}
-          onRefresh={() => setRefreshKey((key) => key + 1)}
+          minutesAgo={3}
+          onRefresh={() => {
+            useMarketStore.setState({ dashboard: null });
+            setRefreshKey((k) => k + 1);
+            void fetchDashboard();
+          }}
           changePct={changePct}
         />
         <View style={styles.tabSwitchGap}>

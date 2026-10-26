@@ -1,14 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { space, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { BillingToggle } from './_components/BillingToggle';
 import { PlanSelectCard } from './_components/PlanSelectCard';
-import { plans } from '@/mocks';
-import { useSessionStore } from '@/stores';
+import { useSubscriptionsStore, useSessionStore } from '@/stores';
 import { useT } from '@/i18n';
-import type { BillingCycle, Tier } from '@/mocks/types';
+import type { BillingCycle, Tier } from '@/types';
 
 export default function Plans() {
   const t = useT();
@@ -16,6 +15,13 @@ export default function Plans() {
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('MONTHLY');
   const termsAccepted = useSessionStore((state) => state.termsAccepted);
   const setTier = useSessionStore((state) => state.setTier);
+  const plans = useSubscriptionsStore((s) => s.plans);
+  const fetchPlans = useSubscriptionsStore((s) => s.fetchPlans);
+  const status = useSubscriptionsStore((s) => s.status);
+
+  useEffect(() => {
+    if (status === 'idle') fetchPlans();
+  }, [status, fetchPlans]);
 
   const onChoose = (tier: Exclude<Tier, 'NONE'>) => {
     if (!termsAccepted) {

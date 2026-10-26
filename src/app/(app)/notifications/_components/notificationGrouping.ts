@@ -1,4 +1,4 @@
-import type { AppNotification } from '@/mocks/types';
+import type { AppNotification } from '@/types';
 
 export type NotificationGroupKey = 'today' | 'yesterday' | 'earlierThisWeek' | 'older';
 

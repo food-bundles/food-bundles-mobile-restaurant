@@ -5,7 +5,7 @@ import { ChannelToggleRow } from './_components/ChannelToggleRow';
 import { useNotificationsStore } from '@/stores';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
-import type { NotificationChannel } from '@/mocks/types';
+import type { NotificationChannel } from '@/types';
 
 const CHANNEL_ORDER: NotificationChannel[] = [
   'order',

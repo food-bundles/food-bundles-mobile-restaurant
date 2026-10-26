@@ -1,4 +1,4 @@
-import type { CreditScore, CreditTier, DataConsent, DataConsentSource } from '@/mocks/types';
+import type { CreditScore, CreditTier, DataConsent, DataConsentSource } from '@/types';
 
 /** Base credit line from FoodBundles' own transaction history alone — always included, no authorization needed. */
 export const BASE_LIMIT_RWF = 60_000;

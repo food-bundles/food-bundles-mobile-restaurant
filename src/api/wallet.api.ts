@@ -1,5 +1,5 @@
 import { request } from './client';
-import type { Transaction } from '@/mocks/types';
+import type { Transaction } from '@/types';
 
 interface ApiTransaction {
   id: string;

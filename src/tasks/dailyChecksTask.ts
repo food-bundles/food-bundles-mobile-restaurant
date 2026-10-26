@@ -1,13 +1,12 @@
 import { useNotificationsStore, useVouchersStore } from '@/stores';
+import { useMarketStore } from '@/stores/marketStore';
 import { scheduleDelayedNotification } from '@/services/notificationService';
 import { translate } from '@/i18n';
-import { computeBuyingAdvice } from '@/lib';
-import { formatDate } from '@/lib';
+import { formatDate, formatRwf } from '@/lib';
+import { getVouchersApi } from '@/api/vouchers.api';
 
 const CONSENT_REMINDER_WINDOW_DAYS = 3;
 const REPAYMENT_REMINDER_DAYS = 5;
-const MOCK_REPAYMENT_DUE_DATE = '2026-08-30';
-const MOCK_REPAYMENT_AMOUNT_RWF = 59_200;
 const DAILY_DIGEST_HOUR = 7;
 
 function secondsUntilNextHour(hour: number): number {
@@ -24,15 +23,18 @@ function alreadyNotified(channel: 'marketPrice' | 'consent' | 'repayment', match
     .notifications.some((n) => n.channel === channel && n.body.includes(matchKey));
 }
 
-/** Schedules the next 07:00 market-price digest, highlighting today's biggest mover in each direction. */
+/** Schedules the next 07:00 market-price digest using real market store data. */
 export async function scheduleDailyMarketDigest(): Promise<void> {
-  const { buyNow, wait } = computeBuyingAdvice();
-  const drop = buyNow[0];
-  const rise = wait[0];
+  const dashboard = useMarketStore.getState().dashboard;
+  if (!dashboard) return;
+
+  const sorted = [...dashboard.commodities].sort((a, b) => Math.abs(b.changePct) - Math.abs(a.changePct));
+  const drop = sorted.find((c) => c.changePct < -2);
+  const rise = sorted.find((c) => c.changePct > 2);
   if (!drop && !rise) return;
 
-  const dropText = drop ? `${drop.name} ${Math.round(drop.changeFraction * 100)}%` : '';
-  const riseText = rise ? `${rise.name} +${Math.round(rise.changeFraction * 100)}%` : '';
+  const dropText = drop ? `${drop.name} ${drop.changePct.toFixed(1)}%` : '';
+  const riseText = rise ? `${rise.name} +${rise.changePct.toFixed(1)}%` : '';
   const summary = [dropText, riseText].filter(Boolean).join(' · ');
 
   const today = formatDate(new Date().toISOString());
@@ -73,24 +75,39 @@ export async function checkConsentExpiryReminders(): Promise<void> {
   }
 }
 
-/** Reminds the restaurant 5 days before a mock voucher-repayment settlement date. */
+/**
+ * Fetches real voucher data from the backend and reminds the restaurant
+ * REPAYMENT_REMINDER_DAYS before any active voucher's expiry date.
+ */
 export async function checkRepaymentReminder(): Promise<void> {
-  const now = Date.now();
-  const dueAt = new Date(MOCK_REPAYMENT_DUE_DATE).getTime();
-  const daysUntilDue = Math.round((dueAt - now) / (24 * 60 * 60 * 1000));
-  if (daysUntilDue !== REPAYMENT_REMINDER_DAYS) return;
-  if (alreadyNotified('repayment', MOCK_REPAYMENT_DUE_DATE)) return;
+  let vouchers;
+  try {
+    vouchers = await getVouchersApi();
+  } catch {
+    return;
+  }
 
-  await scheduleDelayedNotification(
-    {
-      channel: 'repayment',
-      title: translate('notif_repaymentDueSoon', {
-        days: REPAYMENT_REMINDER_DAYS,
-        amount: MOCK_REPAYMENT_AMOUNT_RWF.toLocaleString('en-US'),
-      }),
-      body: translate('notif_repaymentDueSoonBody', { date: formatDate(MOCK_REPAYMENT_DUE_DATE) }),
-      deepLink: '/(app)/(tabs)/wallet?tab=vouchers',
-    },
-    5,
-  );
+  const now = Date.now();
+  const windowMs = REPAYMENT_REMINDER_DAYS * 24 * 60 * 60 * 1000;
+
+  for (const voucher of vouchers) {
+    if (voucher.status !== 'AVAILABLE') continue;
+    const dueAt = new Date(voucher.expiresAt).getTime();
+    const msUntilDue = dueAt - now;
+    if (msUntilDue < 0 || msUntilDue > windowMs) continue;
+    if (alreadyNotified('repayment', voucher.expiresAt)) continue;
+
+    await scheduleDelayedNotification(
+      {
+        channel: 'repayment',
+        title: translate('notif_repaymentDueSoon', {
+          days: REPAYMENT_REMINDER_DAYS,
+          amount: formatRwf(voucher.amount),
+        }),
+        body: translate('notif_repaymentDueSoonBody', { date: formatDate(voucher.expiresAt) }),
+        deepLink: '/(app)/(tabs)/wallet?tab=vouchers',
+      },
+      5,
+    );
+  }
 }

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { radius, space, text, useTheme } from '@/theme';
 import { PriceText } from '@/components/product';
 import { useT } from '@/i18n';
-import type { Order } from '@/mocks/types';
+import type { Order } from '@/types';
 
 export interface OrderMetaCardProps {
   order: Order;

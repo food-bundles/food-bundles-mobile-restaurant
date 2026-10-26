@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { hit, radius, space, text, useTheme } from '@/theme';
-import type { TimeRange } from '@/mocks';
+import type { TimeRange } from '@/api/market.api';
 
 export interface TimeRangeTabsProps {
   options: TimeRange[];

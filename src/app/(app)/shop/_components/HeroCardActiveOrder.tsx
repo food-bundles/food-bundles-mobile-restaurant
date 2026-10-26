@@ -4,8 +4,8 @@ import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } 
 import { signatureDuration, space, text, useTheme } from '@/theme';
 import { HeroCardShell } from './HeroCardShell';
 import { HeroCardLink } from './HeroCardLink';
-import { ORDER_STEPS } from '@/mocks/types';
-import type { Order } from '@/mocks/types';
+import { ORDER_STEPS } from '@/types';
+import type { Order } from '@/types';
 
 export interface HeroCardActiveOrderProps {
   order: Order;
