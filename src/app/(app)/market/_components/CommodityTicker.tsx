@@ -23,7 +23,7 @@ export function CommodityTicker() {
       setIndex((prev) => (prev + 1) % commodities.length);
     }, signatureDuration.tickerCycle);
     return () => clearInterval(interval);
-  }, [commodities.length]);
+  }, [commodities.length, opacity]);
 
   const fadeStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
 

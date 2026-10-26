@@ -1,12 +1,10 @@
 import { create } from 'zustand';
-import type { ChatMessage, Conversation } from '@/api/chat.api';
+import type { ChatMessage, Conversation, MessageKind } from '@/api/chat.api';
 import {
   getConversationsApi,
   getMessagesApi,
-  sendMessageApi,
   startConversationApi,
   markConversationReadApi,
-  sendTypingApi,
 } from '@/api/chat.api';
 import { getToken } from '@/api/client';
 
@@ -149,13 +147,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
         id: c.id,
         kind: c.kind as Conversation['kind'],
         participantIds: c.participantIds,
-        lastMessage: c.lastMessage ?? {
-          id: `${c.id}-placeholder`,
-          senderId: '',
-          kind: 'text',
-          body: '',
-          sentAt: new Date().toISOString(),
-        },
+        lastMessage: c.lastMessage
+          ? { ...c.lastMessage, kind: c.lastMessage.kind as MessageKind }
+          : { id: `${c.id}-placeholder`, senderId: '', kind: 'text' as MessageKind, body: '', sentAt: new Date().toISOString() },
         unreadCount: c.unreadCount,
       }));
       for (const c of conversations) subscribeConversationWs(c.id);

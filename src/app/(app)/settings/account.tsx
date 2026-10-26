@@ -28,7 +28,6 @@ export default function Account() {
   const [language, setLanguage] = useLanguage();
 
   const businessName = profile?.name ?? 'My Restaurant';
-  const managerRole = profile?.role ?? 'RESTAURANT';
 
   const onLogout = async () => {
     await logout();

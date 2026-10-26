@@ -1,5 +1,5 @@
 import { request } from './client';
-import type { Plan, Tier, BillingCycle } from '@/types';
+import type { Plan, Tier } from '@/types';
 
 interface ApiPlan {
   id: string;

@@ -8,7 +8,6 @@ import { MovingAverageOverlay } from './MovingAverageOverlay';
 import { TimeRangeTabs } from './TimeRangeTabs';
 import { ChartTypeToggle, type ChartType } from './ChartTypeToggle';
 import { CandlestickChart } from './CandlestickChart';
-import { VolumeBars } from './VolumeBars';
 import { MaOverlayToggle } from './MaOverlayToggle';
 import { MarketComparisonTable } from './MarketComparisonTable';
 import { AnalyticsCards } from './AnalyticsCards';

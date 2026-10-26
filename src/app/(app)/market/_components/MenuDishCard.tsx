@@ -4,7 +4,6 @@ import { hit, radius, shadow, space, text, useTheme } from '@/theme';
 import { Badge } from '@/components/primitives';
 import { CheckIcon } from '@/components/icons';
 import { QuantityStepper } from '@/components/product';
-import { formatRwf } from '@/lib';
 import type { MenuDish } from '@/lib';
 import { useT } from '@/i18n';
 

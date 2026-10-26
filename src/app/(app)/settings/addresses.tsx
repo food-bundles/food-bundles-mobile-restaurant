@@ -1,6 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
-import { hit, radius, space, text, useTheme } from '@/theme';
+import { hit, radius, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { PlusIcon } from '@/components/icons';
 import { AddressRow } from './_components/AddressRow';

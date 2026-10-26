@@ -3,7 +3,7 @@ import { hit, radius, space, text, useTheme } from '@/theme';
 import type { TimeRange } from '@/api/market.api';
 
 export interface TimeRangeTabsProps {
-  options: TimeRange[];
+  options: readonly TimeRange[];
   selected: TimeRange;
   onSelect: (range: TimeRange) => void;
 }

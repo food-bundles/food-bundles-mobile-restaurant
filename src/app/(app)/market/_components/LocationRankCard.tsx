@@ -3,6 +3,7 @@ import Svg, { Circle, Rect } from 'react-native-svg';
 import { radius, shadow, space, text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
 import { useMarketStore } from '@/stores';
+import type { RankingData } from '@/api/market.api';
 import { useT } from '@/i18n';
 
 /** Static map thumbnail + nearby market price comparison for the restaurant's location. */
@@ -13,7 +14,7 @@ export function LocationRankCard() {
   const location = ranking?.yourLocation ?? '';
   const reachable = ranking?.marketsWithinReach ?? 0;
   const total = ranking?.totalMarketsTracked ?? 0;
-  const nearbyPrices = ranking?.nearbyMarketPrices ?? [];
+  const nearbyPrices: RankingData['nearbyMarketPrices'] = ranking?.nearbyMarketPrices ?? [];
 
   return (
     <View style={[styles.card, { backgroundColor: colors.paper }]}>
@@ -38,7 +39,7 @@ export function LocationRankCard() {
       {nearbyPrices.map((entry, index) => (
         <View key={`${entry.marketName}-${entry.productId}-${index}`} style={styles.priceRow}>
           <Text style={[styles.priceLabel, { color: colors.secondary }]}>
-            {entry.marketName} · {('name' in entry ? entry.name : entry.productId)}
+          {entry.marketName} · {entry.name}
           </Text>
           <Text style={[styles.priceValue, { color: colors.ink }]}>{formatRwf(entry.price)}</Text>
         </View>
