@@ -6,8 +6,10 @@ import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { MobileMoneyTile, CardTile } from '@/components/payment';
 import { GuestTotalsCard } from '../_components/GuestTotalsCard';
 import { CheckoutStepHeader } from '@/components/checkout';
-import { useGuestCartStore } from '@/stores';
-import { sleep, formatRwf } from '@/lib';
+import { useGuestCartStore, useGuestDeliveryStore } from '@/stores';
+import { placeGuestOrderApi } from '@/api/guestOrder.api';
+import { ApiError } from '@/api/client';
+import { formatRwf } from '@/lib';
 import { useT } from '@/i18n';
 
 type Method = 'MOBILE_MONEY' | 'CARD';
@@ -15,16 +17,38 @@ type Method = 'MOBILE_MONEY' | 'CARD';
 export default function GuestPayment() {
   const t = useT();
   const { colors } = useTheme();
+  const lines = useGuestCartStore((state) => state.lines);
   const total = useGuestCartStore((state) => state.total());
+  const delivery = useGuestDeliveryStore();
   const [method, setMethod] = useState<Method>('MOBILE_MONEY');
   const [phone, setPhone] = useState('');
   const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onPay = async () => {
     setProcessing(true);
-    await sleep(1300);
-    setProcessing(false);
-    router.replace('/(public)/guest/confirmation');
+    setError(null);
+    try {
+      await placeGuestOrderApi({
+        lines: lines.map((l) => ({ productId: l.productId, qty: l.qty, unitPrice: l.unitPrice })),
+        contactName: delivery.name,
+        contactPhone: delivery.phone,
+        deliveryStreet: delivery.street,
+        deliveryLandmark: delivery.landmark || undefined,
+        paymentMethod: method,
+      });
+      router.replace('/(public)/guest/confirmation');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else if (err instanceof TypeError) {
+        setError('Cannot reach the server. Check your network connection.');
+      } else {
+        setError('Payment failed. Please try again.');
+      }
+    } finally {
+      setProcessing(false);
+    }
   };
 
   return (
@@ -44,6 +68,7 @@ export default function GuestPayment() {
           <CardTile selected={method === 'CARD'} onPress={() => setMethod('CARD')} />
         </View>
         <Text style={[styles.note, { color: colors.muted }]}>{t('guest_walletVoucherNote')}</Text>
+        {error ? <Text style={[styles.error, { color: colors.chili }]}>{error}</Text> : null}
       </ScreenScroll>
       <StickyFooter>
         <Pressable
@@ -71,6 +96,7 @@ const styles = StyleSheet.create({
   totalsGap: { marginTop: space.md },
   tiles: { gap: space.sm, marginTop: space.lg },
   note: { ...text.caption, marginTop: space.md },
+  error: { ...text.caption, textAlign: 'center', marginTop: space.sm },
   button: {
     minHeight: 48,
     borderRadius: radius.md,

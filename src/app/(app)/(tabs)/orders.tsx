@@ -5,12 +5,11 @@ import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { space, text, useTheme } from '@/theme';
 import { EmptyState, ErrorState } from '@/components/primitives';
-import { DemoStateToggle } from '../orders/_components/DemoStateToggle';
 import { ActiveOrderCard } from '../orders/_components/ActiveOrderCard';
 import { OrderFilterChips, type OrderFilter } from '../orders/_components/OrderFilterChips';
 import { OrderCard } from '../orders/_components/OrderCard';
 import { OrderCardSkeleton } from '../orders/_components/OrderCardSkeleton';
-import { useOrdersStore, useUiStore } from '@/stores';
+import { useOrdersStore } from '@/stores';
 import { useT } from '@/i18n';
 import { OrdersIcon } from '@/components/icons';
 import { useHideOnScroll } from '@/hooks';
@@ -18,8 +17,6 @@ import { useHideOnScroll } from '@/hooks';
 export default function OrdersList() {
   const t = useT();
   const { colors } = useTheme();
-  const demoState = useUiStore((state) => state.ordersDemoState);
-  const setDemoState = useUiStore((state) => state.setOrdersDemoState);
   const insets = useSafeAreaInsets();
   const [filter, setFilter] = useState<OrderFilter>('all');
   const [refreshing, setRefreshing] = useState(false);
@@ -31,15 +28,8 @@ export default function OrdersList() {
   const ordersStatus = useOrdersStore((state) => state.status);
 
   useEffect(() => {
-    if (demoState === 'live' && ordersStatus === 'idle') fetchOrders();
-  }, [demoState, ordersStatus, fetchOrders]);
-
-  useEffect(() => {
-    if (demoState === 'loading') {
-      const timer = setTimeout(() => setDemoState('live'), 1200);
-      return () => clearTimeout(timer);
-    }
-  }, [demoState, setDemoState]);
+    if (ordersStatus === 'idle') fetchOrders();
+  }, [ordersStatus, fetchOrders]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -58,29 +48,28 @@ export default function OrdersList() {
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <View style={[styles.header, { paddingTop: insets.top + space.sm }]}>
         <Text style={[styles.title, { color: colors.ink }]}>{t('orders_title')}</Text>
-        <DemoStateToggle selected={demoState} onSelect={setDemoState} />
       </View>
-      {demoState === 'loading' ? (
+      {ordersStatus === 'loading' ? (
         <ScrollView contentContainerStyle={styles.listContent}>
           <OrderCardSkeleton />
           <OrderCardSkeleton />
           <OrderCardSkeleton faded />
         </ScrollView>
-      ) : demoState === 'empty' ? (
+      ) : ordersStatus === 'error' ? (
+        <View style={styles.centerContent}>
+          <ErrorState
+            title={t('orders_errorTitle')}
+            message={t('orders_errorSub')}
+            onRetry={fetchOrders}
+          />
+        </View>
+      ) : ordersStatus === 'ready' && orders.length === 0 ? (
         <View style={styles.centerContent}>
           <EmptyState
             icon={<OrdersIcon size={22} color={colors.leaf} />}
             title={t('orders_emptyTitle')}
             message={t('orders_emptySub')}
             action={{ label: t('orders_browseProduce'), onPress: () => router.push('/(app)/(tabs)') }}
-          />
-        </View>
-      ) : demoState === 'error' ? (
-        <View style={styles.centerContent}>
-          <ErrorState
-            title={t('orders_errorTitle')}
-            message={t('orders_errorSub')}
-            onRetry={() => setDemoState('loading')}
           />
         </View>
       ) : (

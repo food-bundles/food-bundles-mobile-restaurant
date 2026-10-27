@@ -44,7 +44,11 @@ export function ProductCard({ product, onPress, onAdd, qty = 0, onInc, onDec }: 
         accessibilityLabel={`${product.name}, ${product.unit}`}
         style={[styles.container, { backgroundColor: colors.paper }]}
       >
-        <Image source={product.image} accessible={false} style={[styles.image, { backgroundColor: colors.neutral }]} />
+        {typeof product.image === 'object' && product.image !== null && 'uri' in product.image && (product.image as { uri: string }).uri ? (
+          <Image source={product.image} accessible={false} style={[styles.image, { backgroundColor: colors.neutral }]} />
+        ) : (
+          <View style={[styles.image, { backgroundColor: colors.neutral }]} />
+        )}
         {product.wasPrice ? (
           <View style={[styles.discountBadge, { backgroundColor: colors.chili }]}>
             <Text style={[styles.discountLabel, { color: colors.paper }]}>{t('shop_sale')}</Text>

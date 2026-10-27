@@ -45,6 +45,25 @@ export async function logoutApi(): Promise<void> {
   await clearToken();
 }
 
+export interface RegisterPayload {
+  name: string;
+  email: string;
+  phone?: string;
+  tin: string;
+  password: string;
+  role: 'RESTAURANT' | 'HOTEL';
+}
+
+export async function registerApi(payload: RegisterPayload): Promise<{ token: string; data: MeResponse }> {
+  const res = await request<{ token: string; data: MeResponse }>('/register', {
+    method: 'POST',
+    body: payload,
+    auth: false,
+  });
+  await saveToken(res.token);
+  return res;
+}
+
 export async function updateProfileApi(data: {
   name?: string;
   email?: string;

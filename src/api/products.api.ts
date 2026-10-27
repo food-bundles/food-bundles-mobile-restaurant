@@ -47,7 +47,7 @@ export async function getProductsApi(params?: {
   page?: number;
   limit?: number;
 }): Promise<{ products: Product[]; total: number; page: number; totalPages: number }> {
-  const res = await request<ProductsResponse>('/products', { params: params as any });
+  const res = await request<ProductsResponse>('/products', { params: params as any, auth: false });
   return {
     products: res.data.map(toMobileProduct),
     total: res.pagination.total,

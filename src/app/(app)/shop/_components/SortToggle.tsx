@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
-import { hit, radius, space, text, useTheme } from '@/theme';
-import { useT } from '@/i18n';
+import { Pressable, StyleSheet, Text } from "react-native";
+import { hit, radius, space, text, useTheme } from "@/theme";
+import { useT } from "@/i18n";
 
-export type SortOrder = 'asc' | 'desc';
+export type SortOrder = "asc" | "desc";
 
 export interface SortToggleProps {
   sort: SortOrder;
@@ -17,10 +17,17 @@ export function SortToggle({ sort, onToggle }: SortToggleProps) {
     <Pressable
       onPress={onToggle}
       accessibilityRole="button"
-      accessibilityLabel={sort === 'asc' ? t('a11y_sortLowToHigh') : t('a11y_sortHighToLow')}
-      style={[styles.button, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
+      accessibilityLabel={
+        sort === "asc" ? t("a11y_sortLowToHigh") : t("a11y_sortHighToLow")
+      }
+      style={[
+        styles.button,
+        { backgroundColor: colors.paper, borderColor: colors.hairline },
+      ]}
     >
-      <Text style={[styles.label, { color: colors.ink }]}>{sort === 'asc' ? 'Price ↑' : 'Price ↓'}</Text>
+      <Text style={[styles.label, { color: colors.ink }]}>
+        {sort === "asc" ? "Price ↑" : "Price ↓"}
+      </Text>
     </Pressable>
   );
 }
@@ -31,8 +38,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
     borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   label: { ...text.label },
 });

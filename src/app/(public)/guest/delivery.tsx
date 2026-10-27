@@ -5,11 +5,13 @@ import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, StickyFooter } from '@/components/layout';
 import { Input } from '@/components/primitives';
 import { CheckoutStepHeader, DeliveryWindowPicker } from '@/components/checkout';
+import { useGuestDeliveryStore } from '@/stores';
 import { useT } from '@/i18n';
 
 export default function GuestDelivery() {
   const t = useT();
   const { colors } = useTheme();
+  const setDelivery = useGuestDeliveryStore((s) => s.set);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [street, setStreet] = useState('');
@@ -35,7 +37,10 @@ export default function GuestDelivery() {
       </ScreenScroll>
       <StickyFooter>
         <Pressable
-          onPress={() => router.push('/(public)/guest/payment')}
+          onPress={() => {
+            setDelivery({ name: name.trim(), phone: phone.trim(), street: street.trim(), landmark: landmark.trim(), windowIndex });
+            router.push('/(public)/guest/payment');
+          }}
           disabled={!canContinue}
           accessibilityRole="button"
           accessibilityLabel={t('guest_continueToPayment')}

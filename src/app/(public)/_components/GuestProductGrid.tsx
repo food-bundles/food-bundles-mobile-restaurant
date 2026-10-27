@@ -30,7 +30,12 @@ export function GuestProductGrid({ products, onSelectProduct }: GuestProductGrid
             <ProductCard
               product={item}
               onPress={() => onSelectProduct(item.id)}
-              onAdd={() => add(item.id)}
+              onAdd={() => {
+                const uri = typeof item.image === 'object' && item.image !== null && 'uri' in item.image
+                  ? (item.image as { uri: string }).uri
+                  : '';
+                add(item.id, item.name, item.unit, uri, item.price);
+              }}
               qty={line?.qty ?? 0}
               onInc={() => inc(item.id)}
               onDec={() => dec(item.id)}

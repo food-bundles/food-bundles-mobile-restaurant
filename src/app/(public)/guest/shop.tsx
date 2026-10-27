@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { hit, radius, space, text, useTheme } from '@/theme';
@@ -28,6 +28,8 @@ export default function GuestShop() {
   const itemCount = useGuestCartStore((state) => state.itemCount());
   const total = useGuestCartStore((state) => state.total());
   const products = useProductsStore((s) => s.products);
+  const productsStatus = useProductsStore((s) => s.status);
+  const productsError = useProductsStore((s) => s.error);
   const fetchProducts = useProductsStore((s) => s.fetch);
 
   useEffect(() => { void fetchProducts(); }, [fetchProducts]);
@@ -67,7 +69,23 @@ export default function GuestShop() {
           <CategoryChips options={CATEGORY_OPTIONS} selected={category} onSelect={setCategory} />
         </View>
         <View style={styles.grid}>
-          <GuestProductGrid products={visibleProducts} onSelectProduct={() => undefined} />
+          {productsStatus === 'loading' ? (
+            <View style={styles.centered}>
+              <ActivityIndicator size="large" color={colors.leaf} />
+              <Text style={[styles.statusText, { color: colors.secondary }]}>Loading products…</Text>
+            </View>
+          ) : productsStatus === 'error' ? (
+            <View style={styles.centered}>
+              <Text style={[styles.statusText, { color: colors.chili }]}>
+                {productsError ?? 'Failed to load products.'}
+              </Text>
+              <Pressable onPress={() => void fetchProducts()} accessibilityRole="button" style={[styles.retryButton, { backgroundColor: colors.leaf }]}>
+                <Text style={[styles.retryLabel, { color: colors.paper }]}>Retry</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <GuestProductGrid products={visibleProducts} onSelectProduct={() => undefined} />
+          )}
         </View>
       </ScreenScroll>
       <StickyFooter>
@@ -98,6 +116,10 @@ const styles = StyleSheet.create({
   bannerBold: { ...text.bodySemi },
   chips: { marginTop: space.md },
   grid: { marginTop: space.md },
+  centered: { alignItems: 'center', justifyContent: 'center', paddingVertical: space.xl, gap: space.md },
+  statusText: { ...text.body, textAlign: 'center' },
+  retryButton: { paddingHorizontal: space.lg, paddingVertical: space.sm, borderRadius: radius.md },
+  retryLabel: { ...text.bodySemi },
   footerRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   footerCount: { ...text.caption },
   footerTotal: { ...text.h2, fontVariant: ['tabular-nums'] },

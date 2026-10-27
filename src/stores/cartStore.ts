@@ -122,7 +122,13 @@ export const useCartStore = create<CartState>((set, get) => ({
     set((state) => ({
       lines: state.lines.map((l) =>
         l.productId === productId
-          ? { ...l, cartItemId: item.id, unitPrice: item.unitPrice }
+          ? {
+              ...l,
+              cartItemId: item.id,
+              unitPrice: item.unitPrice,
+              name: item.product?.productName ?? l.name,
+              unit: item.product?.unit ?? l.unit,
+            }
           : l,
       ),
     }));

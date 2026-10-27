@@ -33,11 +33,13 @@ export default function Login() {
       await login({ email: email.trim(), password });
       router.replace("/(app)/(tabs)");
     } catch (err) {
-      setError(
-        err instanceof ApiError
-          ? err.message
-          : "Login failed. Please try again.",
-      );
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else if (err instanceof TypeError) {
+        setError("Cannot reach the server. Check your network connection.");
+      } else {
+        setError(err instanceof Error ? err.message : "Login failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

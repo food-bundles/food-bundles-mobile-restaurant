@@ -14,9 +14,9 @@ export const SUPPORT_CONVERSATION_KIND = 'support';
 export type AsyncStatus = 'idle' | 'loading' | 'ready' | 'error';
 
 // ─── WebSocket singleton ──────────────────────────────────────────────────────
-const WS_URL = (process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:5000/api')
-  .replace(/^http/, 'ws')
-  .replace('/api', '/api/ws');
+// Derive WS URL: strip any trailing /api suffix, switch protocol, append /api/ws
+const _apiBase = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:5000/api';
+const WS_URL = _apiBase.replace(/\/api\/?$/, '').replace(/^http/, 'ws') + '/api/ws';
 
 let _ws: WebSocket | null = null;
 let _wsUserId: string | null = null;
