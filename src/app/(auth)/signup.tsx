@@ -42,7 +42,7 @@ export default function Signup() {
         name: businessName.trim(),
         email: email.trim(),
         phone: phone.trim() || undefined,
-        tin,
+        tin: tin.replace(/\s/g, ''),
         password,
         role: businessType,
       });
