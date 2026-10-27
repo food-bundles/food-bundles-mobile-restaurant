@@ -6,12 +6,14 @@
   "build": {
     "preview": {
       "distribution": "internal",
+      "prebuildCommand": "npx expo prebuild --clean --no-install",
       "android": {
         "buildType": "apk"
       }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "prebuildCommand": "npx expo prebuild --clean --no-install"
     }
   },
   "submit": {
