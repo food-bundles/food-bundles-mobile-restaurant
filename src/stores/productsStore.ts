@@ -6,6 +6,7 @@ export type AsyncStatus = "idle" | "loading" | "ready" | "error";
 
 interface ProductsState {
   status: AsyncStatus;
+  error: string | null;
   products: Product[];
   fetch: (params?: {
     categoryId?: string;
@@ -17,15 +18,18 @@ interface ProductsState {
 
 export const useProductsStore = create<ProductsState>((set, get) => ({
   status: "idle",
+  error: null,
   products: [],
 
   fetch: async (params) => {
-    set({ status: "loading" });
+    set({ status: "loading", error: null });
     try {
       const result = await getProductsApi({ limit: 100, ...params });
       set({ status: "ready", products: result.products });
-    } catch {
-      set({ status: "error", products: [] });
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      console.error('[productsStore] fetch failed:', message);
+      set({ status: "error", products: [], error: message });
     }
   },
 
@@ -34,7 +38,8 @@ export const useProductsStore = create<ProductsState>((set, get) => ({
     if (local) return local;
     try {
       return await getProductByIdApi(productId);
-    } catch {
+    } catch (e) {
+      console.error('[productsStore] getById failed:', e instanceof Error ? e.message : String(e));
       return null;
     }
   },

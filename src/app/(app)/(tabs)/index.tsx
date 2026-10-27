@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { BackHandler, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { SectionHeader } from '@/components/layout';
 import { Toast } from '@/components/primitives';
 import { CategoryChips, type CategoryOption } from '@/app/(public)/_components/CategoryChips';
@@ -53,7 +52,7 @@ export default function ShopHome() {
   const t = useT();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const tabBarHeight = useBottomTabBarHeight();
+  const tabBarHeight = hit.min + space.lg + insets.bottom;
   const { toastMessage, hideToast } = useExitConfirm(t('common_pressBackToExit'));
   const { onScroll } = useHideOnScroll();
 

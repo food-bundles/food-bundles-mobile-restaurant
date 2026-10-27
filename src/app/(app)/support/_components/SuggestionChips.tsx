@@ -15,7 +15,7 @@ export function SuggestionChips({ suggestions, onSelect }: SuggestionChipsProps)
   const { colors } = useTheme();
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollWrap} contentContainerStyle={styles.row}>
       {suggestions.map((suggestion) => (
         <Pressable
           key={suggestion.key}
@@ -32,9 +32,10 @@ export function SuggestionChips({ suggestions, onSelect }: SuggestionChipsProps)
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.md, paddingBottom: space.sm },
+  scrollWrap: { flexGrow: 0 },
+  row: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.md, paddingBottom: space.sm, alignItems: 'center' },
   chip: {
-    minHeight: hit.min,
+    height: hit.min,
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
     borderWidth: 1,

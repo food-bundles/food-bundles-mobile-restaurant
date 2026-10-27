@@ -27,8 +27,9 @@ function toMobilePlan(p: ApiPlan): Plan {
   const isWeekly = p.duration <= 7;
   const monthly = isWeekly ? p.price * 4 : p.price;
   const weekly = isWeekly ? p.price : Math.round(p.price / 4);
+  const upper = p.name.toUpperCase();
   const tier: Exclude<Tier, 'NONE'> =
-    p.name.toUpperCase().includes('PREMIUM') ? 'PREMIUM' : 'BASIC';
+    upper.includes('PREMIUM') ? 'PREMIUM' : upper.includes('STANDARD') ? 'STANDARD' : 'BASIC';
   return {
     id: tier,
     name: p.name,

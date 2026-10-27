@@ -136,7 +136,7 @@ export interface Affiliator {
 
 // ─── Subscriptions ────────────────────────────────────────────────────────────
 
-export type Tier = 'NONE' | 'BASIC' | 'PREMIUM';
+export type Tier = 'NONE' | 'BASIC' | 'STANDARD' | 'PREMIUM';
 export type BillingCycle = 'WEEKLY' | 'MONTHLY';
 
 export interface Plan {

@@ -53,7 +53,6 @@ export function ChatComposer({ bottomInset, draft, onDraftChange, onSendText, on
   const startRecording = async () => {
     const permission = await requestRecordingPermissionsAsync();
     if (!permission.granted) return;
-    await recorder.prepareToRecordAsync();
     recorder.record();
   };
 

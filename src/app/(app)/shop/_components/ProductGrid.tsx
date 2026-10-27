@@ -31,6 +31,8 @@ export function ProductGrid({
   const add = useCartStore((state) => state.add);
   const inc = useCartStore((state) => state.inc);
   const dec = useCartStore((state) => state.dec);
+  const syncAdd = useCartStore((state) => state.syncAdd);
+  const syncUpdate = useCartStore((state) => state.syncUpdate);
 
   return (
     <Animated.FlatList<Product>
@@ -52,9 +54,16 @@ export function ProductGrid({
             <ProductCard
               product={item}
               onPress={() => router.push({ pathname: '/(app)/shop/product/[id]', params: { id: item.id } })}
-              onAdd={() => add(item.id)}
+              onAdd={() => {
+                add(item.id);
+                void syncAdd(item.id, 1);
+              }}
               qty={line?.qty ?? 0}
-              onInc={() => inc(item.id)}
+              onInc={() => {
+                inc(item.id);
+                if (line?.cartItemId) void syncUpdate(line.cartItemId, (line.qty ?? 0) + 1);
+                else void syncAdd(item.id, 1);
+              }}
               onDec={() => dec(item.id)}
             />
           </StaggeredGridCell>

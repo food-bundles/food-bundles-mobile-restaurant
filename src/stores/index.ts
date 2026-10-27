@@ -3,6 +3,8 @@ export { useCartStore } from './cartStore';
 export type { CartLine } from './cartStore';
 export { useCheckoutStore } from './checkoutStore';
 export { useGuestCartStore, MINIMUM_ORDER, SMALL_ORDER_FEE } from './guestCartStore';
+export { useGuestDeliveryStore } from './guestDeliveryStore';
+export type { GuestDeliveryInfo } from './guestDeliveryStore';
 export { useOrdersStore } from './ordersStore';
 export { useWalletStore, MAX_TOP_UP } from './walletStore';
 export { useVouchersStore, isVouchersUnlocked } from './vouchersStore';
