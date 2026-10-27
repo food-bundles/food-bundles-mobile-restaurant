@@ -4,7 +4,7 @@ import { radius, space, text, useTheme } from '@/theme';
 import { WalletIcon } from '@/components/icons';
 import { PriceText } from '@/components/product';
 import { formatDate } from '@/lib';
-import type { Transaction } from '@/mocks/types';
+import type { Transaction } from '@/types';
 
 export interface TransactionRowProps {
   transaction: Transaction;

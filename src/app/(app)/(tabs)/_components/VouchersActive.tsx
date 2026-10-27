@@ -6,7 +6,7 @@ import { VoucherListItem } from './VoucherListItem';
 import { ConsentExpiryBanner } from './ConsentExpiryBanner';
 import { useVouchersStore, useSessionStore } from '@/stores';
 import { useT } from '@/i18n';
-import type { DataConsentSource } from '@/mocks/types';
+import type { DataConsentSource } from '@/types';
 
 const CONSENT_SOURCES: DataConsentSource[] = ['eucl', 'rra', 'vubaVuba', 'kayko', 'creditBureau'];
 

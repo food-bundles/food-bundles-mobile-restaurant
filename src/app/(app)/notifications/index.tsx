@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { hit, space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
@@ -41,7 +41,13 @@ export default function NotificationsList() {
   const markRead = useNotificationsStore((state) => state.markRead);
   const markAllRead = useNotificationsStore((state) => state.markAllRead);
   const deleteNotification = useNotificationsStore((state) => state.deleteNotification);
+  const fetchNotifications = useNotificationsStore((state) => state.fetchNotifications);
+  const loaded = useNotificationsStore((state) => state.loaded);
   const [filter, setFilter] = useState<NotificationFilter>('all');
+
+  useEffect(() => {
+    if (!loaded) fetchNotifications();
+  }, [loaded, fetchNotifications]);
 
   const filtered = filter === 'all' ? notifications : notifications.filter((n) => n.channel === filter);
   const groups = groupNotificationsByDay(filtered);

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,20 +7,13 @@ import { ScreenHeader } from '@/components/layout';
 import { MessageBubble, TypingIndicator, ChatComposer, CallScreen, type ComposerAttachment } from '@/components/chat';
 import { PhoneIcon, VideoIcon } from '@/components/icons';
 import { useT } from '@/i18n';
-import { useChatStore } from '@/stores';
-import { affiliators, RESTAURANT_DIRECTORY, SUPPORT_ID, YOU_ID, type CallKind } from '@/mocks';
-import { peerCannedReply, simulateReply } from '@/lib';
+import { useChatStore, useSessionStore } from '@/stores';
+import { useMarketStore } from '@/stores/marketStore';
+import { sendMessageApi } from '@/api/chat.api';
+import type { CallKind } from '@/api/chat.api';
 
 function newMessageId(): string {
   return `msg-${Date.now()}-${Math.round(Math.random() * 1000)}`;
-}
-
-function resolvePeer(participantIds: string[]): { id: string; name: string } {
-  const peerId = participantIds.find((id) => id !== YOU_ID) ?? '';
-  const affiliator = affiliators.find((a) => a.id === peerId);
-  if (affiliator) return { id: peerId, name: affiliator.name };
-  const restaurant = RESTAURANT_DIRECTORY.find((r) => r.id === peerId);
-  return { id: peerId, name: restaurant?.name ?? peerId };
 }
 
 export default function ConversationThread() {
@@ -28,72 +21,72 @@ export default function ConversationThread() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<React.ElementRef<typeof ScrollView>>(null);
+
+  const profile = useSessionStore((state) => state.profile);
+  const myId = profile?.id ?? 'me';
+
   const conversation = useChatStore((state) => state.conversations.find((c) => c.id === id));
   const messages = useChatStore((state) => state.messagesByConversation[id ?? ''] ?? []);
   const typingConversationId = useChatStore((state) => state.typingConversationId);
   const sendMessage = useChatStore((state) => state.sendMessage);
-  const receiveMessage = useChatStore((state) => state.receiveMessage);
-  const setTyping = useChatStore((state) => state.setTyping);
-  const simulateDeliveryThenRead = useChatStore((state) => state.simulateDeliveryThenRead);
+  const fetchMessages = useChatStore((state) => state.fetchMessages);
+  const markRead = useChatStore((state) => state.markRead);
+
+  const directory = useMarketStore((state) => state.directory);
   const [draft, setDraft] = useState('');
   const [activeCall, setActiveCall] = useState<CallKind | null>(null);
 
+  useEffect(() => {
+    if (id) {
+      void fetchMessages(id);
+      markRead(id);
+    }
+  }, [id, fetchMessages, markRead]);
+
   if (!conversation || !id) return null;
 
-  const isSupport = conversation.participantIds.includes(SUPPORT_ID);
-  const peer = isSupport ? { id: SUPPORT_ID, name: t('chat_title') } : resolvePeer(conversation.participantIds);
+  const peerId = conversation.participantIds.find((pid) => pid !== myId) ?? '';
+  const peerName = directory.find((r) => r.id === peerId)?.name ?? peerId;
 
   const scrollToBottom = () => {
     requestAnimationFrame(() => scrollRef.current?.scrollToEnd({ animated: true }));
   };
 
-  const pushUserMessage = (kind: ComposerAttachment['kind'], body: string, attachment?: string, durationMs?: number) => {
-    const messageId = newMessageId();
-    sendMessage(id, {
-      id: messageId,
-      senderId: YOU_ID,
+  const pushAndSend = async (kind: ComposerAttachment['kind'], body: string, attachment?: string, durationMs?: number) => {
+    const tempId = newMessageId();
+    const optimistic = {
+      id: tempId,
+      senderId: myId,
       kind,
       body,
       attachment,
       durationMs,
       sentAt: new Date().toISOString(),
-    });
+    };
+    sendMessage(id, optimistic);
     scrollToBottom();
-    void simulateDeliveryThenRead(id, messageId);
-  };
 
-  const triggerPeerReply = async () => {
-    const replyBody = await simulateReply(peerCannedReply(messages.length), {
-      onTypingStart: () => setTyping(id),
-      onTypingEnd: () => setTyping(null),
-    });
-    receiveMessage(id, {
-      id: newMessageId(),
-      senderId: peer.id,
-      kind: 'text',
-      body: replyBody,
-      sentAt: new Date().toISOString(),
-      deliveredAt: new Date().toISOString(),
-    });
-    scrollToBottom();
+    try {
+      await sendMessageApi(id, { kind, body, attachment, durationMs });
+    } catch {
+      // message already shown optimistically; silent fail
+    }
   };
 
   const sendDraft = () => {
     const trimmed = draft.trim();
     if (!trimmed) return;
-    pushUserMessage('text', trimmed);
+    void pushAndSend('text', trimmed);
     setDraft('');
-    void triggerPeerReply();
   };
 
   const sendAttachment = (attachment: ComposerAttachment) => {
-    pushUserMessage(attachment.kind, '', attachment.uri, attachment.durationMs);
-    void triggerPeerReply();
+    void pushAndSend(attachment.kind, '', attachment.uri, attachment.durationMs);
   };
 
   if (activeCall) {
-    return <CallScreen peerName={peer.name} kind={activeCall} onEnd={() => setActiveCall(null)} />;
+    return <CallScreen peerName={peerName} kind={activeCall} onEnd={() => setActiveCall(null)} />;
   }
 
   return (
@@ -103,7 +96,7 @@ export default function ConversationThread() {
       keyboardVerticalOffset={insets.top}
     >
       <ScreenHeader
-        title={peer.name}
+        title={peerName}
         trailing={
           <View style={styles.callActions}>
             <Pressable
@@ -134,7 +127,7 @@ export default function ConversationThread() {
         onContentSizeChange={scrollToBottom}
       >
         {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} fromMe={message.senderId === YOU_ID} />
+          <MessageBubble key={message.id} message={message} fromMe={message.senderId === myId} />
         ))}
         {typingConversationId === id ? <TypingIndicator /> : null}
       </ScrollView>

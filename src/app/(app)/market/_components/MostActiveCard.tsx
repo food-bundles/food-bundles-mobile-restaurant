@@ -2,8 +2,10 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import Svg, { Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 import { radius, shadow, space, text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
-import { COMMODITIES, PRICE_HISTORY, PRODUCT_IMAGES, momentumChangePct, type CommodityId } from '@/mocks';
+import { PRODUCT_IMAGES } from '@/constants/productImages';
+import { useMarketStore } from '@/stores';
 import { guardSeries } from './chartMath';
+import type { CommodityId } from '@/api/market.api';
 
 export interface MostActiveCardProps {
   commodityId: CommodityId;
@@ -14,7 +16,7 @@ const THUMB_HEIGHT = 56;
 const PHOTO_HEIGHT = 56;
 const GRADIENT_ID = 'mostActiveGradient';
 
-const COMMODITY_IMAGE: Record<CommodityId, (typeof PRODUCT_IMAGES)[keyof typeof PRODUCT_IMAGES]> = {
+const COMMODITY_IMAGE: Record<CommodityId, any> = {
   irishPotatoes: PRODUCT_IMAGES.irishPotatoes,
   tomatoes: PRODUCT_IMAGES.freshTomatoes,
   redOnions: PRODUCT_IMAGES.redOnions,
@@ -38,12 +40,14 @@ function buildAreaPath(values: number[]): string {
 /** One "most active today" commodity: full-bleed photo, gradient area-chart thumbnail, price and change badge. */
 export function MostActiveCard({ commodityId }: MostActiveCardProps) {
   const { colors } = useTheme();
-  const commodity = COMMODITIES.find((c) => c.id === commodityId);
-  if (!commodity) return null;
+  const dashboard = useMarketStore((s) => s.dashboard);
+  const apiCommodity = dashboard?.commodities.find((c) => c.id === commodityId);
 
-  const history = guardSeries(PRICE_HISTORY[commodityId]);
-  const todayPrice = history[history.length - 1];
-  const changePct = momentumChangePct(commodityId);
+  if (!apiCommodity) return null;
+
+  const history = guardSeries(apiCommodity.history.map((h) => h.price));
+  const todayPrice = apiCommodity.latestPrice;
+  const changePct = apiCommodity.changePct;
   const isUp = changePct >= 0;
 
   return (
@@ -51,21 +55,15 @@ export function MostActiveCard({ commodityId }: MostActiveCardProps) {
       <Image
         source={COMMODITY_IMAGE[commodityId]}
         style={styles.photo}
-        accessibilityLabel={commodity.name}
+        accessibilityLabel={apiCommodity.name}
         resizeMode="cover"
       />
       <View style={styles.body}>
         <View style={styles.headerRow}>
-          <Text style={[styles.name, { color: colors.ink }]}>{commodity.name}</Text>
-          <View
-            style={[
-              styles.changeBadge,
-              { backgroundColor: isUp ? colors.ripe : colors.chili },
-            ]}
-          >
+          <Text style={[styles.name, { color: colors.ink }]}>{apiCommodity.name}</Text>
+          <View style={[styles.changeBadge, { backgroundColor: isUp ? colors.ripe : colors.chili }]}>
             <Text style={[styles.changeLabel, { color: colors.paper }]}>
-              {isUp ? '+' : '−'}
-              {Math.abs(changePct).toFixed(1)}%
+              {isUp ? '+' : '−'}{Math.abs(changePct).toFixed(1)}%
             </Text>
           </View>
         </View>

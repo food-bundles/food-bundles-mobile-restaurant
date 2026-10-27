@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { space, text, useTheme } from '@/theme';
 import { MarketComparisonRow } from './MarketComparisonRow';
 import { useT } from '@/i18n';
-import type { CommodityId, MarketComparisonRow as MarketComparisonRowData } from '@/mocks';
+import type { CommodityId, MarketComparisonRow as MarketComparisonRowData } from '@/api/market.api';
 
 export interface MarketComparisonTableProps {
   rows: MarketComparisonRowData[];

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { space, text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
 import { useT } from '@/i18n';
-import type { Order } from '@/mocks/types';
+import type { Order } from '@/types';
 
 const VAT_RATE = 0.18;
 

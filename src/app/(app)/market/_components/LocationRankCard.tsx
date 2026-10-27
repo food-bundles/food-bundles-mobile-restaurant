@@ -2,13 +2,19 @@ import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Rect } from 'react-native-svg';
 import { radius, shadow, space, text, useTheme } from '@/theme';
 import { formatRwf } from '@/lib';
-import { NEARBY_MARKET_PRICES, MARKETS_WITHIN_REACH, TOTAL_MARKETS_TRACKED, YOUR_LOCATION, products } from '@/mocks';
+import { useMarketStore } from '@/stores';
+import type { RankingData } from '@/api/market.api';
 import { useT } from '@/i18n';
 
 /** Static map thumbnail + nearby market price comparison for the restaurant's location. */
 export function LocationRankCard() {
   const t = useT();
   const { colors } = useTheme();
+  const ranking = useMarketStore((s) => s.ranking);
+  const location = ranking?.yourLocation ?? '';
+  const reachable = ranking?.marketsWithinReach ?? 0;
+  const total = ranking?.totalMarketsTracked ?? 0;
+  const nearbyPrices: RankingData['nearbyMarketPrices'] = ranking?.nearbyMarketPrices ?? [];
 
   return (
     <View style={[styles.card, { backgroundColor: colors.paper }]}>
@@ -25,23 +31,19 @@ export function LocationRankCard() {
       </View>
       <Text style={[styles.summary, { color: colors.ink }]}>
         {t('ranking_locationSummary', {
-          location: YOUR_LOCATION,
-          reachable: MARKETS_WITHIN_REACH,
-          total: TOTAL_MARKETS_TRACKED,
+          location,
+          reachable,
+          total,
         })}
       </Text>
-      {NEARBY_MARKET_PRICES.map((entry, index) => {
-        const product = products.find((p) => p.id === entry.productId);
-        if (!product) return null;
-        return (
-          <View key={`${entry.marketName}-${entry.productId}-${index}`} style={styles.priceRow}>
-            <Text style={[styles.priceLabel, { color: colors.secondary }]}>
-              {entry.marketName} · {product.name}
-            </Text>
-            <Text style={[styles.priceValue, { color: colors.ink }]}>{formatRwf(entry.price)}</Text>
-          </View>
-        );
-      })}
+      {nearbyPrices.map((entry, index) => (
+        <View key={`${entry.marketName}-${entry.productId}-${index}`} style={styles.priceRow}>
+          <Text style={[styles.priceLabel, { color: colors.secondary }]}>
+          {entry.marketName} · {entry.name}
+          </Text>
+          <Text style={[styles.priceValue, { color: colors.ink }]}>{formatRwf(entry.price)}</Text>
+        </View>
+      ))}
     </View>
   );
 }

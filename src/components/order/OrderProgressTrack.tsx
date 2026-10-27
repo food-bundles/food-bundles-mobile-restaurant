@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { space, text, useTheme } from '@/theme';
-import { ORDER_STEPS } from '@/mocks/types';
+import { ORDER_STEPS } from '@/types';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
 

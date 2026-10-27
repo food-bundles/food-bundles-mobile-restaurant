@@ -3,7 +3,7 @@ import { hit, space, text, useTheme } from '@/theme';
 import { AvatarFace } from '@/components/navigation';
 import { formatTime } from '@/lib';
 import { useT } from '@/i18n';
-import type { Conversation } from '@/mocks/chat';
+import type { Conversation } from '@/api/chat.api';
 
 export interface ConversationListRowProps {
   conversation: Conversation;

@@ -1,19 +1,39 @@
-import { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { OrderStatusRail, OrderStatusBadge, OrderItemsCard } from '@/components/order';
 import { OrderMetaCard } from './_components/OrderMetaCard';
 import { OrderActionsRow } from './_components/OrderActionsRow';
-import { orders } from '@/mocks';
+import { useOrdersStore } from '@/stores';
 import { useT } from '@/i18n';
 
 export default function OrderDetail() {
   const t = useT();
   const { colors } = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const order = useMemo(() => orders.find((o) => o.id === id), [id]);
+  const orders = useOrdersStore((state) => state.orders);
+  const fetchById = useOrdersStore((state) => state.fetchById);
+  const [loading, setLoading] = useState(false);
+
+  const order = useMemo(() => orders.find((o) => o.id === id), [orders, id]);
+
+  useEffect(() => {
+    if (!order && id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setLoading(true);
+      fetchById(id).finally(() => setLoading(false));
+    }
+  }, [id, order, fetchById]);
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.oat, alignItems: 'center', justifyContent: 'center' }]}>
+        <ActivityIndicator color={colors.leaf} />
+      </View>
+    );
+  }
 
   if (!order) return null;
 

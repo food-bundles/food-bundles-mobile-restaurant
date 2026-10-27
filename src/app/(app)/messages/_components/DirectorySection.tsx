@@ -2,18 +2,19 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { SectionHeader } from '@/components/layout';
 import { useT } from '@/i18n';
-import { affiliators, RESTAURANT_DIRECTORY } from '@/mocks';
+import { useMarketStore } from '@/stores/marketStore';
+import { useAffiliatorsStore } from '@/stores/affiliatorsStore';
+import { useEffect } from 'react';
 
 export interface DirectorySectionProps {
   existingPeerIds: Set<string>;
   onStart: (peerId: string) => void;
 }
 
-function DirectoryRow({ id, name, subtitle, onPress }: { id: string; name: string; subtitle: string; onPress: () => void }) {
+function DirectoryRow({ name, subtitle, onPress }: { id: string; name: string; subtitle: string; onPress: () => void }) {
   const { colors } = useTheme();
   return (
     <Pressable
-      key={id}
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={name}
@@ -23,22 +24,27 @@ function DirectoryRow({ id, name, subtitle, onPress }: { id: string; name: strin
         <Text style={[styles.initials, { color: colors.pine }]}>{name.slice(0, 1).toUpperCase()}</Text>
       </View>
       <View style={styles.textCol}>
-        <Text style={[styles.name, { color: colors.ink }]} numberOfLines={1}>
-          {name}
-        </Text>
-        <Text style={[styles.subtitle, { color: colors.secondary }]} numberOfLines={1}>
-          {subtitle}
-        </Text>
+        <Text style={[styles.name, { color: colors.ink }]} numberOfLines={1}>{name}</Text>
+        <Text style={[styles.subtitle, { color: colors.secondary }]} numberOfLines={1}>{subtitle}</Text>
       </View>
     </Pressable>
   );
 }
 
-/** Lists affiliators and peer restaurants that don't yet have a conversation started. */
 export function DirectorySection({ existingPeerIds, onStart }: DirectorySectionProps) {
   const t = useT();
+  const directory = useMarketStore((s) => s.directory);
+  const fetchDirectory = useMarketStore((s) => s.fetchDirectory);
+  const affiliators = useAffiliatorsStore((s) => s.affiliators);
+  const fetchAffiliators = useAffiliatorsStore((s) => s.fetch);
+
+  useEffect(() => {
+    void fetchDirectory();
+    void fetchAffiliators();
+  }, [fetchDirectory, fetchAffiliators]);
+
   const availableAffiliators = affiliators.filter((a) => !existingPeerIds.has(a.id));
-  const availableRestaurants = RESTAURANT_DIRECTORY.filter((r) => !existingPeerIds.has(r.id));
+  const availableRestaurants = directory.filter((r) => !existingPeerIds.has(r.id));
 
   if (availableAffiliators.length === 0 && availableRestaurants.length === 0) return null;
 

@@ -9,15 +9,16 @@ import { TinInput } from './_components/TinInput';
 import { PurposeChips, type PurposeOption } from './_components/PurposeChips';
 import { FrequencyTiles, type FrequencyOption } from './_components/FrequencyTiles';
 import { FirstTimeToggleRow } from './_components/FirstTimeToggleRow';
+import { useSessionStore } from '@/stores';
 import { useT } from '@/i18n';
-import { account } from '@/mocks';
 
 /** Voucher application form: TIN, purpose, usage frequency and first-time status, then on to data authorization. */
 export default function Underwriting() {
   const t = useT();
   const { colors } = useTheme();
   const { completed } = useLocalSearchParams<{ completed?: string }>();
-  const [tin, setTin] = useState(account.tin);
+  const profile = useSessionStore((s) => s.profile);
+  const [tin, setTin] = useState(profile?.tin ?? '');
   const [purpose, setPurpose] = useState<PurposeOption>('BRIDGE_CASH_FLOW');
   const [otherPurpose, setOtherPurpose] = useState('');
   const [firstTime, setFirstTime] = useState(true);
@@ -51,7 +52,7 @@ export default function Underwriting() {
         <UnderwritingHeader />
         <View style={[styles.formCard, { backgroundColor: colors.paper }]}>
           <View style={styles.fields}>
-            <TinInput value={tin} onChangeText={setTin} prefilled={Boolean(account.tin)} />
+            <TinInput value={tin} onChangeText={setTin} prefilled={Boolean(profile?.tin)} />
             <View>
               <Text style={[styles.label, { color: colors.ink }]}>{t('underwriting_reason')}</Text>
               <PurposeChips

@@ -6,19 +6,12 @@ import { MessageBubble, TypingIndicator, ChatComposer, CallScreen, type Composer
 import { ChatHeader } from './_components/ChatHeader';
 import { SuggestionChips, type Suggestion } from './_components/SuggestionChips';
 import { useT } from '@/i18n';
-import type { TranslationKey } from '@/i18n';
 import { useChatStore } from '@/stores';
-import { SUPPORT_ID, YOU_ID } from '@/mocks';
-import { simulateReply } from '@/lib';
-import type { CallKind } from '@/mocks';
+import { aiSupportStream, type AiChatMessage } from '@/api/ai.api';
+import type { CallKind } from '@/api/chat.api';
 
+const SUPPORT_ID = 'support-bot';
 const CONVERSATION_ID = 'conv-support';
-
-const ANSWER_KEY: Record<string, TranslationKey> = {
-  orderStatus: 'chat_answerOrderStatus',
-  vouchers: 'chat_answerVouchers',
-  topUp: 'chat_answerTopUp',
-};
 
 function newMessageId(): string {
   return `msg-${Date.now()}-${Math.round(Math.random() * 1000)}`;
@@ -28,13 +21,13 @@ export default function Chat() {
   const t = useT();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<React.ElementRef<typeof ScrollView>>(null);
+  const myId = useChatStore((state) => state.myId) ?? 'me';
   const messages = useChatStore((state) => state.messagesByConversation[CONVERSATION_ID] ?? []);
   const typingConversationId = useChatStore((state) => state.typingConversationId);
   const sendMessage = useChatStore((state) => state.sendMessage);
   const receiveMessage = useChatStore((state) => state.receiveMessage);
   const setTyping = useChatStore((state) => state.setTyping);
-  const simulateDeliveryThenRead = useChatStore((state) => state.simulateDeliveryThenRead);
   const [draft, setDraft] = useState('');
   const [activeCall, setActiveCall] = useState<CallKind | null>(null);
 
@@ -48,32 +41,78 @@ export default function Chat() {
     requestAnimationFrame(() => scrollRef.current?.scrollToEnd({ animated: true }));
   };
 
-  const respondWithAnswer = async (answerBody: string) => {
-    const replyBody = await simulateReply(answerBody, {
-      onTypingStart: () => setTyping(CONVERSATION_ID),
-      onTypingEnd: () => setTyping(null),
-    });
+  const buildHistory = (): AiChatMessage[] =>
+    messages.map((m) => ({
+      role: m.senderId === myId ? 'user' : 'assistant',
+      content: m.body,
+    }));
+
+  const respondWithAi = async (question: string) => {
+    setTyping(CONVERSATION_ID);
+    const history = buildHistory();
+    const botMsgId = newMessageId();
+    let accumulated = '';
+
+    // Optimistically add empty bot message that fills in via streaming tokens
     receiveMessage(CONVERSATION_ID, {
-      id: newMessageId(),
+      id: botMsgId,
       senderId: SUPPORT_ID,
       kind: 'text',
-      body: replyBody,
+      body: '',
       sentAt: new Date().toISOString(),
-      deliveredAt: new Date().toISOString(),
     });
+
+    const stop = aiSupportStream(
+      question,
+      history,
+      (token) => {
+        accumulated += token;
+        // Update the message body in-place via receiveMessage replacement
+        useChatStore.setState((state) => ({
+          messagesByConversation: {
+            ...state.messagesByConversation,
+            [CONVERSATION_ID]: (state.messagesByConversation[CONVERSATION_ID] ?? []).map((m) =>
+              m.id === botMsgId ? { ...m, body: accumulated } : m,
+            ),
+          },
+        }));
+      },
+      () => {
+        setTyping(null);
+        scrollToBottom();
+        if (!accumulated) {
+          useChatStore.setState((state) => ({
+            messagesByConversation: {
+              ...state.messagesByConversation,
+              [CONVERSATION_ID]: (state.messagesByConversation[CONVERSATION_ID] ?? []).map((m) =>
+                m.id === botMsgId ? { ...m, body: t('chat_fallbackAnswer') } : m,
+              ),
+            },
+          }));
+        }
+      },
+      () => {
+        setTyping(null);
+        useChatStore.setState((state) => ({
+          messagesByConversation: {
+            ...state.messagesByConversation,
+            [CONVERSATION_ID]: (state.messagesByConversation[CONVERSATION_ID] ?? []).map((m) =>
+              m.id === botMsgId ? { ...m, body: t('chat_fallbackAnswer') } : m,
+            ),
+          },
+        }));
+      },
+    );
+
     scrollToBottom();
+    return stop;
   };
 
-  const pushUserMessage = (
-    kind: ComposerAttachment['kind'],
-    body: string,
-    attachment?: string,
-    durationMs?: number,
-  ) => {
+  const pushUserMessage = (kind: ComposerAttachment['kind'], body: string, attachment?: string, durationMs?: number) => {
     const id = newMessageId();
     sendMessage(CONVERSATION_ID, {
       id,
-      senderId: YOU_ID,
+      senderId: myId,
       kind,
       body,
       attachment,
@@ -81,14 +120,12 @@ export default function Chat() {
       sentAt: new Date().toISOString(),
     });
     scrollToBottom();
-    void simulateDeliveryThenRead(CONVERSATION_ID, id);
     return id;
   };
 
   const askSuggestion = (suggestion: Suggestion) => {
     pushUserMessage('text', suggestion.label);
-    const answerKey = ANSWER_KEY[suggestion.key];
-    void respondWithAnswer(answerKey ? t(answerKey) : t('chat_fallbackAnswer'));
+    void respondWithAi(suggestion.label);
   };
 
   const sendDraft = () => {
@@ -96,12 +133,12 @@ export default function Chat() {
     if (!trimmed) return;
     pushUserMessage('text', trimmed);
     setDraft('');
-    void respondWithAnswer(t('chat_fallbackAnswer'));
+    void respondWithAi(trimmed);
   };
 
   const sendAttachment = (attachment: ComposerAttachment) => {
     pushUserMessage(attachment.kind, '', attachment.uri, attachment.durationMs);
-    void respondWithAnswer(t('chat_fallbackAnswer'));
+    void respondWithAi('I sent an attachment.');
   };
 
   if (activeCall) {
@@ -124,7 +161,7 @@ export default function Chat() {
         onContentSizeChange={scrollToBottom}
       >
         {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} fromMe={message.senderId === YOU_ID} />
+          <MessageBubble key={message.id} message={message} fromMe={message.senderId === myId} />
         ))}
         {typingConversationId === CONVERSATION_ID ? <TypingIndicator /> : null}
       </ScrollView>

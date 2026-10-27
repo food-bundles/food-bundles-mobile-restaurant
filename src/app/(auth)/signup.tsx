@@ -7,19 +7,18 @@ import { Input } from '@/components/primitives';
 import { ChevronLeftIcon } from '@/components/icons';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useT } from '@/i18n';
-import { account } from '@/mocks';
 import { formatTin, isValidTin } from '@/lib';
-import type { Role } from '@/mocks/types';
+import type { Role } from '@/types';
 
 export default function Signup() {
   const t = useT();
   const { colors } = useTheme();
   const login = useSessionStore((s) => s.login);
   const setRole = useSessionStore((s) => s.setRole);
-  const [businessName, setBusinessName] = useState(account.businessName);
+  const [businessName, setBusinessName] = useState('');
   const [businessType, setBusinessType] = useState<Extract<Role, 'RESTAURANT' | 'HOTEL'>>('RESTAURANT');
-  const [phone, setPhone] = useState(account.phone);
-  const [tin, setTin] = useState(formatTin(account.tin));
+  const [phone, setPhone] = useState('');
+  const [tin, setTin] = useState('');
   const [tinTouched, setTinTouched] = useState(false);
 
   const tinInvalid = tinTouched && !isValidTin(tin);

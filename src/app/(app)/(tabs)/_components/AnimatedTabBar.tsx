@@ -3,19 +3,14 @@ import { BottomTabBar, type BottomTabBarProps } from '@react-navigation/bottom-t
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { tabBarTranslateY } from '@/stores/tabBarVisibilityStore';
 
-/**
- * Wraps the default bottom tab bar in an `Animated.View` driven by the shared
- * `tabBarTranslateY` value, so scroll-tracked screens can slide it away on scroll-down
- * and back in on scroll-up without Expo Router's `Tabs` needing a first-class API for it.
- */
-export function AnimatedTabBar(props: BottomTabBarProps) {
+export function AnimatedTabBar(props: React.ComponentProps<typeof BottomTabBar>) {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: tabBarTranslateY.value }],
   }));
 
   return (
     <Animated.View style={[styles.wrap, animatedStyle]}>
-      <BottomTabBar {...props} />
+      <BottomTabBar {...props as BottomTabBarProps} />
     </Animated.View>
   );
 }

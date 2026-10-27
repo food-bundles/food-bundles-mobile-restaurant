@@ -1,7 +1,7 @@
 import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { type AnimatedScrollViewProps } from 'react-native-reanimated';
 import { router } from 'expo-router';
-import type { Product } from '@/mocks/types';
+import type { Product } from '@/types';
 import { ProductCard } from '@/components/product';
 import { useCartStore } from '@/stores';
 import { space } from '@/theme';

@@ -2,7 +2,6 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
-import { account } from '@/mocks';
 import { useCartStore, useNotificationsStore, useSessionStore } from '@/stores';
 import { BellIcon, BasketIcon } from '@/components/icons';
 
@@ -22,6 +21,8 @@ export function ShopHomeHeader() {
   const itemCount = useCartStore((state) => state.itemCount());
   const unreadCount = useNotificationsStore((state) => state.unreadCount());
   const restaurantImageUri = useSessionStore((state) => state.restaurantImageUri);
+  const profile = useSessionStore((state) => state.profile);
+  const businessName = profile?.name ?? 'FoodBundles';
 
   return (
     <View style={styles.row}>
@@ -34,12 +35,12 @@ export function ShopHomeHeader() {
           />
         ) : (
           <View style={[styles.venueLogo, { backgroundColor: colors.tintLeaf }]}>
-            <Text style={[styles.venueInitials, { color: colors.leaf }]}>{initialsOf(account.businessName)}</Text>
+            <Text style={[styles.venueInitials, { color: colors.leaf }]}>{initialsOf(businessName)}</Text>
           </View>
         )}
         <View>
           <Text style={[styles.orderingFor, { color: colors.secondary }]}>{t('shop_orderingFor')}</Text>
-          <Text style={[styles.venueName, { color: colors.ink }]}>{account.businessName}</Text>
+          <Text style={[styles.venueName, { color: colors.ink }]}>{businessName}</Text>
         </View>
       </View>
       <View style={styles.actions}>

@@ -9,7 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { radius, shadow, signatureDuration, space, text, useTheme } from '@/theme';
 import { renderChannelIcon } from './channelIcon';
 import { useNotificationsStore } from '@/stores';
-import type { AppNotification } from '@/mocks/types';
+import type { AppNotification } from '@/types';
 
 const MAX_STACKED = 2;
 const RECENT_WINDOW_MS = 3000;

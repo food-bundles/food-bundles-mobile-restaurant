@@ -3,7 +3,7 @@ import { useWindowDimensions, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import Svg, { G, Line, Rect } from 'react-native-svg';
 import { signatureDuration, space, useTheme } from '@/theme';
-import type { OhlcDay } from '@/mocks';
+import type { OhlcDay } from '@/api/market.api';
 
 const CHART_HEIGHT = 160;
 const PADDING = 16;

@@ -6,7 +6,7 @@ import { PriceText } from '@/components/product';
 import { formatDate } from '@/lib';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
-import type { Order } from '@/mocks/types';
+import type { Order } from '@/types';
 
 const STATUS_KEY: Record<string, TranslationKey> = {
   PENDING: 'st_pending',

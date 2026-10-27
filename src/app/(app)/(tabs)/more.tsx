@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
@@ -5,21 +6,32 @@ import { ScreenScroll } from '@/components/layout';
 import { MoreMenuRow } from './_components/MoreMenuRow';
 import { PersonIcon, HelpIcon, WalletIcon, BellIcon, TrendingUpIcon, SendIcon } from '@/components/icons';
 import { useT } from '@/i18n';
-import { useNotificationsStore, useSessionStore, useChatStore } from '@/stores';
-import { account, plans } from '@/mocks';
+import { useNotificationsStore, useSessionStore, useChatStore, useSubscriptionsStore } from '@/stores';
 
 export default function More() {
   const t = useT();
   const { colors } = useTheme();
   const tier = useSessionStore((state) => state.tier);
   const restaurantImageUri = useSessionStore((state) => state.restaurantImageUri);
+  const profile = useSessionStore((state) => state.profile);
   const unreadCount = useNotificationsStore((state) => state.unreadCount());
   const unreadMessages = useChatStore((state) =>
     state.conversations.reduce((total, conversation) => total + conversation.unreadCount, 0),
   );
+  const plans = useSubscriptionsStore((s) => s.plans);
+  const fetchPlans = useSubscriptionsStore((s) => s.fetchPlans);
+  const plansStatus = useSubscriptionsStore((s) => s.status);
+  const affiliatorsCount = 0; // loaded per-screen in affiliators/index
+
+  useEffect(() => {
+    if (plansStatus === 'idle') fetchPlans();
+  }, [plansStatus, fetchPlans]);
+
+  const managerName = profile?.name ?? '';
+  const businessName = profile?.name ?? '';
   const planLabel = plans.find((p) => p.id === tier)?.name ?? t('sub_noPlan');
 
-  const initials = account.managerName
+  const initials = managerName
     .split(' ')
     .map((part) => part[0])
     .join('');
@@ -36,9 +48,9 @@ export default function More() {
           </View>
         )}
         <View style={styles.profileText}>
-          <Text style={[styles.name, { color: colors.ink }]}>{account.managerName}</Text>
+          <Text style={[styles.name, { color: colors.ink }]}>{managerName}</Text>
           <Text style={[styles.role, { color: colors.secondary }]}>
-            {t('more_managerLabel', { business: account.businessName })}
+            {t('more_managerLabel', { business: businessName })}
           </Text>
         </View>
       </View>
@@ -52,7 +64,7 @@ export default function More() {
         <MoreMenuRow
           icon={<PersonIcon size={18} color={colors.leaf} />}
           label={t('more_affiliators')}
-          trailing={<Text style={[styles.trailing, { color: colors.secondary }]}>3</Text>}
+          trailing={<Text style={[styles.trailing, { color: colors.secondary }]}>{affiliatorsCount}</Text>}
           onPress={() => router.push('/(app)/affiliators')}
         />
         <MoreMenuRow

@@ -6,7 +6,7 @@ import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { SearchField } from './_components/SearchField';
 import { ProductGrid } from './_components/ProductGrid';
-import { products } from '@/mocks';
+import { useProductsStore } from '@/stores';
 import { useT } from '@/i18n';
 
 const RECENT_SEARCHES = ['Onions', 'Eggs', 'Cabbage'];
@@ -16,17 +16,24 @@ export default function Search() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
+  const products = useProductsStore((state) => state.products);
+  const fetchProducts = useProductsStore((state) => state.fetch);
 
   const results = useMemo(() => {
     if (!query.trim()) return [];
     const lower = query.toLowerCase();
     return products.filter((product) => product.name.toLowerCase().includes(lower));
-  }, [query]);
+  }, [query, products]);
+
+  const onSearch = (text: string) => {
+    setQuery(text);
+    if (text.trim().length > 2) fetchProducts({ search: text.trim() });
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
       <View style={[styles.header, { paddingTop: insets.top + space.sm, borderBottomColor: colors.hairline }]}>
-        <SearchField value={query} onChangeText={setQuery} placeholder={t('shop_searchProduce')} />
+        <SearchField value={query} onChangeText={onSearch} placeholder={t('shop_searchProduce')} />
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"

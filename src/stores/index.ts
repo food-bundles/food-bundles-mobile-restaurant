@@ -1,12 +1,18 @@
 export { useSessionStore, canRequestVouchers } from './sessionStore';
 export { useCartStore } from './cartStore';
+export type { CartLine } from './cartStore';
 export { useCheckoutStore } from './checkoutStore';
 export { useGuestCartStore, MINIMUM_ORDER, SMALL_ORDER_FEE } from './guestCartStore';
 export { useOrdersStore } from './ordersStore';
 export { useWalletStore, MAX_TOP_UP } from './walletStore';
 export { useVouchersStore, isVouchersUnlocked } from './vouchersStore';
 export { useNotificationsStore } from './notificationsStore';
+export { useProductsStore } from './productsStore';
 export { useChatStore } from './chatStore';
 export { useUiStore, useLanguage, hydrateLanguage } from './uiStore';
+export { useSubscriptionsStore } from './subscriptionsStore';
+export { useAddressesStore } from './addressesStore';
+export { useAffiliatorsStore } from './affiliatorsStore';
+export { useMarketStore } from './marketStore';
 export type { AsyncStatus } from './ordersStore';
 export type { OrdersDemoState, Language } from './uiStore';

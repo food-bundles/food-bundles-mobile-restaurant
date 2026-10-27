@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { hit, space, text, useTheme } from '@/theme';
 import { LogoMark } from '@/components/icons';
 import { useT } from '@/i18n';
-import { account } from '@/mocks';
+import { useSessionStore } from '@/stores';
 
 export interface OrderingAsBannerProps {
   onExit: () => void;
@@ -12,10 +12,12 @@ export function OrderingAsBanner({ onExit }: OrderingAsBannerProps) {
   const t = useT();
   const { colors } = useTheme();
 
+  const businessName = useSessionStore((s) => s.profile?.name ?? '');
+
   return (
     <View style={[styles.banner, { backgroundColor: colors.pine }]}>
       <LogoMark size={22} />
-      <Text style={[styles.label, { color: colors.paper }]}>{t('aff_orderingAs', { business: account.businessName })}</Text>
+      <Text style={[styles.label, { color: colors.paper }]}>{t('aff_orderingAs', { business: businessName })}</Text>
       <Pressable
         onPress={onExit}
         accessibilityRole="button"

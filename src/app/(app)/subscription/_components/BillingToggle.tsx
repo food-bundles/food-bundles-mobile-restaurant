@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { hit, radius, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
-import type { BillingCycle } from '@/mocks/types';
+import type { BillingCycle } from '@/types';
 
 export interface BillingToggleProps {
   selected: BillingCycle;

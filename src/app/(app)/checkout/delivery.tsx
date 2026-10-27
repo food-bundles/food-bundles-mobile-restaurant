@@ -1,15 +1,17 @@
-import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
-import { hit, radius, space, text, useTheme } from '@/theme';
-import { ScreenScroll, StickyFooter } from '@/components/layout';
-import { PlusIcon } from '@/components/icons';
-import { Input } from '@/components/primitives';
-import { DeliveryMap } from './_components/DeliveryMap';
-import { CheckoutStepHeader, DeliveryWindowPicker } from '@/components/checkout';
-import { useCheckoutStore } from '@/stores';
-import { useT } from '@/i18n';
-import { account } from '@/mocks';
+import { useEffect, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
+import { hit, radius, space, text, useTheme } from "@/theme";
+import { ScreenScroll, StickyFooter } from "@/components/layout";
+import { PlusIcon } from "@/components/icons";
+import { Input } from "@/components/primitives";
+import { DeliveryMap } from "./_components/DeliveryMap";
+import {
+  CheckoutStepHeader,
+  DeliveryWindowPicker,
+} from "@/components/checkout";
+import { useCheckoutStore, useSessionStore, useCartStore, useAddressesStore } from "@/stores";
+import { useT } from "@/i18n";
 
 export default function CheckoutDelivery() {
   const t = useT();
@@ -17,55 +19,111 @@ export default function CheckoutDelivery() {
   const address = useCheckoutStore((state) => state.address);
   const windowIndex = useCheckoutStore((state) => state.windowIndex);
   const setWindowIndex = useCheckoutStore((state) => state.setWindowIndex);
+  const setAddress = useCheckoutStore((state) => state.setAddress);
+  const setCartId = useCheckoutStore((state) => state.setCartId);
+  const profile = useSessionStore((state) => state.profile);
+  const serverCart = useCartStore((state) => state.serverCart);
+  const addresses = useAddressesStore((s) => s.addresses);
+  const fetchAddresses = useAddressesStore((s) => s.fetch);
+  const addressStatus = useAddressesStore((s) => s.status);
   const [manual, setManual] = useState(false);
-  const [street, setStreet] = useState('');
-  const [landmark, setLandmark] = useState('');
+  const [street, setStreet] = useState("");
+  const [landmark, setLandmark] = useState("");
+
+  const businessName = profile?.name ?? "My Restaurant";
+
+  useEffect(() => {
+    if (addressStatus === 'idle') fetchAddresses();
+  }, [addressStatus, fetchAddresses]);
+
+  const defaultAddress = addresses.find((a) => a.isDefault) ?? addresses[0];
+
+  const onContinue = () => {
+    // Persist cart ID into checkout store so payment step can use it
+    if (serverCart?.id) setCartId(serverCart.id);
+    if (manual && street.trim())
+      setAddress(`${street.trim()}${landmark ? ", " + landmark : ""}`);
+    else if (defaultAddress && !address)
+      setAddress(`${defaultAddress.street}${defaultAddress.landmark ? ', ' + defaultAddress.landmark : ''}`);
+    router.push("/(app)/checkout/payment");
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
-      <CheckoutStepHeader title={t('checkout_deliveryDetails')} step={1} />
+      <CheckoutStepHeader title={t("checkout_deliveryDetails")} step={1} />
       <ScreenScroll contentInsetBottom={80} applyTopInset={false}>
         <View style={styles.mapBleed}>
           <DeliveryMap />
         </View>
-        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('checkout_deliverTo')}</Text>
-        <View style={[styles.addressCard, { backgroundColor: colors.paper, borderColor: colors.leaf }]}>
-          <Text style={[styles.addressTitle, { color: colors.ink }]}>{account.businessName}</Text>
-          <Text style={[styles.addressLine, { color: colors.secondary }]}>{address}</Text>
+        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>
+          {t("checkout_deliverTo")}
+        </Text>
+        <View
+          style={[
+            styles.addressCard,
+            { backgroundColor: colors.paper, borderColor: colors.leaf },
+          ]}
+        >
+          <Text style={[styles.addressTitle, { color: colors.ink }]}>
+            {businessName}
+          </Text>
+          <Text style={[styles.addressLine, { color: colors.secondary }]}>
+            {address || t("checkout_addAddress")}
+          </Text>
         </View>
         <Pressable
+          onPress={() => router.push('/(app)/settings/addresses')}
           accessibilityRole="button"
-          accessibilityLabel={t('checkout_addAddress')}
+          accessibilityLabel={t("checkout_addAddress")}
           style={styles.linkRow}
         >
           <PlusIcon size={18} color={colors.leaf} />
-          <Text style={[styles.linkLabel, { color: colors.leaf }]}>{t('checkout_addAddress')}</Text>
+          <Text style={[styles.linkLabel, { color: colors.leaf }]}>
+            {t("checkout_addAddress")}
+          </Text>
         </Pressable>
         <Pressable
           onPress={() => setManual((prev) => !prev)}
           accessibilityRole="button"
-          accessibilityLabel={t('checkout_enterManually')}
+          accessibilityLabel={t("checkout_enterManually")}
           style={styles.linkRow}
         >
-          <Text style={[styles.linkLabelMuted, { color: colors.secondary }]}>{t('checkout_enterManually')}</Text>
+          <Text style={[styles.linkLabelMuted, { color: colors.secondary }]}>
+            {t("checkout_enterManually")}
+          </Text>
         </Pressable>
         {manual ? (
           <View style={styles.manualFields}>
-            <Input label={t('checkout_street')} value={street} onChangeText={setStreet} />
-            <Input label={t('checkout_landmarkOptional')} value={landmark} onChangeText={setLandmark} />
+            <Input
+              label={t("checkout_street")}
+              value={street}
+              onChangeText={setStreet}
+            />
+            <Input
+              label={t("checkout_landmarkOptional")}
+              value={landmark}
+              onChangeText={setLandmark}
+            />
           </View>
         ) : null}
-        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('checkout_deliveryWindow')}</Text>
-        <DeliveryWindowPicker selected={windowIndex} onSelect={setWindowIndex} />
+        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>
+          {t("checkout_deliveryWindow")}
+        </Text>
+        <DeliveryWindowPicker
+          selected={windowIndex}
+          onSelect={setWindowIndex}
+        />
       </ScreenScroll>
       <StickyFooter>
         <Pressable
-          onPress={() => router.push('/(app)/checkout/payment')}
+          onPress={onContinue}
           accessibilityRole="button"
-          accessibilityLabel={t('checkout_continuePayment')}
+          accessibilityLabel={t("checkout_continuePayment")}
           style={[styles.button, { backgroundColor: colors.leaf }]}
         >
-          <Text style={[styles.buttonLabel, { color: colors.paper }]}>{t('checkout_continuePayment')}</Text>
+          <Text style={[styles.buttonLabel, { color: colors.paper }]}>
+            {t("checkout_continuePayment")}
+          </Text>
         </Pressable>
       </StickyFooter>
     </View>
@@ -75,17 +133,17 @@ export default function CheckoutDelivery() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   mapBleed: { marginTop: space.md, marginHorizontal: -space.lg },
-  sectionLabel: { ...text.overline, marginTop: space.md, marginBottom: space.sm },
-  addressCard: {
-    borderWidth: 1.5,
-    borderRadius: radius.lg,
-    padding: space.md,
+  sectionLabel: {
+    ...text.overline,
+    marginTop: space.md,
+    marginBottom: space.sm,
   },
+  addressCard: { borderWidth: 1.5, borderRadius: radius.lg, padding: space.md },
   addressTitle: { ...text.bodySemi },
   addressLine: { ...text.caption, marginTop: 2 },
   linkRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: space.sm,
     minHeight: hit.min,
     paddingVertical: space.xs,
@@ -96,8 +154,8 @@ const styles = StyleSheet.create({
   button: {
     minHeight: 48,
     borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonLabel: { ...text.bodySemi },
 });

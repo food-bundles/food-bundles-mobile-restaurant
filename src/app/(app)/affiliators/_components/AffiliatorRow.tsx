@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
-import type { Affiliator } from '@/mocks/types';
+import type { Affiliator } from '@/types';
 
 export interface AffiliatorRowProps {
   affiliator: Affiliator;

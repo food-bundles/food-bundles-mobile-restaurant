@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
@@ -12,7 +12,7 @@ import {
   filterOrdersByRange,
   type PriceHistoryRange,
 } from '@/lib';
-import { orders } from '@/mocks';
+import { useOrdersStore, useMarketStore } from '@/stores';
 import { useT } from '@/i18n';
 
 /** "Did I pay a good price?" screen: order prices vs. FoodBundles/Kimironko/Nyabugogo, per item. */
@@ -20,8 +20,20 @@ export default function PriceComparison() {
   const t = useT();
   const { colors } = useTheme();
   const [range, setRange] = useState<PriceHistoryRange>('MONTH');
+  const orders = useOrdersStore((s) => s.orders);
+  const fetch = useOrdersStore((s) => s.fetch);
+  const status = useOrdersStore((s) => s.status);
+  const seriesCache = useMarketStore((s) => s.seriesCache);
+  const fetchSeries = useMarketStore((s) => s.fetchSeries);
 
-  const items = computeItemComparisons(filterOrdersByRange(orders, range));
+  useEffect(() => {
+    if (status === 'idle') fetch();
+    // Fetch comparison for the most common commodity (irishPotatoes as proxy)
+    void fetchSeries('irishPotatoes', '7D');
+  }, [status, fetch, fetchSeries]);
+
+  const comparison = seriesCache['irishPotatoes-7D']?.comparison ?? [];
+  const items = computeItemComparisons(filterOrdersByRange(orders, range), comparison);
   const summary = computeComparisonSummary(items);
 
   const onDownloadCsv = () => {

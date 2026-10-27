@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
@@ -6,18 +7,25 @@ import { BasketIcon } from '@/components/icons';
 import { EmptyState } from '@/components/primitives';
 import { CartList } from './_components/CartList';
 import { CartTotalsCard } from './_components/CartTotalsCard';
-import { useCartStore } from '@/stores';
-import { account } from '@/mocks';
+import { useCartStore, useSessionStore } from '@/stores';
 import { useT } from '@/i18n';
 
 export default function Cart() {
   const t = useT();
   const { colors } = useTheme();
   const itemCount = useCartStore((state) => state.itemCount());
+  const fetchCart = useCartStore((state) => state.fetchCart);
+  const synced = useCartStore((state) => state.synced);
+  const profile = useSessionStore((state) => state.profile);
+  const businessName = profile?.name ?? 'My Cart';
+
+  useEffect(() => {
+    if (!synced) fetchCart();
+  }, [synced, fetchCart]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
-      <ScreenHeader title={t('shop_cart')} subtitle={`${account.businessName} · ${t('shop_tapToEdit')}`} />
+      <ScreenHeader title={t('shop_cart')} subtitle={`${businessName} · ${t('shop_tapToEdit')}`} />
       <ScreenScroll contentInsetBottom={80}>
         {itemCount === 0 ? (
           <EmptyState

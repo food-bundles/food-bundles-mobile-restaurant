@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { space, text, useTheme } from '@/theme';
-import type { MomentumReading } from '@/mocks';
+import type { MomentumReading } from '@/api/market.api';
 import { useT } from '@/i18n';
 
 export interface MomentumIndicatorProps {

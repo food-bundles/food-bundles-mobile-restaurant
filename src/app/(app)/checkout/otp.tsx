@@ -1,20 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { ChevronLeftIcon, VoucherIcon } from '@/components/icons';
 import { OtpBoxes } from '@/components/checkout';
-import { sleep } from '@/lib';
 import { useT, translate } from '@/i18n';
-import { useCheckoutStore, useVouchersStore } from '@/stores';
+import { useCheckoutStore } from '@/stores';
 import { scheduleLocalNotification } from '@/services/notificationService';
-import { orders } from '@/mocks';
 import type { Href } from 'expo-router';
 
 const CODE_LENGTH = 6;
-const RESEND_SECONDS = 24;
-const MOCK_PREFILL = '418';
+const RESEND_SECONDS = 60;
 
 function formatCountdown(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);
@@ -34,13 +31,12 @@ export default function Otp() {
   const t = useT();
   const { colors } = useTheme();
   const { purpose } = useLocalSearchParams<{ purpose?: Purpose }>();
-  const redeemVoucher = useVouchersStore((state) => state.redeemVoucher);
-  const vouchers = useVouchersStore((state) => state.vouchers);
-  const selectedVoucherId = useCheckoutStore((state) => state.selectedVoucherId);
-  const activeOrder = orders.find((order) => order.id === 'FB-24815') ?? orders[0];
-  const [code, setCode] = useState(MOCK_PREFILL);
+  const verifyOtp = useCheckoutStore((state) => state.verifyOtp);
+  const checkoutError = useCheckoutStore((state) => state.error);
+  const [code, setCode] = useState('');
   const [seconds, setSeconds] = useState(RESEND_SECONDS);
   const [verifying, setVerifying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (seconds === 0) return;
@@ -49,22 +45,25 @@ export default function Otp() {
   }, [seconds]);
 
   const onVerify = async () => {
+    if (code.length < CODE_LENGTH) return;
     setVerifying(true);
-    await sleep(1300);
-    if ((purpose === undefined || purpose === 'payment') && selectedVoucherId) {
-      redeemVoucher(selectedVoucherId, activeOrder.id);
-      const voucher = vouchers.find((v) => v.id === selectedVoucherId);
-      if (voucher) {
+    setError(null);
+    try {
+      if (purpose === undefined || purpose === 'payment') {
+        const order = await verifyOtp(code);
         await scheduleLocalNotification({
-          channel: 'voucher',
-          title: translate('notif_voucherApplied', { code: voucher.code, orderId: activeOrder.id }),
-          body: translate('notif_voucherAppliedBody'),
-          deepLink: '/(app)/(tabs)/wallet?tab=vouchers',
+          channel: 'order',
+          title: translate('notif_orderPlaced', { orderId: order.orderNumber }),
+          body: translate('notif_orderPlacedBody'),
+          deepLink: `/(app)/orders/${order.orderNumber}`,
         });
       }
+      router.replace(DESTINATIONS[purpose ?? 'payment']);
+    } catch (err: any) {
+      setError(err.message ?? 'Verification failed. Please try again.');
+    } finally {
+      setVerifying(false);
     }
-    setVerifying(false);
-    router.replace(DESTINATIONS[purpose ?? 'payment']);
   };
 
   return (
@@ -97,6 +96,9 @@ export default function Otp() {
           <OtpBoxes value={code} length={CODE_LENGTH} />
         </View>
       </View>
+      {error || checkoutError ? (
+        <Text style={[styles.errorText, { color: colors.chili }]}>{error ?? checkoutError}</Text>
+      ) : null}
       {seconds > 0 ? (
         <Text style={[styles.resendText, { color: colors.secondary }]}>
           {t('checkout_resendIn', { time: formatCountdown(seconds) })}
@@ -113,12 +115,16 @@ export default function Otp() {
       )}
       <Pressable
         onPress={onVerify}
-        disabled={verifying}
+        disabled={verifying || code.length < CODE_LENGTH}
         accessibilityRole="button"
         accessibilityLabel={t('checkout_verifyPay')}
-        style={[styles.verifyButton, { backgroundColor: colors.leaf }]}
+        style={[styles.verifyButton, { backgroundColor: colors.leaf }, (verifying || code.length < CODE_LENGTH) && styles.verifyDisabled]}
       >
-        <Text style={[styles.verifyLabel, { color: colors.paper }]}>{t('checkout_verifyPay')}</Text>
+        {verifying ? (
+          <ActivityIndicator color={colors.paper} />
+        ) : (
+          <Text style={[styles.verifyLabel, { color: colors.paper }]}>{t('checkout_verifyPay')}</Text>
+        )}
       </Pressable>
     </ScreenScroll>
   );
@@ -139,6 +145,7 @@ const styles = StyleSheet.create({
   boxesWrap: { position: 'relative', height: 56 },
   boxesVisual: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   hiddenInput: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: 0 },
+  errorText: { ...text.caption, textAlign: 'center', marginTop: space.md },
   resendText: { ...text.caption, textAlign: 'center', marginTop: space.md },
   resendButton: { minHeight: hit.min, alignItems: 'center', justifyContent: 'center', marginTop: space.md },
   resendLabel: { ...text.label },
@@ -147,6 +154,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: space.md,
   },
+  verifyDisabled: { opacity: 0.5 },
   verifyLabel: { ...text.bodySemi },
 });

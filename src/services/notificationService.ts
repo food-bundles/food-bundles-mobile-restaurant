@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { useNotificationsStore } from '@/stores';
-import type { AppNotification, NotificationChannel } from '@/mocks/types';
+import type { AppNotification, NotificationChannel } from '@/types';
 
 type NotificationDraft = Omit<AppNotification, 'id' | 'read' | 'timestamp'>;
 

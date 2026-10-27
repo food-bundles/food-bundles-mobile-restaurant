@@ -1,8 +1,11 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { hit, radius, space, text, useTheme } from '@/theme';
-import { COMPARISON_PRESETS, type ComparisonPreset } from '@/mocks';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
+
+export type ComparisonPreset = 'WEEK' | 'MONTH' | 'QUARTER';
+
+const COMPARISON_PRESETS: ComparisonPreset[] = ['WEEK', 'MONTH', 'QUARTER'];
 
 export interface ComparePeriodsSheetProps {
   visible: boolean;
@@ -17,7 +20,6 @@ const PRESET_LABEL: Record<ComparisonPreset, TranslationKey> = {
   QUARTER: 'compare_quarter',
 };
 
-/** Bottom sheet for picking a Week/Month/Quarter comparison period. */
 export function ComparePeriodsSheet({ visible, selected, onSelect, onClose }: ComparePeriodsSheetProps) {
   const t = useT();
   const { colors } = useTheme();
@@ -25,12 +27,7 @@ export function ComparePeriodsSheet({ visible, selected, onSelect, onClose }: Co
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.container}>
-        <Pressable
-          onPress={onClose}
-          accessibilityRole="button"
-          accessibilityLabel={t('action_close')}
-          style={styles.scrimTouchable}
-        >
+        <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel={t('action_close')} style={styles.scrimTouchable}>
           <View style={[styles.scrim, { backgroundColor: colors.ink }]} />
         </Pressable>
         <View style={[styles.sheet, { backgroundColor: colors.paper }]}>
@@ -63,20 +60,9 @@ const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'flex-end' },
   scrimTouchable: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
   scrim: { flex: 1, opacity: 0.4 },
-  sheet: {
-    borderTopLeftRadius: radius.lg,
-    borderTopRightRadius: radius.lg,
-    padding: space.lg,
-  },
+  sheet: { borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg, padding: space.lg },
   grabber: { width: 36, height: 4, borderRadius: 2, alignSelf: 'center', marginBottom: space.sm },
   title: { ...text.h2, marginBottom: space.md },
-  option: {
-    minHeight: hit.min,
-    borderWidth: 1.5,
-    borderRadius: radius.md,
-    justifyContent: 'center',
-    paddingHorizontal: space.md,
-    marginBottom: space.sm,
-  },
+  option: { minHeight: hit.min, borderWidth: 1.5, borderRadius: radius.md, justifyContent: 'center', paddingHorizontal: space.md, marginBottom: space.sm },
   optionLabel: { ...text.bodySemi },
 });

@@ -46,10 +46,12 @@ export function Button({
   const isDisabled = disabled || loading;
 
   const onPressIn = useCallback(() => {
+    // eslint-disable-next-line react-hooks/immutability
     scale.value = withTiming(0.98, { duration: duration.press });
   }, [scale]);
 
   const onPressOut = useCallback(() => {
+    // eslint-disable-next-line react-hooks/immutability
     scale.value = withTiming(1, { duration: duration.press });
   }, [scale]);
 

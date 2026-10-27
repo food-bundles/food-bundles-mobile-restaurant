@@ -5,8 +5,7 @@ import { Badge } from '@/components/primitives';
 import { Sparkline } from './Sparkline';
 import { PriceAreaChart } from './PriceAreaChart';
 import { useT } from '@/i18n';
-import type { CommodityId, MarketComparisonRow as MarketComparisonRowData } from '@/mocks';
-import { getPriceSeries } from '@/mocks';
+import type { CommodityId, MarketComparisonRow as MarketComparisonRowData } from '@/api/market.api';
 
 export interface MarketComparisonRowProps {
   row: MarketComparisonRowData;
@@ -22,13 +21,14 @@ const STOCK_KEY = {
   LOW: 'market_stockLow',
 } as const;
 
-/** One row of the market comparison table; tapping expands a full 7-day chart for that market. */
-export function MarketComparisonRow({ row, latestPrice, commodity, expanded, onToggle }: MarketComparisonRowProps) {
+const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+/** One row of the market comparison table; tapping expands a full chart for that market. */
+export function MarketComparisonRow({ row, latestPrice, expanded, onToggle }: MarketComparisonRowProps) {
   const t = useT();
   const { colors } = useTheme();
   const price = Math.round(latestPrice * row.priceMultiplier);
-  const series = getPriceSeries(commodity, '7D');
-  const scaledValues = series.values.map((value) => Math.round(value * row.priceMultiplier));
+  const scaledValues = row.trend.map((v) => Math.round(v * row.priceMultiplier));
 
   return (
     <Pressable
@@ -55,9 +55,9 @@ export function MarketComparisonRow({ row, latestPrice, commodity, expanded, onT
         <Text style={[styles.stock, { color: colors.secondary }]}>{t(STOCK_KEY[row.stock])}</Text>
         <Sparkline values={row.trend} />
       </View>
-      {expanded ? (
+      {expanded && scaledValues.length > 0 ? (
         <View style={[styles.expanded, { borderTopColor: colors.hairline }]}>
-          <PriceAreaChart values={scaledValues} dayLabels={series.labels} />
+          <PriceAreaChart values={scaledValues} dayLabels={DAY_LABELS.slice(0, scaledValues.length)} />
         </View>
       ) : null}
     </Pressable>
@@ -65,11 +65,7 @@ export function MarketComparisonRow({ row, latestPrice, commodity, expanded, onT
 }
 
 const styles = StyleSheet.create({
-  row: {
-    borderRadius: radius.md,
-    padding: space.md,
-    borderWidth: 1,
-  },
+  row: { borderRadius: radius.md, padding: space.md, borderWidth: 1 },
   mainLine: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
   marketCol: { flex: 1.4, gap: 2 },
   marketName: { ...text.bodySemi },

@@ -9,8 +9,8 @@ export { setCache, getCache, clearCache, clearAllCache, refreshStaleCaches } fro
 export { computeScore, BASE_LIMIT_RWF, SOURCE_CONTRIBUTION, TOGGLEABLE_SOURCES } from './creditScoring';
 export { computeBuyingAdvice, COMMODITY_PRODUCT_ID } from './buyingAdvice';
 export type { BuyingAdviceItem } from './buyingAdvice';
-export { consolidateIngredients } from './menuPlanning';
-export type { ConsolidatedIngredient } from './menuPlanning';
+export { consolidateIngredients, getDishesForMenu, updateMarketSources } from './menuPlanning';
+export type { ConsolidatedIngredient, MenuDish, CuisineType, MealType } from './menuPlanning';
 export { computePercentile } from './percentile';
 export { computeItemComparisons, computeComparisonSummary, filterOrdersByRange } from './priceComparison';
 export type { ItemComparison, OrderPricePoint, ComparisonSummary, PriceHistoryRange } from './priceComparison';
@@ -21,7 +21,5 @@ export {
   waitForDelivery,
   waitForRead,
   typingDurationMs,
-  peerCannedReply,
   simulateReply,
-  isSupportParticipant,
 } from './chatSimulator';

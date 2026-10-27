@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { duration, hit, radius, shadow, space, text, useTheme } from '@/theme';
-import type { Product } from '@/mocks/types';
+import type { Product } from '@/types';
 import { useT } from '@/i18n';
 import { formatRwf } from '@/lib';
 import { PriceText } from './PriceText';
@@ -23,10 +23,12 @@ export function ProductCard({ product, onPress, onAdd, qty = 0, onInc, onDec }: 
   const scale = useSharedValue(1);
 
   const onPressIn = useCallback(() => {
+    // eslint-disable-next-line react-hooks/immutability
     scale.value = withTiming(0.98, { duration: duration.press });
   }, [scale]);
 
   const onPressOut = useCallback(() => {
+    // eslint-disable-next-line react-hooks/immutability
     scale.value = withTiming(1, { duration: duration.press });
   }, [scale]);
 

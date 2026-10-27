@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
 import { LocationPinIcon } from '@/components/icons';
 import { useT } from '@/i18n';
-import type { Address } from '@/mocks/types';
+import type { Address } from '@/types';
 
 export interface AddressRowProps {
   address: Address;

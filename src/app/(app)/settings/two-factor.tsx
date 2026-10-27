@@ -7,7 +7,6 @@ import { TotpQrCode } from './_components/TotpQrCode';
 import { TwoFactorEnabledScreen } from './_components/TwoFactorEnabledScreen';
 import { useT } from '@/i18n';
 import { useSessionStore } from '@/stores';
-import { account } from '@/mocks';
 import { generateTotpSecret, buildOtpauthUri, currentMockTotpCode, validateTotp } from '@/lib';
 
 const CODE_LENGTH = 6;
@@ -16,8 +15,10 @@ export default function TwoFactorSetup() {
   const t = useT();
   const { colors } = useTheme();
   const enableTwoFactor = useSessionStore((state) => state.enableTwoFactor);
+  const profile = useSessionStore((state) => state.profile);
+  const accountEmail = profile?.email ?? '';
   const secret = useMemo(() => generateTotpSecret(), []);
-  const otpauthUri = useMemo(() => buildOtpauthUri(secret, account.email), [secret]);
+  const otpauthUri = useMemo(() => buildOtpauthUri(secret, accountEmail), [secret, accountEmail]);
   const [code, setCode] = useState('');
   const [error, setError] = useState(false);
   const [enabled, setEnabled] = useState(false);

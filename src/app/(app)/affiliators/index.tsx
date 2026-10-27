@@ -1,15 +1,25 @@
+import { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { PlusIcon } from '@/components/icons';
 import { AffiliatorRow } from './_components/AffiliatorRow';
-import { affiliators, account } from '@/mocks';
+import { useAffiliatorsStore, useSessionStore } from '@/stores';
 import { useT } from '@/i18n';
 
 export default function AffiliatorsList() {
   const t = useT();
   const { colors } = useTheme();
+  const affiliators = useAffiliatorsStore((s) => s.affiliators);
+  const fetch = useAffiliatorsStore((s) => s.fetch);
+  const status = useAffiliatorsStore((s) => s.status);
+  const profile = useSessionStore((s) => s.profile);
+  const businessName = profile?.name ?? '';
+
+  useEffect(() => {
+    if (status === 'idle') fetch();
+  }, [status, fetch]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
@@ -28,7 +38,7 @@ export default function AffiliatorsList() {
       />
       <ScreenScroll contentInsetBottom={40}>
         <Text style={[styles.subtitle, { color: colors.secondary }]}>
-          {t('aff_subtitle', { business: account.businessName })}
+          {t('aff_subtitle', { business: businessName })}
         </Text>
         <View style={styles.listGap}>
           {affiliators.map((affiliator) => (

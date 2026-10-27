@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { renderChannelIcon } from '@/components/notifications/channelIcon';
-import type { NotificationChannel } from '@/mocks/types';
+import type { NotificationChannel } from '@/types';
 
 export interface ChannelToggleRowProps {
   channel: NotificationChannel;

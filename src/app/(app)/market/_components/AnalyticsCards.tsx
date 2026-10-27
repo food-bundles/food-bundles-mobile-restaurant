@@ -5,12 +5,13 @@ import { formatRwf } from '@/lib';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
 import { weeklyAverage, cheapestDay, volatility, type Volatility } from './marketAnalytics';
-import { momentumChangePct, type CommodityId } from '@/mocks';
+import type { CommodityId } from '@/api/market.api';
 
 export interface AnalyticsCardsProps {
   commodityId: CommodityId;
   priceHistory: number[];
-  volumeHistory: number[];
+  volumeHistory?: number[];
+  changePct?: number;
 }
 
 const VOLATILITY_LABEL: Record<Volatility, TranslationKey> = {
@@ -29,15 +30,13 @@ const VOLATILITY_TONE: Record<Volatility, 'ripe' | 'marigold' | 'chili'> = {
   HIGH: 'chili',
 };
 
-/** Horizontal row of four derived-insight cards below the market comparison table. */
-export function AnalyticsCards({ commodityId, priceHistory, volumeHistory }: AnalyticsCardsProps) {
+export function AnalyticsCards({ priceHistory, volumeHistory, changePct = 0 }: AnalyticsCardsProps) {
   const t = useT();
   const { colors } = useTheme();
   const { average } = weeklyAverage(priceHistory);
-  const changePct = momentumChangePct(commodityId);
   const day = cheapestDay(priceHistory);
   const vol = volatility(priceHistory);
-  const maxVolume = Math.max(...volumeHistory, 1);
+  const maxVolume = Math.max(...(volumeHistory ?? [1]), 1);
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
@@ -63,17 +62,19 @@ export function AnalyticsCards({ commodityId, priceHistory, volumeHistory }: Ana
         <Text style={[styles.cardMeta, { color: colors.muted }]}>{t(VOLATILITY_DESC[vol])}</Text>
       </View>
 
-      <View style={[styles.card, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
-        <Text style={[styles.cardTitle, { color: colors.secondary }]}>{t('market_volumeTrendTitle')}</Text>
-        <View style={styles.volumeBars}>
-          {volumeHistory.map((value, index) => (
-            <View
-              key={index}
-              style={[styles.volumeBar, { height: (value / maxVolume) * 40, backgroundColor: colors.leaf }]}
-            />
-          ))}
+      {volumeHistory && volumeHistory.length > 0 ? (
+        <View style={[styles.card, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
+          <Text style={[styles.cardTitle, { color: colors.secondary }]}>{t('market_volumeTrendTitle')}</Text>
+          <View style={styles.volumeBars}>
+            {volumeHistory.map((value, index) => (
+              <View
+                key={index}
+                style={[styles.volumeBar, { height: (value / maxVolume) * 40, backgroundColor: colors.leaf }]}
+              />
+            ))}
+          </View>
         </View>
-      </View>
+      ) : null}
     </ScrollView>
   );
 }

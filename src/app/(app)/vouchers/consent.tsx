@@ -12,7 +12,7 @@ import { useVouchersStore } from '@/stores';
 import { BASE_LIMIT_RWF, SOURCE_CONTRIBUTION, TOGGLEABLE_SOURCES } from '@/lib';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
-import type { DataConsentSource } from '@/mocks/types';
+import type { DataConsentSource } from '@/types';
 import type { PartnerLogoKey } from '@/constants/partners';
 
 type ToggleableSource = Exclude<DataConsentSource, 'foodbundles'>;

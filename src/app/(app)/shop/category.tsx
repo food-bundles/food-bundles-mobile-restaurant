@@ -1,13 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { ProductGrid } from './_components/ProductGrid';
 import { SortToggle, type SortOrder } from './_components/SortToggle';
-import { products } from '@/mocks';
+import { useProductsStore } from '@/stores';
 import { useT } from '@/i18n';
-import type { ProductCategory } from '@/mocks/types';
+import type { ProductCategory } from '@/types';
 
 const CATEGORY_TITLES: Record<ProductCategory, string> = {
   ANIMAL_PRODUCTS: 'Animal Products',
@@ -22,10 +22,17 @@ export default function Category() {
   const { colors } = useTheme();
   const { category } = useLocalSearchParams<{ category?: ProductCategory }>();
   const [sort, setSort] = useState<SortOrder>('asc');
+  const products = useProductsStore((s) => s.products);
+  const fetch = useProductsStore((s) => s.fetch);
+  const status = useProductsStore((s) => s.status);
+
+  useEffect(() => {
+    if (status === 'idle') fetch();
+  }, [status, fetch]);
 
   const filtered = useMemo(
     () => (category ? products.filter((p) => p.category === category) : products),
-    [category],
+    [category, products],
   );
 
   const sorted = useMemo(

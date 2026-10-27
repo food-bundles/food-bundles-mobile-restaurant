@@ -1,34 +1,62 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
-import { Toast } from '@/components/primitives';
+import { Toast, Skeleton } from '@/components/primitives';
 import { BuyNowCard } from './_components/BuyNowCard';
 import { WaitCard } from './_components/WaitCard';
 import { SubstituteCard } from './_components/SubstituteCard';
 import { CartPriceWarning } from './_components/CartPriceWarning';
 import { WeeklyPatternChart } from './_components/WeeklyPatternChart';
 import { ChartErrorBoundary } from '@/components/market';
-import { useSessionStore } from '@/stores';
-import { computeBuyingAdvice } from '@/lib';
-import { COMMODITIES, PRICE_HISTORY, MOMENTUM, substitutions } from '@/mocks';
+import { useSessionStore, useMarketStore } from '@/stores';
+import { getSubstitutionsApi, type Substitution } from '@/api/market.api';
 import { useT } from '@/i18n';
 
-const LAST_UPDATED_LABEL = '07:00';
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-/** Buying advice: 5 vertically-stacked sections covering what to buy now, wait on, substitute, and watch. */
 export default function PurchaseAdvisor() {
   const t = useT();
   const { colors } = useTheme();
   const isAuthenticated = useSessionStore((state) => state.isAuthenticated);
-  const { buyNow, wait } = computeBuyingAdvice();
+  const advice = useMarketStore((s) => s.advice);
+  const fetchAdvice = useMarketStore((s) => s.fetchAdvice);
+  const dashboard = useMarketStore((s) => s.dashboard);
+  const fetchDashboard = useMarketStore((s) => s.fetchDashboard);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [substitutions, setSubstitutions] = useState<Substitution[]>([]);
 
-  const topCommodity = COMMODITIES.reduce((top, candidate) =>
-    MOMENTUM[candidate.id].magnitudePct > MOMENTUM[top.id].magnitudePct ? candidate : top,
-  );
+  useEffect(() => {
+    void fetchAdvice();
+    void fetchDashboard();
+    getSubstitutionsApi().then(setSubstitutions).catch(() => {});
+  }, [fetchAdvice, fetchDashboard]);
+
+  const buyNow = advice?.buyNow ?? [];
+  const wait = advice?.wait ?? [];
+
+  const topCommodityId = dashboard?.mostActive[0] ?? 'irishPotatoes';
+  const apiHistory = dashboard?.commodities.find((c) => c.id === topCommodityId)?.history.map((h) => h.price);
+  const priceValues = apiHistory ?? [];
+
+  const updatedAt = advice?.updatedAt
+    ? new Date(advice.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : '--:--';
+
+  if (!advice && !dashboard) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.oat }]}>
+        <ScreenHeader title={t('advisor_title')} />
+        <ScreenScroll contentInsetBottom={space.xl}>
+          <View style={{ gap: space.md, marginTop: space.md }}>
+            <Skeleton width="100%" height={120} radius={8} />
+            <Skeleton width="100%" height={120} radius={8} />
+          </View>
+        </ScreenScroll>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
@@ -36,7 +64,7 @@ export default function PurchaseAdvisor() {
       <Toast message={toastMessage} onHide={() => setToastMessage(null)} />
       <ScreenScroll contentInsetBottom={space.xl}>
         <Text style={[styles.updated, { color: colors.secondary }]}>
-          {t('advisor_lastUpdated', { time: LAST_UPDATED_LABEL })}
+          {t('advisor_lastUpdated', { time: updatedAt })}
         </Text>
 
         <BuyNowCard items={buyNow} onFeedback={setToastMessage} />
@@ -59,15 +87,17 @@ export default function PurchaseAdvisor() {
           </View>
         ) : null}
 
-        <View style={styles.sectionGap}>
-          <ChartErrorBoundary>
-            <WeeklyPatternChart
-              commodityName={topCommodity.name}
-              values={PRICE_HISTORY[topCommodity.id]}
-              dayLabels={DAY_LABELS}
-            />
-          </ChartErrorBoundary>
-        </View>
+        {priceValues.length > 0 ? (
+          <View style={styles.sectionGap}>
+            <ChartErrorBoundary>
+              <WeeklyPatternChart
+                commodityName={topCommodityId}
+                values={priceValues}
+                dayLabels={DAY_LABELS}
+              />
+            </ChartErrorBoundary>
+          </View>
+        ) : null}
       </ScreenScroll>
     </View>
   );

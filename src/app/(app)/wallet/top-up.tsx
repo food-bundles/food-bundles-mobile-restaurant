@@ -1,46 +1,59 @@
-import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
-import { radius, space, text, useTheme } from '@/theme';
-import { ScreenScroll, StickyFooter, ScreenHeader } from '@/components/layout';
-import { MobileMoneyTile, CardTile } from '@/components/payment';
-import { TopupAmountInput } from './_components/TopupAmountInput';
-import { QuickAmountChips } from './_components/QuickAmountChips';
-import { ShareAccountantRow } from './_components/ShareAccountantRow';
-import { ActionSheet } from './_components/ActionSheet';
-import { useWalletStore } from '@/stores';
-import { scheduleLocalNotification } from '@/services/notificationService';
-import { useT, translate } from '@/i18n';
-import { formatRwf } from '@/lib';
-import { account } from '@/mocks';
+import { useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { router } from "expo-router";
+import { radius, space, text, useTheme } from "@/theme";
+import { ScreenScroll, StickyFooter, ScreenHeader } from "@/components/layout";
+import { MobileMoneyTile, CardTile } from "@/components/payment";
+import { TopupAmountInput } from "./_components/TopupAmountInput";
+import { QuickAmountChips } from "./_components/QuickAmountChips";
+import { ShareAccountantRow } from "./_components/ShareAccountantRow";
+import { ActionSheet } from "./_components/ActionSheet";
+import { useWalletStore, useSessionStore } from "@/stores";
+import { scheduleLocalNotification } from "@/services/notificationService";
+import { useT, translate } from "@/i18n";
+import { formatRwf } from "@/lib";
 
 /** Top-up screen: pick an amount and a payment method, then confirm to add it to the wallet balance. */
 export default function TopUp() {
   const t = useT();
   const { colors } = useTheme();
   const topUp = useWalletStore((state) => state.topUp);
+  const profilePhone = useSessionStore((state) => state.profile?.phone);
   const [amount, setAmount] = useState(200000);
-  const [method, setMethod] = useState<'MOBILE_MONEY' | 'CARD'>('MOBILE_MONEY');
-  const [phone, setPhone] = useState(account.phone);
+  const [method, setMethod] = useState<"MOBILE_MONEY" | "CARD">("MOBILE_MONEY");
+  const [phone, setPhone] = useState(profilePhone ?? "");
   const [submitting, setSubmitting] = useState(false);
-  const [openSheet, setOpenSheet] = useState<'share' | 'accountant' | null>(null);
+  const [openSheet, setOpenSheet] = useState<"share" | "accountant" | null>(
+    null,
+  );
 
   const onConfirm = async () => {
     setSubmitting(true);
-    await topUp(amount);
-    setSubmitting(false);
-    await scheduleLocalNotification({
-      channel: 'wallet',
-      title: translate('notif_walletToppedUp', { amount: formatRwf(amount) }),
-      body: translate('notif_walletToppedUpBody'),
-      deepLink: '/(app)/(tabs)/wallet',
-    });
-    router.back();
+    try {
+      await topUp(amount, method, phone || undefined);
+      await scheduleLocalNotification({
+        channel: "wallet",
+        title: translate("notif_walletToppedUp", { amount: formatRwf(amount) }),
+        body: translate("notif_walletToppedUpBody"),
+        deepLink: "/(app)/(tabs)/wallet",
+      });
+      router.back();
+    } catch {
+      // error handled inside topUp
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
-      <ScreenHeader title={t('wallet_topUpWallet')} />
+      <ScreenHeader title={t("wallet_topUpWallet")} />
       <ScreenScroll contentInsetBottom={80} applyTopInset={false}>
         <View style={styles.amountGap}>
           <TopupAmountInput amount={amount} onChangeAmount={setAmount} />
@@ -48,40 +61,50 @@ export default function TopUp() {
         <View style={styles.chipsGap}>
           <QuickAmountChips selected={amount} onSelect={setAmount} />
         </View>
-        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('wallet_payFrom')}</Text>
+        <Text style={[styles.sectionLabel, { color: colors.secondary }]}>
+          {t("wallet_payFrom")}
+        </Text>
         <View style={styles.tilesGap}>
           <MobileMoneyTile
-            selected={method === 'MOBILE_MONEY'}
-            onPress={() => setMethod('MOBILE_MONEY')}
+            selected={method === "MOBILE_MONEY"}
+            onPress={() => setMethod("MOBILE_MONEY")}
             phone={phone}
             onChangeNumber={() =>
-              setPhone((current) => (current === account.phone ? account.altPhone : account.phone))
+              setPhone((current) => (current ? "" : (profilePhone ?? "")))
             }
           />
-          <CardTile selected={method === 'CARD'} onPress={() => setMethod('CARD')} />
+          <CardTile
+            selected={method === "CARD"}
+            onPress={() => setMethod("CARD")}
+          />
         </View>
         <View style={styles.shareGap}>
-          <ShareAccountantRow onShare={() => setOpenSheet('share')} onAskAccountant={() => setOpenSheet('accountant')} />
+          <ShareAccountantRow
+            onShare={() => setOpenSheet("share")}
+            onAskAccountant={() => setOpenSheet("accountant")}
+          />
         </View>
       </ScreenScroll>
       <ActionSheet
-        visible={openSheet === 'share'}
+        visible={openSheet === "share"}
         onClose={() => setOpenSheet(null)}
-        title={t('wallet_shareSheetTitle')}
-        message={t('wallet_shareSheetMessage')}
+        title={t("wallet_shareSheetTitle")}
+        message={t("wallet_shareSheetMessage")}
       />
       <ActionSheet
-        visible={openSheet === 'accountant'}
+        visible={openSheet === "accountant"}
         onClose={() => setOpenSheet(null)}
-        title={t('wallet_accountantSheetTitle')}
-        message={t('wallet_accountantSheetMessage')}
+        title={t("wallet_accountantSheetTitle")}
+        message={t("wallet_accountantSheetMessage")}
       />
       <StickyFooter>
         <Pressable
           onPress={onConfirm}
           disabled={amount === 0 || submitting}
           accessibilityRole="button"
-          accessibilityLabel={t('wallet_topUpAmount', { amount: formatRwf(amount) })}
+          accessibilityLabel={t("wallet_topUpAmount", {
+            amount: formatRwf(amount),
+          })}
           style={[
             styles.button,
             { backgroundColor: colors.marigold },
@@ -92,7 +115,7 @@ export default function TopUp() {
             <ActivityIndicator color={colors.pine} />
           ) : (
             <Text style={[styles.buttonLabel, { color: colors.pine }]}>
-              {t('wallet_topUpAmount', { amount: formatRwf(amount) })}
+              {t("wallet_topUpAmount", { amount: formatRwf(amount) })}
             </Text>
           )}
         </Pressable>
@@ -105,14 +128,18 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   amountGap: { marginTop: space.xl },
   chipsGap: { marginTop: space.lg },
-  sectionLabel: { ...text.overline, marginTop: space.xl, marginBottom: space.sm },
+  sectionLabel: {
+    ...text.overline,
+    marginTop: space.xl,
+    marginBottom: space.sm,
+  },
   tilesGap: { gap: space.sm },
   shareGap: { marginTop: space.md },
   button: {
     minHeight: 48,
     borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonDisabled: { opacity: 0.5 },
   buttonLabel: { ...text.bodySemi },

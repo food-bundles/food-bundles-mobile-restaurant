@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
 import { OrderProgressTrack } from '@/components/order';
 import { PriceText } from '@/components/product';
-import type { Order } from '@/mocks/types';
+import type { Order } from '@/types';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
 

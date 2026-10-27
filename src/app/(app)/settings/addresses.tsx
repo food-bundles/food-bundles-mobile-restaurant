@@ -4,12 +4,20 @@ import { hit, radius, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { PlusIcon } from '@/components/icons';
 import { AddressRow } from './_components/AddressRow';
-import { addresses } from '@/mocks';
+import { useAddressesStore } from '@/stores';
+import { useEffect } from 'react';
 import { useT } from '@/i18n';
 
 export default function Addresses() {
   const t = useT();
   const { colors } = useTheme();
+  const addresses = useAddressesStore((s) => s.addresses);
+  const fetch = useAddressesStore((s) => s.fetch);
+  const status = useAddressesStore((s) => s.status);
+
+  useEffect(() => {
+    if (status === 'idle') fetch();
+  }, [status, fetch]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>

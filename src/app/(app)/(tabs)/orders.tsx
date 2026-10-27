@@ -10,8 +10,7 @@ import { ActiveOrderCard } from '../orders/_components/ActiveOrderCard';
 import { OrderFilterChips, type OrderFilter } from '../orders/_components/OrderFilterChips';
 import { OrderCard } from '../orders/_components/OrderCard';
 import { OrderCardSkeleton } from '../orders/_components/OrderCardSkeleton';
-import { orders as seedOrders } from '@/mocks';
-import { useUiStore } from '@/stores';
+import { useOrdersStore, useUiStore } from '@/stores';
 import { useT } from '@/i18n';
 import { OrdersIcon } from '@/components/icons';
 import { useHideOnScroll } from '@/hooks';
@@ -26,6 +25,15 @@ export default function OrdersList() {
   const [refreshing, setRefreshing] = useState(false);
   const { onScroll } = useHideOnScroll();
 
+  const orders = useOrdersStore((state) => state.orders);
+  const fetchOrders = useOrdersStore((state) => state.fetch);
+  const refreshOrders = useOrdersStore((state) => state.refresh);
+  const ordersStatus = useOrdersStore((state) => state.status);
+
+  useEffect(() => {
+    if (demoState === 'live' && ordersStatus === 'idle') fetchOrders();
+  }, [demoState, ordersStatus, fetchOrders]);
+
   useEffect(() => {
     if (demoState === 'loading') {
       const timer = setTimeout(() => setDemoState('live'), 1200);
@@ -33,13 +41,14 @@ export default function OrdersList() {
     }
   }, [demoState, setDemoState]);
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 900);
+    await refreshOrders();
+    setRefreshing(false);
   };
 
-  const activeOrder = seedOrders.find((order) => order.step > 0 && order.step < 6);
-  const filteredOrders = seedOrders.filter((order) => {
+  const activeOrder = orders.find((order) => order.step > 0 && order.step < 6);
+  const filteredOrders = orders.filter((order) => {
     if (filter === 'active') return order.step > 0 && order.step < 6;
     if (filter === 'past') return order.step === 0 || order.step === 6;
     return true;

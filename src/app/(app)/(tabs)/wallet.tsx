@@ -30,7 +30,10 @@ export default function WalletBalance() {
   }, []);
 
   useEffect(() => {
-    if (tab === 'vouchers' || tab === 'topup') setPane(tab);
+    if (tab === 'vouchers' || tab === 'topup') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPane(tab);
+    }
   }, [tab]);
 
   return (

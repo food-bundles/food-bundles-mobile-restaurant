@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader, StickyFooter } from '@/components/layout';
@@ -9,10 +9,9 @@ import { TrendingChipsRow } from './_components/TrendingChipsRow';
 import { MenuTabSwitch, type MenuTab } from './_components/MenuTabSwitch';
 import { MenuDishCard } from './_components/MenuDishCard';
 import { IngredientListRow } from './_components/IngredientListRow';
-import { useCartStore } from '@/stores';
-import { consolidateIngredients, formatDate } from '@/lib';
-import { getDishesForMenu, account } from '@/mocks';
-import type { CuisineType, MealType, MenuDish } from '@/mocks/types';
+import { useCartStore, useSessionStore, useMarketStore } from '@/stores';
+import { consolidateIngredients, formatDate, getDishesForMenu, updateMarketSources } from '@/lib';
+import type { CuisineType, MealType, MenuDish } from '@/lib/menuPlanning';
 import { useT } from '@/i18n';
 import type { TranslationKey } from '@/i18n';
 
@@ -42,6 +41,19 @@ export default function MenuGenerator() {
   const t = useT();
   const { colors } = useTheme();
   const addQty = useCartStore((state) => state.addQty);
+  const businessName = useSessionStore((state) => state.profile?.name ?? 'My Restaurant');
+  const seriesCache = useMarketStore((s) => s.seriesCache);
+  const fetchSeries = useMarketStore((s) => s.fetchSeries);
+
+  // Seed market source labels from real comparison data
+  useEffect(() => {
+    const rows = seriesCache['irishPotatoes-7D']?.comparison;
+    if (rows && rows.length > 0) {
+      updateMarketSources(rows);
+    } else {
+      void fetchSeries('irishPotatoes', '7D');
+    }
+  }, [seriesCache, fetchSeries]);
   const [cuisines, setCuisines] = useState<CuisineType[]>([]);
   const [mealTypes, setMealTypes] = useState<MealType[]>([]);
   const [portions, setPortions] = useState(DEFAULT_PORTIONS);
@@ -70,7 +82,7 @@ export default function MenuGenerator() {
   };
 
   const onExportPdf = () => {
-    Share.share({ message: t('menu_exportShareMessage', { restaurant: account.businessName }) });
+    void Share.share({ message: t('menu_exportShareMessage', { restaurant: businessName }) });
   };
 
   if (!generated) {
@@ -119,7 +131,7 @@ export default function MenuGenerator() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
-      <ScreenHeader title={t('menu_outputTitle', { restaurant: account.businessName })} />
+      <ScreenHeader title={t('menu_outputTitle', { restaurant: businessName })} />
       <ScreenScroll contentInsetBottom={140}>
         <Text style={[styles.subtitle, { color: colors.secondary }]}>
           {t('menu_outputSubtitle', { date: formatDate(GENERATED_DATE_ISO) })}

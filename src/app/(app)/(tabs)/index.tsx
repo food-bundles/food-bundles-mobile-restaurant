@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BackHandler, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,7 +11,7 @@ import { SearchTrigger } from '../shop/_components/SearchTrigger';
 import { HeroCarousel } from '../shop/_components/HeroCarousel';
 import { ProductGrid } from '../shop/_components/ProductGrid';
 import { SeeAllLink } from '../shop/_components/SeeAllLink';
-import { products } from '@/mocks';
+import { useProductsStore } from '@/stores';
 import { useT } from '@/i18n';
 import { hit, space, text, useTheme } from '@/theme';
 import { useHideOnScroll } from '@/hooks';
@@ -56,6 +56,14 @@ export default function ShopHome() {
   const tabBarHeight = useBottomTabBarHeight();
   const { toastMessage, hideToast } = useExitConfirm(t('common_pressBackToExit'));
   const { onScroll } = useHideOnScroll();
+
+  const products = useProductsStore((state) => state.products);
+  const fetchProducts = useProductsStore((state) => state.fetch);
+  const productsStatus = useProductsStore((state) => state.status);
+
+  useEffect(() => {
+    if (productsStatus === 'idle') fetchProducts();
+  }, [productsStatus, fetchProducts]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
