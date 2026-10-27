@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
@@ -12,7 +13,7 @@ export default function GuestConfirmation() {
   const t = useT();
   const { colors } = useTheme();
   const total = useGuestCartStore((state) => state.total());
-  const orderId = `FB-G-${Math.floor(1000 + Math.random() * 9000)}`;
+  const [orderId] = useState(() => `FB-G-${Math.floor(1000 + Math.random() * 9000)}`);
   const window = 'Tomorrow, 9:00 AM – 12:00 PM';
 
   const onContinueBrowsing = () => {

@@ -21,7 +21,7 @@ export default function Chat() {
   const t = useT();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<React.ElementRef<typeof ScrollView>>(null);
   const myId = useChatStore((state) => state.myId) ?? 'me';
   const messages = useChatStore((state) => state.messagesByConversation[CONVERSATION_ID] ?? []);
   const typingConversationId = useChatStore((state) => state.typingConversationId);

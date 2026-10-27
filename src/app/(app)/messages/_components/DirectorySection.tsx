@@ -11,7 +11,7 @@ export interface DirectorySectionProps {
   onStart: (peerId: string) => void;
 }
 
-function DirectoryRow({ id, name, subtitle, onPress }: { id: string; name: string; subtitle: string; onPress: () => void }) {
+function DirectoryRow({ name, subtitle, onPress }: { id: string; name: string; subtitle: string; onPress: () => void }) {
   const { colors } = useTheme();
   return (
     <Pressable

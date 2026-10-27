@@ -24,7 +24,7 @@ const STOCK_KEY = {
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
 /** One row of the market comparison table; tapping expands a full chart for that market. */
-export function MarketComparisonRow({ row, latestPrice, commodity, expanded, onToggle }: MarketComparisonRowProps) {
+export function MarketComparisonRow({ row, latestPrice, expanded, onToggle }: MarketComparisonRowProps) {
   const t = useT();
   const { colors } = useTheme();
   const price = Math.round(latestPrice * row.priceMultiplier);

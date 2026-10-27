@@ -34,7 +34,7 @@ export default function TabsLayout() {
 
   return (
     <Tabs
-      tabBar={(props) => <AnimatedTabBar {...props} />}
+      tabBar={(props) => <AnimatedTabBar {...props as any} />}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.leaf,

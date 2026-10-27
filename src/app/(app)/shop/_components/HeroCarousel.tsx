@@ -184,6 +184,7 @@ export function HeroCarousel() {
   }, [index, paused]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPhase(1);
     entrance.value = 0;
     entrance.value = withTiming(1, {

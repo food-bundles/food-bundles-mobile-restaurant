@@ -48,6 +48,7 @@ export function PortionStepper({ value, onChange }: PortionStepperProps) {
     .onUpdate((event) => {
       if (trackWidth.value <= 0) return;
       const ratio = Math.max(0, Math.min(1, event.x / trackWidth.value));
+      // eslint-disable-next-line react-hooks/immutability
       dragValue.value = MIN_PORTIONS + ratio * (MAX_PORTIONS - MIN_PORTIONS);
     })
     .onEnd(() => {

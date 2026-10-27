@@ -21,7 +21,7 @@ export default function ConversationThread() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<React.ElementRef<typeof ScrollView>>(null);
 
   const profile = useSessionStore((state) => state.profile);
   const myId = profile?.id ?? 'me';

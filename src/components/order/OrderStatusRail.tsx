@@ -24,7 +24,7 @@ export interface OrderStatusRailProps {
 export function OrderStatusRail({ step, timestamps = [] }: OrderStatusRailProps) {
   const t = useT();
   const { colors } = useTheme();
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<React.ElementRef<typeof ScrollView>>(null);
   const itemOffsets = useRef<number[]>([]);
   const containerWidth = useRef(0);
 

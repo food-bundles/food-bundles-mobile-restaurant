@@ -10,7 +10,7 @@ interface AffiliatorsState {
   remove: (affiliatorId: string) => Promise<void>;
 }
 
-export const useAffiliatorsStore = create<AffiliatorsState>((set, get) => ({
+export const useAffiliatorsStore = create<AffiliatorsState>((set) => ({
   affiliators: [],
   status: 'idle',
 

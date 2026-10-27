@@ -30,7 +30,7 @@ const VOLATILITY_TONE: Record<Volatility, 'ripe' | 'marigold' | 'chili'> = {
   HIGH: 'chili',
 };
 
-export function AnalyticsCards({ commodityId, priceHistory, volumeHistory, changePct = 0 }: AnalyticsCardsProps) {
+export function AnalyticsCards({ priceHistory, volumeHistory, changePct = 0 }: AnalyticsCardsProps) {
   const t = useT();
   const { colors } = useTheme();
   const { average } = weeklyAverage(priceHistory);
