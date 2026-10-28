@@ -15,6 +15,7 @@
       "package": "rw.foodbundles.restaurant"
     },
     "plugins": [
+      "./plugins/withBuildConfig",
       "expo-router",
       "expo-font",
       [
