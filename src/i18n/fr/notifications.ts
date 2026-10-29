@@ -4,7 +4,7 @@ export const notifications: Record<keyof typeof notificationsEn, string> = {
   notif_title: "Notifications",
   notif_markAllRead: "Tout marquer comme lu",
   notif_emptyTitle: "Aucune notification pour le moment",
-  notif_emptyMessage: "Nous vous informerons dès qu’il y aura du nouveau.",
+  notif_emptyMessage: "Nous vous informerons dès qu'il y aura du nouveau.",
   notif_readLabel: "lu",
   notif_unreadLabel: "non lu",
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   NativeSyntheticEvent,
@@ -16,7 +16,6 @@ import { ScreenScroll } from '@/components/layout';
 import { ChevronLeftIcon } from '@/components/icons';
 import { verifyOtpApi, resendOtpApi } from '@/api/auth.api';
 import { ApiError } from '@/api/client';
-import { useT } from '@/i18n';
 import { useSessionStore } from '@/stores/sessionStore';
 import TermsModal from '@/components/TermsModal';
 
@@ -24,14 +23,13 @@ const OTP_LENGTH = 6;
 const RESEND_COOLDOWN = 60;
 
 export default function VerifyOtp() {
-  const t = useT();
   const { colors } = useTheme();
   const { phone, email, password } = useLocalSearchParams<{ phone: string; email: string; password: string }>();
   const login = useSessionStore((s) => s.login);
 
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(''));
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const inputRefs = useRef<(TextInput | null)[]>([]);
+  const inputRefs = useRef<(React.ElementRef<typeof TextInput> | null)[]>([]);
 
   const [verifying, setVerifying] = useState(false);
   const [resending, setResending] = useState(false);
@@ -162,7 +160,7 @@ export default function VerifyOtp() {
             {Array.from({ length: OTP_LENGTH }).map((_, i) => (
               <TextInput
                 key={i}
-                ref={(r) => { inputRefs.current[i] = r; }}
+                ref={(r) => { inputRefs.current[i] = r as React.ElementRef<typeof TextInput> | null; }}
                 style={[
                   styles.otpBox,
                   {

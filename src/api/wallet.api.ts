@@ -37,13 +37,49 @@ export async function getWalletApi(): Promise<{ id: string; balance: number }> {
   return { id: res.data.id, balance: res.data.balance };
 }
 
+export interface TopUpResult {
+  transactionId: string;
+  redirectUrl?: string;
+  status: string;
+}
+
 export async function topUpWalletApi(params: {
   walletId: string;
   amount: number;
   paymentMethod: 'MOBILE_MONEY' | 'CARD';
   phoneNumber?: string;
-}): Promise<void> {
-  await request('/wallets/top-up', { method: 'POST', body: params });
+}): Promise<TopUpResult> {
+  const res = await request<{ data: { transaction?: { id: string }; redirectUrl?: string; status?: string } }>(
+    '/wallets/top-up',
+    { method: 'POST', body: params },
+  );
+  return {
+    transactionId: res.data?.transaction?.id ?? '',
+    redirectUrl: res.data?.redirectUrl,
+    status: res.data?.status ?? 'pending',
+  };
+}
+
+export async function verifyTopUpApi(txId: string): Promise<{ verified: boolean; status: string; message?: string }> {
+  const res = await request<{ data: { verified: boolean; status: string; message?: string } }>(
+    `/wallets/verify-top-up/${txId}`,
+  );
+  return res.data;
+}
+
+export interface VoucherTransfer {
+  id: string;
+  amount: number;
+  source: string;
+  status: string;
+  transferredAt?: string;
+  createdAt: string;
+  notes?: string;
+}
+
+export async function getVoucherTransfersApi(): Promise<VoucherTransfer[]> {
+  const res = await request<{ data: VoucherTransfer[] }>('/wallets/my-transfers');
+  return res.data ?? [];
 }
 
 export async function getTransactionsApi(params?: {

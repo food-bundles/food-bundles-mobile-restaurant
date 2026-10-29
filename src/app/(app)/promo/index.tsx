@@ -3,7 +3,6 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll, ScreenHeader } from '@/components/layout';
 import { Input } from '@/components/primitives';
-import { useT } from '@/i18n';
 import { request } from '@/api/client';
 
 interface AppliedPromo {
@@ -14,7 +13,6 @@ interface AppliedPromo {
 }
 
 export default function PromoCodes() {
-  const t = useT();
   const { colors } = useTheme();
   const [code, setCode] = useState('');
   const [applying, setApplying] = useState(false);
@@ -53,7 +51,6 @@ export default function PromoCodes() {
             label="Promo Code"
             value={code}
             onChangeText={(v) => { setCode(v.toUpperCase()); setError(null); }}
-            autoCapitalize="characters"
             placeholder="e.g. WELCOME20"
           />
           {error ? (

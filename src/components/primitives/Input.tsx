@@ -16,6 +16,7 @@ export interface InputProps {
   secureTextEntry?: boolean;
   editable?: boolean;
   maxLength?: number;
+  onBlur?: () => void;
   rightSlot?: React.ReactNode;
 }
 
@@ -31,6 +32,7 @@ export function Input({
   secureTextEntry,
   editable = true,
   maxLength,
+  onBlur,
   rightSlot,
 }: InputProps) {
   const id = useId();
@@ -51,6 +53,7 @@ export function Input({
         <TextInput
           value={value}
           onChangeText={onChangeText}
+          onBlur={onBlur}
           placeholder={placeholder}
           keyboardType={keyboardType}
           secureTextEntry={secureTextEntry}

@@ -65,28 +65,24 @@ export default function Dashboard() {
                 label={t('dash_totalOrders')}
                 value={String(stats?.totalOrders ?? 0)}
                 accent={colors.leaf}
-                bg={colors.tintLeaf}
                 textColor={colors.pine}
               />
               <MetricCard
                 label={t('dash_totalSpent')}
                 value={fmt(stats?.totalSpent ?? 0)}
                 accent={colors.leaf}
-                bg={colors.tintLeaf}
                 textColor={colors.pine}
               />
               <MetricCard
                 label={t('dash_completed')}
                 value={String(stats?.completedOrders ?? 0)}
                 accent={colors.ripe}
-                bg={colors.tintLeaf}
                 textColor={colors.ripe}
               />
               <MetricCard
                 label={t('dash_cancelled')}
                 value={String(stats?.cancelledOrders ?? 0)}
                 accent={colors.chili}
-                bg={colors.tintChili}
                 textColor={colors.chili}
               />
             </View>
@@ -164,13 +160,11 @@ function MetricCard({
   label,
   value,
   accent,
-  bg,
   textColor,
 }: {
   label: string;
   value: string;
   accent: string;
-  bg: string;
   textColor: string;
 }) {
   const { colors } = useTheme();

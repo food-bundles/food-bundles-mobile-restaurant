@@ -148,14 +148,14 @@ export default function TwoFactorSetup() {
             <Pressable
               onPress={() => { resetCode(); setStage('disable_confirm'); }}
               accessibilityRole="button"
-              style={[styles.actionRow, { borderColor: colors.border }]}
+              style={[styles.actionRow, { borderColor: colors.hairline }]}
             >
               <Text style={[styles.actionLabel, { color: colors.chili }]}>{t('settings_disable2fa')}</Text>
             </Pressable>
             <Pressable
               onPress={() => { resetCode(); setStage('regen_confirm'); }}
               accessibilityRole="button"
-              style={[styles.actionRow, { borderColor: colors.border }]}
+              style={[styles.actionRow, { borderColor: colors.hairline }]}
             >
               <Text style={[styles.actionLabel, { color: colors.ink }]}>{t('settings_regenBackupCodes')}</Text>
             </Pressable>
@@ -172,7 +172,7 @@ export default function TwoFactorSetup() {
         <ScreenScroll contentInsetBottom={80}>
           <Text style={[styles.sectionTitle, { color: colors.ink }]}>{t('settings_newBackupCodes')}</Text>
           <Text style={[styles.intro, { color: colors.secondary }]}>{t('settings_backupCodesIntro')}</Text>
-          <View style={[styles.codesBox, { backgroundColor: colors.paper, borderColor: colors.border }]}>
+          <View style={[styles.codesBox, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
             {newBackupCodes.map((c) => (
               <Text key={c} style={[styles.codeItem, { color: colors.ink }]}>{c}</Text>
             ))}
@@ -212,7 +212,7 @@ export default function TwoFactorSetup() {
         {isSetup && setupData ? (
           <>
             <Text style={[styles.intro, { color: colors.secondary }]}>{t('settings_twoFactorIntro')}</Text>
-            <View style={[styles.qrWrap, { backgroundColor: colors.paper, borderColor: colors.border }]}>
+            <View style={[styles.qrWrap, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
               <Image
                 source={{ uri: setupData.qrCode }}
                 style={styles.qrImage}
@@ -221,7 +221,7 @@ export default function TwoFactorSetup() {
               />
             </View>
             <Text style={[styles.secretLabel, { color: colors.secondary }]}>{t('settings_cantScan')}</Text>
-            <View style={[styles.secretBox, { backgroundColor: colors.paper, borderColor: colors.border }]}>
+            <View style={[styles.secretBox, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
               <Text style={[styles.secretText, { color: colors.ink }]} selectable>{setupData.secret}</Text>
             </View>
 
@@ -230,7 +230,7 @@ export default function TwoFactorSetup() {
               <>
                 <Text style={[styles.sectionTitle, { color: colors.ink }]}>{t('settings_backupCodesTitle')}</Text>
                 <Text style={[styles.intro, { color: colors.secondary }]}>{t('settings_backupCodesIntro')}</Text>
-                <View style={[styles.codesBox, { backgroundColor: colors.paper, borderColor: colors.border }]}>
+                <View style={[styles.codesBox, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
                   {setupData.backupCodes.map((c) => (
                     <Text key={c} style={[styles.codeItem, { color: colors.ink }]}>{c}</Text>
                   ))}
