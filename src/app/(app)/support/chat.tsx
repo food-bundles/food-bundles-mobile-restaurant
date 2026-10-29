@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { space, useTheme } from '@/theme';
@@ -12,6 +12,7 @@ import type { CallKind } from '@/api/chat.api';
 
 const SUPPORT_ID = 'support-bot';
 const CONVERSATION_ID = 'conv-support';
+const MAX_HISTORY = 10; // keep last N exchanges sent to AI to avoid context drift
 
 function newMessageId(): string {
   return `msg-${Date.now()}-${Math.round(Math.random() * 1000)}`;
@@ -31,6 +32,16 @@ export default function Chat() {
   const [draft, setDraft] = useState('');
   const [activeCall, setActiveCall] = useState<CallKind | null>(null);
 
+  // Clear previous support session messages on mount so stale history doesn't leak into AI context
+  useEffect(() => {
+    useChatStore.setState((state) => ({
+      messagesByConversation: {
+        ...state.messagesByConversation,
+        [CONVERSATION_ID]: [],
+      },
+    }));
+  }, []);
+
   const suggestions: Suggestion[] = [
     { key: 'orderStatus', label: t('chat_suggestion1') },
     { key: 'vouchers', label: t('chat_suggestion2') },
@@ -42,10 +53,13 @@ export default function Chat() {
   };
 
   const buildHistory = (): AiChatMessage[] =>
-    messages.map((m) => ({
-      role: m.senderId === myId ? 'user' : 'assistant',
-      content: m.body,
-    }));
+    messages
+      .slice(-MAX_HISTORY * 2) // cap at last N user+assistant pairs
+      .filter((m) => m.body) // skip empty bot messages still streaming
+      .map((m) => ({
+        role: m.senderId === myId ? 'user' : 'assistant',
+        content: m.body,
+      }));
 
   const respondWithAi = async (question: string) => {
     setTyping(CONVERSATION_ID);

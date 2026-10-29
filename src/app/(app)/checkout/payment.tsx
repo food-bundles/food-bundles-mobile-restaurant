@@ -44,6 +44,7 @@ export default function CheckoutPayment() {
     unit: l.unit ?? '',
     qty: l.qty,
     each: l.unitPrice ?? 0,
+    imageUrl: l.imageUrl,
   }));
 
   const appliedPromo = useCheckoutStore((state) => state.appliedPromo);

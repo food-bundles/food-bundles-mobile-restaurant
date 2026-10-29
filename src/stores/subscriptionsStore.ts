@@ -41,7 +41,7 @@ export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
       const plans = await getSubscriptionPlansApi();
       set({ plans, status: 'ready' });
     } catch {
-      set({ status: 'error' });
+      set({ status: 'error', plans: [] });
     }
   },
 

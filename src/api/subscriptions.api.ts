@@ -36,6 +36,7 @@ function toMobilePlan(p: ApiPlan): Plan {
     upper.includes('PREMIUM') ? 'PREMIUM' : upper.includes('STANDARD') ? 'STANDARD' : 'BASIC';
   return {
     id: tier,
+    dbId: p.id, // actual DB UUID used when subscribing
     name: p.name,
     monthly,
     weekly,

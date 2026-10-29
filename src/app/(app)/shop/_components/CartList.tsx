@@ -28,7 +28,7 @@ export function CartList() {
             deleteLabel={`Remove ${name} from cart`}
           >
             <View style={[styles.row, { backgroundColor: colors.paper }]}>
-              <ProductLineImage source={undefined} label={name} />
+              <ProductLineImage source={line.imageUrl ? { uri: line.imageUrl } : undefined} label={name} />
               <View style={styles.textCol}>
                 <Text style={[styles.name, { color: colors.ink }]}>{name}</Text>
                 <Text style={[styles.unit, { color: colors.muted }]}>

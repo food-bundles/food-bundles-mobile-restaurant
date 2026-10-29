@@ -102,4 +102,6 @@ export const subscription: Record<keyof typeof subscriptionEn, string> = {
   sub_viewHistory: "Amateka y'iyandikisha",
   sub_historyTitle: "Amateka y'iyandikisha",
   sub_historyEmpty: "Nta mateka y'iyandikisha arahari.",
+  sub_loadError: "Gutondeka ibipimo byanze. Reba aho guhuza.",
+  sub_retry: "Ongera ugerageze",
 };

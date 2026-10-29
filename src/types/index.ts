@@ -39,6 +39,7 @@ export interface OrderLine {
   qty: number;
   each: number;
   pricePerUnitAtOrderTime?: number;
+  imageUrl?: string;
 }
 
 export interface Order {
@@ -153,6 +154,7 @@ export type BillingCycle = 'WEEKLY' | 'MONTHLY';
 
 export interface Plan {
   id: Exclude<Tier, 'NONE'>;
+  dbId?: string; // actual DB UUID used when subscribing/changing plan
   name: string;
   monthly: number;
   weekly: number;

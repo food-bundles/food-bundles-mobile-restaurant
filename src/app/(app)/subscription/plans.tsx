@@ -114,13 +114,16 @@ export default function Plans() {
     const plan = plans.find((p) => p.id === tier);
     if (!plan) return;
 
+    // Use the real DB UUID if available, otherwise fall back to the tier string
+    const planId = plan.dbId ?? tier;
+
     setSubmitting(true);
     try {
       let result: SubscribeResult;
       if (current?.status === 'ACTIVE' && current.plan.id !== tier) {
-        result = await changePlan(tier);
+        result = await changePlan(planId);
       } else {
-        result = await subscribe(tier, 'MOBILE_MONEY');
+        result = await subscribe(planId, 'MOBILE_MONEY');
       }
       handleResult(result);
     } catch (err: any) {
@@ -193,6 +196,19 @@ export default function Plans() {
         <View style={styles.toggleGap}>
           <BillingToggle selected={billingCycle} onSelect={setBillingCycle} />
         </View>
+        {status === 'loading' && (
+          <View style={styles.centered}>
+            <ActivityIndicator size="large" color={colors.leaf} />
+          </View>
+        )}
+        {status === 'error' && plans.length === 0 && (
+          <View style={styles.centered}>
+            <Text style={[styles.errorText, { color: colors.chili }]}>{t('sub_loadError')}</Text>
+            <Pressable onPress={() => { useSubscriptionsStore.setState({ status: 'idle' }); fetchPlans(); }} accessibilityRole="button" style={[styles.retryBtn, { backgroundColor: colors.leaf }]}>
+              <Text style={[styles.retryLabel, { color: colors.paper }]}>{t('sub_retry')}</Text>
+            </Pressable>
+          </View>
+        )}
         <View style={styles.cardsGap}>
           {plans.map((plan) => (
             <PlanSelectCard
@@ -215,6 +231,10 @@ const styles = StyleSheet.create({
   toggleGap: { marginTop: space.md },
   cardsGap: { gap: space.md, marginTop: space.md },
   pendingCenter: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: space.xl, gap: space.md },
+  centered: { alignItems: 'center', justifyContent: 'center', padding: space.xl, gap: space.md },
+  errorText: { ...text.body, textAlign: 'center' },
+  retryBtn: { minHeight: hit.min, borderRadius: radius.md, paddingHorizontal: space.xl, alignItems: 'center', justifyContent: 'center' },
+  retryLabel: { ...text.bodySemi },
   spinner: { marginBottom: space.sm },
   pendingTitle: { ...text.h1, textAlign: 'center' },
   pendingBody: { ...text.body, textAlign: 'center', maxWidth: 280 },

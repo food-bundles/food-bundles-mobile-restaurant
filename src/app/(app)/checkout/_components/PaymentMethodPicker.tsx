@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { space } from "@/theme";
 import {
@@ -13,6 +14,7 @@ import {
   isVouchersUnlocked,
   canRequestVouchers,
 } from "@/stores";
+import { getPaymentMethodsApi, type ApiPaymentMethod } from "@/api/config.api";
 
 export function PaymentMethodPicker() {
   const method = useCheckoutStore((state) => state.method);
@@ -25,28 +27,52 @@ export function PaymentMethodPicker() {
   const walletBalance = useWalletStore((state) => state.balance);
   const vouchersUnlocked = isVouchersUnlocked(tier) && canRequestVouchers(role);
 
+  const [enabledMethods, setEnabledMethods] = useState<Set<string>>(
+    new Set(["MOBILE_MONEY", "CARD", "CASH", "VOUCHER"])
+  );
+
+  useEffect(() => {
+    getPaymentMethodsApi()
+      .then((methods: ApiPaymentMethod[]) => {
+        if (methods.length > 0) {
+          setEnabledMethods(new Set(methods.map((m) => m.name.toUpperCase())));
+        }
+      })
+      .catch(() => {
+        // keep defaults on error
+      });
+  }, []);
+
   return (
     <View style={styles.list}>
-      <MobileMoneyTile
-        selected={method === "MOBILE_MONEY"}
-        onPress={() => setMethod("MOBILE_MONEY")}
-        phone={phone}
-        onChangeNumber={() => setPhone(phone ? "" : (profilePhone ?? ""))}
-      />
-      <CardTile
-        selected={method === "CARD"}
-        onPress={() => setMethod("CARD")}
-      />
-      <WalletTile
-        selected={method === "CASH"}
-        onPress={() => setMethod("CASH")}
-        balance={walletBalance}
-      />
-      <VoucherTile
-        selected={method === "VOUCHER"}
-        onPress={() => setMethod("VOUCHER")}
-        disabled={!vouchersUnlocked}
-      />
+      {enabledMethods.has("MOBILE_MONEY") && (
+        <MobileMoneyTile
+          selected={method === "MOBILE_MONEY"}
+          onPress={() => setMethod("MOBILE_MONEY")}
+          phone={phone}
+          onChangeNumber={() => setPhone(phone ? "" : (profilePhone ?? ""))}
+        />
+      )}
+      {enabledMethods.has("CARD") && (
+        <CardTile
+          selected={method === "CARD"}
+          onPress={() => setMethod("CARD")}
+        />
+      )}
+      {enabledMethods.has("CASH") && (
+        <WalletTile
+          selected={method === "CASH"}
+          onPress={() => setMethod("CASH")}
+          balance={walletBalance}
+        />
+      )}
+      {enabledMethods.has("VOUCHER") && (
+        <VoucherTile
+          selected={method === "VOUCHER"}
+          onPress={() => setMethod("VOUCHER")}
+          disabled={!vouchersUnlocked}
+        />
+      )}
     </View>
   );
 }

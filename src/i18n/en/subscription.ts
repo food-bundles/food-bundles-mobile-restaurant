@@ -102,4 +102,6 @@ export const subscription = {
   sub_viewHistory: "Subscription history",
   sub_historyTitle: "Subscription history",
   sub_historyEmpty: "No subscription history yet.",
+  sub_loadError: "Could not load plans. Please check your connection.",
+  sub_retry: "Retry",
 } as const;

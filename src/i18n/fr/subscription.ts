@@ -104,4 +104,6 @@ export const subscription: Record<keyof typeof subscriptionEn, string> = {
   sub_viewHistory: "Historique des abonnements",
   sub_historyTitle: "Historique des abonnements",
   sub_historyEmpty: "Aucun historique d'abonnement pour le moment.",
+  sub_loadError: "Impossible de charger les plans. Vérifiez votre connexion.",
+  sub_retry: "Réessayer",
 };

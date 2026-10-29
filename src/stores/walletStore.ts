@@ -87,13 +87,9 @@ export const useWalletStore = create<WalletState>((set, get) => ({
         });
       }
       await clearCache(CACHE_KEY);
-      // For MoMo: optimistically credit; real balance refreshed on next fetch.
-      // For Card: balance will only be credited after Flutterwave confirms — don't optimistically add.
-      if (method !== 'CARD') {
-        set({ status: "ready", balance: get().balance + clamped });
-      } else {
-        set({ status: "ready" });
-      }
+      // Never optimistically add balance — real credit only comes after payment gateway confirms.
+      // The pending screen and polling via verifyTopUp will refresh balance on success.
+      set({ status: "ready" });
       return result;
     } catch {
       set({ status: "ready" });
