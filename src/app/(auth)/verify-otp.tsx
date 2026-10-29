@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   NativeSyntheticEvent,
+  PermissionsAndroid,
   Platform,
   Pressable,
   StyleSheet,
@@ -17,14 +18,13 @@ import { ChevronLeftIcon } from '@/components/icons';
 import { verifyOtpApi, resendOtpApi } from '@/api/auth.api';
 import { ApiError } from '@/api/client';
 import { useSessionStore } from '@/stores/sessionStore';
-import TermsModal from '@/components/TermsModal';
 
 const OTP_LENGTH = 6;
 const RESEND_COOLDOWN = 60;
 
 export default function VerifyOtp() {
   const { colors } = useTheme();
-  const { phone, email, password } = useLocalSearchParams<{ phone: string; email: string; password: string }>();
+  const { phone } = useLocalSearchParams<{ phone: string; email: string; password: string }>();
   const login = useSessionStore((s) => s.login);
 
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(''));
@@ -35,8 +35,6 @@ export default function VerifyOtp() {
   const [resending, setResending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [showTerms, setShowTerms] = useState(false);
-  const [pendingToken, setPendingToken] = useState<string | null>(null);
 
   const otp = digits.join('');
   const otpComplete = otp.length === OTP_LENGTH && !digits.includes('');
@@ -48,14 +46,24 @@ export default function VerifyOtp() {
     return () => clearTimeout(id);
   }, [cooldown]);
 
-  // Try to read SMS code automatically on Android
+  // Request SMS permission and try to read OTP from clipboard on Android
   useEffect(() => {
     if (Platform.OS !== 'android') return;
     let cancelled = false;
     (async () => {
       try {
-        const text = await Clipboard.getStringAsync();
-        const match = text?.match(/\b(\d{6})\b/);
+        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECEIVE_SMS, {
+          title: 'SMS Permission',
+          message: 'FoodBundles needs access to your SMS messages to automatically fill in the verification code.',
+          buttonPositive: 'Allow',
+          buttonNegative: 'Not now',
+        });
+      } catch {
+        // permission not available — ignore
+      }
+      try {
+        const clipText = await Clipboard.getStringAsync();
+        const match = clipText?.match(/\b(\d{6})\b/);
         if (match && !cancelled) fillOtp(match[1]);
       } catch {
         // clipboard not available — ignore
@@ -103,24 +111,14 @@ export default function VerifyOtp() {
     setVerifying(true);
     setError(null);
     try {
-      const res = await verifyOtpApi(phone, otp);
-      setPendingToken(res.token);
-      setShowTerms(true);
+      // verifyOtpApi saves the token internally; use the token-only login path
+      await verifyOtpApi(phone, otp);
+      await login();
+      router.replace('/(app)/(tabs)');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Verification failed. Please try again.');
     } finally {
       setVerifying(false);
-    }
-  }
-
-  async function handleAcceptTerms() {
-    setShowTerms(false);
-    if (!pendingToken) return;
-    try {
-      await login({ email: email, password });
-      router.replace('/(app)/(tabs)');
-    } catch {
-      router.replace('/(auth)/login');
     }
   }
 
@@ -139,8 +137,7 @@ export default function VerifyOtp() {
   }
 
   return (
-    <>
-      <ScreenScroll contentContainerStyle={styles.content}>
+    <ScreenScroll contentContainerStyle={styles.content}>
         <View>
           <Pressable
             onPress={() => router.back()}
@@ -218,14 +215,7 @@ export default function VerifyOtp() {
             <Text style={[styles.submitLabel, { color: colors.paper }]}>Verify</Text>
           )}
         </Pressable>
-      </ScreenScroll>
-
-      <TermsModal
-        visible={showTerms}
-        onAccept={handleAcceptTerms}
-        onClose={() => setShowTerms(false)}
-      />
-    </>
+    </ScreenScroll>
   );
 }
 
