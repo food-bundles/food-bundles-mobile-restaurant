@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
-import { useAudioRecorder, useAudioRecorderState, RecordingPresets, requestRecordingPermissionsAsync } from 'expo-audio';
+import { useAudioRecorder, useAudioRecorderState, RecordingPresets, requestRecordingPermissionsAsync, setAudioModeAsync } from 'expo-audio';
 import { hit, radius, space, text, useTheme } from '@/theme';
 import { AttachIcon, DocumentIcon, CameraIcon, MicIcon, SendIcon } from '@/components/icons';
 import { useT } from '@/i18n';
@@ -53,6 +53,11 @@ export function ChatComposer({ bottomInset, draft, onDraftChange, onSendText, on
   const startRecording = async () => {
     const permission = await requestRecordingPermissionsAsync();
     if (!permission.granted) return;
+    try {
+      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
+    } catch {
+      // non-critical — proceed anyway
+    }
     recorder.record();
   };
 

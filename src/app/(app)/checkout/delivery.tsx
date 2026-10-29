@@ -10,18 +10,16 @@ import {
   CheckoutStepHeader,
   DeliveryWindowPicker,
 } from "@/components/checkout";
-import { useCheckoutStore, useSessionStore, useCartStore, useAddressesStore } from "@/stores";
+import { useCheckoutStore, useCartStore, useAddressesStore } from "@/stores";
 import { useT } from "@/i18n";
 
 export default function CheckoutDelivery() {
   const t = useT();
   const { colors } = useTheme();
-  const address = useCheckoutStore((state) => state.address);
   const windowIndex = useCheckoutStore((state) => state.windowIndex);
   const setWindowIndex = useCheckoutStore((state) => state.setWindowIndex);
   const setAddress = useCheckoutStore((state) => state.setAddress);
   const setCartId = useCheckoutStore((state) => state.setCartId);
-  const profile = useSessionStore((state) => state.profile);
   const serverCart = useCartStore((state) => state.serverCart);
   const addresses = useAddressesStore((s) => s.addresses);
   const fetchAddresses = useAddressesStore((s) => s.fetch);
@@ -30,21 +28,22 @@ export default function CheckoutDelivery() {
   const [street, setStreet] = useState("");
   const [landmark, setLandmark] = useState("");
 
-  const businessName = profile?.name ?? "My Restaurant";
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
   useEffect(() => {
     if (addressStatus === 'idle') fetchAddresses();
   }, [addressStatus, fetchAddresses]);
 
   const defaultAddress = addresses.find((a) => a.isDefault) ?? addresses[0];
+  const selectedAddress = addresses.find((a) => a.id === selectedAddressId) ?? defaultAddress;
 
   const onContinue = () => {
-    // Persist cart ID into checkout store so payment step can use it
     if (serverCart?.id) setCartId(serverCart.id);
-    if (manual && street.trim())
+    if (manual && street.trim()) {
       setAddress(`${street.trim()}${landmark ? ", " + landmark : ""}`);
-    else if (defaultAddress && !address)
-      setAddress(`${defaultAddress.street}${defaultAddress.landmark ? ', ' + defaultAddress.landmark : ''}`);
+    } else if (selectedAddress) {
+      setAddress(`${selectedAddress.street}${selectedAddress.landmark ? ', ' + selectedAddress.landmark : ''}`);
+    }
     router.push("/(app)/checkout/payment");
   };
 
@@ -58,19 +57,43 @@ export default function CheckoutDelivery() {
         <Text style={[styles.sectionLabel, { color: colors.secondary }]}>
           {t("checkout_deliverTo")}
         </Text>
-        <View
-          style={[
-            styles.addressCard,
-            { backgroundColor: colors.paper, borderColor: colors.leaf },
-          ]}
-        >
-          <Text style={[styles.addressTitle, { color: colors.ink }]}>
-            {businessName}
-          </Text>
-          <Text style={[styles.addressLine, { color: colors.secondary }]}>
-            {address || t("checkout_addAddress")}
-          </Text>
-        </View>
+        {addresses.length > 0 ? (
+          addresses.map((addr) => {
+            const isSelected = addr.id === (selectedAddressId ?? defaultAddress?.id);
+            return (
+              <Pressable
+                key={addr.id}
+                onPress={() => { setSelectedAddressId(addr.id); setManual(false); }}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: isSelected }}
+                style={[
+                  styles.addressCard,
+                  {
+                    backgroundColor: colors.paper,
+                    borderColor: isSelected ? colors.leaf : colors.hairline,
+                    borderWidth: isSelected ? 2 : 1,
+                  },
+                ]}
+              >
+                <View style={styles.addressRow}>
+                  <View style={styles.addressText}>
+                    <Text style={[styles.addressTitle, { color: colors.ink }]}>{addr.label}</Text>
+                    <Text style={[styles.addressLine, { color: colors.secondary }]}>
+                      {addr.street}{addr.landmark ? `, ${addr.landmark}` : ''}
+                    </Text>
+                  </View>
+                  <View style={[styles.radio, { borderColor: isSelected ? colors.leaf : colors.hairline }]}>
+                    {isSelected && <View style={[styles.radioDot, { backgroundColor: colors.leaf }]} />}
+                  </View>
+                </View>
+              </Pressable>
+            );
+          })
+        ) : (
+          <View style={[styles.addressCard, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
+            <Text style={[styles.addressLine, { color: colors.secondary }]}>{t("checkout_addAddress")}</Text>
+          </View>
+        )}
         <Pressable
           onPress={() => router.push('/(app)/settings/addresses')}
           accessibilityRole="button"
@@ -138,9 +161,13 @@ const styles = StyleSheet.create({
     marginTop: space.md,
     marginBottom: space.sm,
   },
-  addressCard: { borderWidth: 1.5, borderRadius: radius.lg, padding: space.md },
+  addressCard: { borderRadius: radius.lg, padding: space.md, marginBottom: space.sm },
+  addressRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  addressText: { flex: 1 },
   addressTitle: { ...text.bodySemi },
   addressLine: { ...text.caption, marginTop: 2 },
+  radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
+  radioDot: { width: 10, height: 10, borderRadius: 5 },
   linkRow: {
     flexDirection: "row",
     alignItems: "center",

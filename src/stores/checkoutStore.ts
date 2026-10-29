@@ -16,6 +16,8 @@ interface CheckoutState {
   address: string;
   windowIndex: number;
   method: PaymentMethod;
+  /** DB UUID of the selected payment method — sent as paymentMethodId to the backend */
+  paymentMethodDbId: string | null;
   phone: string;
   selectedVoucherId: string | null;
   selectedLoanSessionRrn: string | null;
@@ -37,7 +39,7 @@ interface CheckoutState {
 
   setAddress: (address: string) => void;
   setWindowIndex: (index: number) => void;
-  setMethod: (method: PaymentMethod) => void;
+  setMethod: (method: PaymentMethod, dbId?: string) => void;
   setPhone: (phone: string) => void;
   setSelectedVoucherId: (voucherId: string | null) => void;
   setSelectedLoanSessionRrn: (rrn: string | null) => void;
@@ -64,6 +66,7 @@ const INITIAL = {
   address: '',
   windowIndex: 0,
   method: 'MOBILE_MONEY' as PaymentMethod,
+  paymentMethodDbId: null as string | null,
   phone: '',
   selectedVoucherId: null as string | null,
   selectedLoanSessionRrn: null as string | null,
@@ -85,7 +88,7 @@ export const useCheckoutStore = create<CheckoutState>((set, get) => ({
 
   setAddress: (address) => set({ address }),
   setWindowIndex: (windowIndex) => set({ windowIndex }),
-  setMethod: (method) => set({ method }),
+  setMethod: (method, dbId) => set({ method, paymentMethodDbId: dbId ?? null }),
   setPhone: (phone) => set({ phone }),
   setSelectedVoucherId: (selectedVoucherId) => set({ selectedVoucherId }),
   setSelectedLoanSessionRrn: (selectedLoanSessionRrn) => set({ selectedLoanSessionRrn }),

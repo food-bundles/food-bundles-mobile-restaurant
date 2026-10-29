@@ -21,6 +21,7 @@ export default function CheckoutPayment() {
   const t = useT();
   const { colors } = useTheme();
   const method = useCheckoutStore((state) => state.method);
+  const paymentMethodDbId = useCheckoutStore((state) => state.paymentMethodDbId);
   const address = useCheckoutStore((state) => state.address);
   const phone = useCheckoutStore((state) => state.phone);
   const cartId = useCheckoutStore((state) => state.cartId);
@@ -90,7 +91,7 @@ export default function CheckoutPayment() {
     try {
       const requiresOtp = await initiateCheckout({
         cartId,
-        paymentMethodId: method,
+        paymentMethodId: paymentMethodDbId ?? method,
         deliveryAddress: address,
         phoneNumber: phone || undefined,
         promoCode: appliedPromo?.code,

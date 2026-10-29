@@ -27,28 +27,40 @@ export function PaymentMethodPicker() {
   const walletBalance = useWalletStore((state) => state.balance);
   const vouchersUnlocked = isVouchersUnlocked(tier) && canRequestVouchers(role);
 
-  const [enabledMethods, setEnabledMethods] = useState<Set<string>>(
-    new Set(["MOBILE_MONEY", "CARD", "CASH", "VOUCHER"])
-  );
+  // Map name → DB record (id + name)
+  const [methodMap, setMethodMap] = useState<Record<string, ApiPaymentMethod>>({});
+  const enabledMethods = Object.keys(methodMap).length > 0
+    ? new Set(Object.keys(methodMap))
+    : new Set(["MOBILE_MONEY", "CARD", "CASH", "VOUCHER"]);
 
   useEffect(() => {
     getPaymentMethodsApi()
       .then((methods: ApiPaymentMethod[]) => {
         if (methods.length > 0) {
-          setEnabledMethods(new Set(methods.map((m) => m.name.toUpperCase())));
+          const map: Record<string, ApiPaymentMethod> = {};
+          methods.forEach((m) => { map[m.name.toUpperCase()] = m; });
+          setMethodMap(map);
+          // Auto-assign DB id to current method if not yet set
+          const state = useCheckoutStore.getState();
+          if (!state.paymentMethodDbId) {
+            const current = map[state.method];
+            if (current) state.setMethod(state.method, current.id);
+          }
         }
       })
-      .catch(() => {
-        // keep defaults on error
-      });
+      .catch(() => {});
   }, []);
+
+  const pick = (name: "MOBILE_MONEY" | "CARD" | "CASH" | "VOUCHER") => {
+    setMethod(name, methodMap[name]?.id);
+  };
 
   return (
     <View style={styles.list}>
       {enabledMethods.has("MOBILE_MONEY") && (
         <MobileMoneyTile
           selected={method === "MOBILE_MONEY"}
-          onPress={() => setMethod("MOBILE_MONEY")}
+          onPress={() => pick("MOBILE_MONEY")}
           phone={phone}
           onChangeNumber={() => setPhone(phone ? "" : (profilePhone ?? ""))}
         />
@@ -56,20 +68,20 @@ export function PaymentMethodPicker() {
       {enabledMethods.has("CARD") && (
         <CardTile
           selected={method === "CARD"}
-          onPress={() => setMethod("CARD")}
+          onPress={() => pick("CARD")}
         />
       )}
       {enabledMethods.has("CASH") && (
         <WalletTile
           selected={method === "CASH"}
-          onPress={() => setMethod("CASH")}
+          onPress={() => pick("CASH")}
           balance={walletBalance}
         />
       )}
       {enabledMethods.has("VOUCHER") && (
         <VoucherTile
           selected={method === "VOUCHER"}
-          onPress={() => setMethod("VOUCHER")}
+          onPress={() => pick("VOUCHER")}
           disabled={!vouchersUnlocked}
         />
       )}
