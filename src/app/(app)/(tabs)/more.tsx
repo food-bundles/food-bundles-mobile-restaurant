@@ -92,6 +92,29 @@ export default function More() {
           icon={<TrendingUpIcon size={18} color={colors.leaf} />}
           label={t('more_marketStanding')}
           onPress={() => router.push('/(app)/market/restaurant-ranking')}
+        />
+        <MoreMenuRow
+          icon={<TrendingUpIcon size={18} color={colors.leaf} />}
+          label="Recipe Costing"
+          onPress={() => router.push('/(app)/market/recipe-costing')}
+        />
+        <MoreMenuRow
+          icon={<TrendingUpIcon size={18} color={colors.leaf} />}
+          label="Menu Management"
+          onPress={() => router.push('/(app)/market/menu-management')}
+          isLast
+        />
+      </View>
+      <View style={[styles.group, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
+        <MoreMenuRow
+          icon={<WalletIcon size={18} color={colors.leaf} />}
+          label="Promo Codes"
+          onPress={() => router.push('/(app)/promo')}
+        />
+        <MoreMenuRow
+          icon={<WalletIcon size={18} color={colors.leaf} />}
+          label="Deposit Requests"
+          onPress={() => router.push('/(app)/wallet/deposit-requests')}
           isLast
         />
       </View>

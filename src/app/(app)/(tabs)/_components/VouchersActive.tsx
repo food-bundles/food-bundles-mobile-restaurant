@@ -55,6 +55,16 @@ export function VouchersActive() {
       >
         <Text style={[styles.requestLabel, { color: colors.leaf }]}>{t('vouchers_requestNew')}</Text>
       </Pressable>
+      {(tier === 'STANDARD' || tier === 'PREMIUM') ? (
+        <Pressable
+          onPress={() => router.push('/(app)/vouchers/loan-request')}
+          accessibilityRole="button"
+          accessibilityLabel="Request a loan"
+          style={styles.requestButton}
+        >
+          <Text style={[styles.requestLabel, { color: colors.leaf }]}>Request a Loan →</Text>
+        </Pressable>
+      ) : null}
       <View style={styles.sectionHeaderRow}>
         <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('vouchers_yourVouchers')}</Text>
         <Pressable

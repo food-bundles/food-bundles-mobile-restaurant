@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
@@ -11,9 +11,10 @@ import { useCheckoutStore, useCartStore, useWalletStore } from '@/stores';
 import { scheduleLocalNotification } from '@/services/notificationService';
 import { useT, translate } from '@/i18n';
 import { formatRwf } from '@/lib';
+import { getDeliveryFeeApi } from '@/api/config.api';
 
 const LOW_BALANCE_THRESHOLD_RWF = 20_000;
-const DELIVERY_FEE = 3000;
+const DEFAULT_DELIVERY_FEE = 3000;
 
 /** Checkout payment step: choose a method and confirm, routing to the voucher or OTP flow as needed. */
 export default function CheckoutPayment() {
@@ -27,8 +28,13 @@ export default function CheckoutPayment() {
   const walletBalance = useWalletStore((state) => state.balance);
   const lines = useCartStore((state) => state.lines);
   const subtotal = useCartStore((state) => state.subtotal());
-  const total = subtotal + DELIVERY_FEE;
+  const [deliveryFee, setDeliveryFee] = useState(DEFAULT_DELIVERY_FEE);
+  const total = subtotal + deliveryFee;
   const [processing, setProcessing] = useState(false);
+
+  useEffect(() => {
+    getDeliveryFeeApi().then(setDeliveryFee).catch(() => {});
+  }, []);
   const [error, setError] = useState<string | null>(null);
 
   // Map CartLine[] to OrderLine[] shape for display

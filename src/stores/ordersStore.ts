@@ -27,6 +27,7 @@ interface OrdersState {
   cancelOrder: (orderId: string, reason?: string) => Promise<void>;
   reorder: (orderId: string) => Promise<void>;
   advanceOrderStatus: (orderId: string) => OrderStatusAdvance | null;
+  receiveOrderUpdate: (orderId: string, status: string, step: number) => void;
 }
 
 export const useOrdersStore = create<OrdersState>((set, get) => ({
@@ -87,6 +88,14 @@ export const useOrdersStore = create<OrdersState>((set, get) => ({
   reorder: async (orderId) => {
     await reorderApi(orderId);
     await clearCache(CACHE_KEY);
+  },
+
+  receiveOrderUpdate: (orderId, status, step) => {
+    set((state) => ({
+      orders: state.orders.map((o) =>
+        o.id === orderId ? { ...o, status: status as Order['status'], step } : o,
+      ),
+    }));
   },
 
   advanceOrderStatus: (orderId) => {
