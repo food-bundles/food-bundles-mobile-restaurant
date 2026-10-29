@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Role, Tier } from '@/types';
 import { loginApi, getMeApi, logoutApi, forgotPasswordApi, resetPasswordApi } from '@/api/auth.api';
+import { get2FAStatusApi } from '@/api/twoFactor.api';
 import type { LoginPayload, MeResponse } from '@/api/auth.api';
 
 interface SessionState {
@@ -19,6 +20,7 @@ interface SessionState {
   login: (payload?: LoginPayload) => Promise<void>;
   logout: () => Promise<void>;
   fetchMe: () => Promise<void>;
+  fetchTwoFactorStatus: () => Promise<void>;
   forgotPassword: (phone: string) => Promise<void>;
   resetPassword: (phone: string, otp: string, newPassword: string) => Promise<void>;
   setTier: (tier: Tier) => void;
@@ -26,6 +28,7 @@ interface SessionState {
   acceptTerms: () => void;
   setRestaurantImage: (uri: string) => void;
   enableTwoFactor: (secret: string) => void;
+  disableTwoFactor: () => void;
 }
 
 export const useSessionStore = create<SessionState>()(
@@ -58,6 +61,14 @@ export const useSessionStore = create<SessionState>()(
         const role = (profile.role as Role) ?? 'RESTAURANT';
         set({ profile, role, isAuthenticated: true });
       },
+      fetchTwoFactorStatus: async () => {
+        try {
+          const status = await get2FAStatusApi();
+          set({ twoFactorEnabled: status.enabled });
+        } catch {
+          // non-fatal
+        }
+      },
       forgotPassword: async (phone) => { await forgotPasswordApi(phone); },
       resetPassword: async (phone, otp, newPassword) => { await resetPasswordApi(phone, otp, newPassword); },
       setTier: (tier) => set({ tier, subscribed: tier !== 'NONE' }),
@@ -65,6 +76,7 @@ export const useSessionStore = create<SessionState>()(
       acceptTerms: () => set({ termsAccepted: true }),
       setRestaurantImage: (uri) => set({ restaurantImageUri: uri }),
       enableTwoFactor: (secret) => set({ twoFactorEnabled: true, totpSecret: secret }),
+      disableTwoFactor: () => set({ twoFactorEnabled: false, totpSecret: null }),
     }),
     {
       name: 'restaurantImageUri',

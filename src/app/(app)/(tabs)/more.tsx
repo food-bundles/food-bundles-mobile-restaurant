@@ -90,6 +90,11 @@ export default function More() {
       <View style={[styles.group, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
         <MoreMenuRow
           icon={<TrendingUpIcon size={18} color={colors.leaf} />}
+          label={t('more_dashboard')}
+          onPress={() => router.push('/(app)/market/dashboard')}
+        />
+        <MoreMenuRow
+          icon={<TrendingUpIcon size={18} color={colors.leaf} />}
           label={t('more_marketStanding')}
           onPress={() => router.push('/(app)/market/restaurant-ranking')}
         />
@@ -115,6 +120,11 @@ export default function More() {
           icon={<WalletIcon size={18} color={colors.leaf} />}
           label="Deposit Requests"
           onPress={() => router.push('/(app)/wallet/deposit-requests')}
+        />
+        <MoreMenuRow
+          icon={<WalletIcon size={18} color={colors.leaf} />}
+          label="Voucher Card"
+          onPress={() => router.push('/(app)/vouchers/voucher-card')}
           isLast
         />
       </View>
