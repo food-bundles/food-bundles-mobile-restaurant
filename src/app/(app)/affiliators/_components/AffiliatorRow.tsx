@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
 import { radius, space, text, useTheme } from '@/theme';
 import { useT } from '@/i18n';
 import type { Affiliator } from '@/types';
@@ -17,20 +18,27 @@ export function AffiliatorRow({ affiliator }: AffiliatorRowProps) {
     .join('');
 
   return (
-    <View style={[styles.row, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
+    <Pressable
+      onPress={() => router.push(`/(app)/affiliators/${affiliator.id}`)}
+      accessibilityRole="button"
+      accessibilityLabel={t('aff_viewDetails', { name: affiliator.name })}
+      style={[styles.row, { backgroundColor: colors.paper, borderColor: colors.hairline }]}
+    >
       <View style={[styles.avatar, { backgroundColor: active ? colors.tintLeaf : colors.neutral }]}>
         <Text style={[styles.avatarLabel, { color: active ? colors.pine : colors.secondary }]}>{initials}</Text>
       </View>
       <View style={styles.textCol}>
         <Text style={[styles.name, { color: colors.ink }]}>{affiliator.name}</Text>
-        <Text style={[styles.role, { color: colors.secondary }]}>{affiliator.role}</Text>
+        <Text style={[styles.role, { color: colors.secondary }]}>
+          {affiliator.phone ?? affiliator.email ?? affiliator.role}
+        </Text>
       </View>
       <View style={[styles.badge, { backgroundColor: active ? colors.tintRipe : colors.neutral }]}>
         <Text style={[styles.badgeLabel, { color: active ? colors.tintedGreenText : colors.secondary }]}>
           {active ? t('aff_statusActive') : t('aff_statusInvited')}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 

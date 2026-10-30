@@ -5,7 +5,6 @@ import { hit, radius, space, text, useTheme } from '@/theme';
 import { ScreenScroll } from '@/components/layout';
 import { Input } from '@/components/primitives';
 import { ChevronLeftIcon } from '@/components/icons';
-import { useSessionStore } from '@/stores/sessionStore';
 import { registerApi } from '@/api/auth.api';
 import { ApiError } from '@/api/client';
 import { useT } from '@/i18n';
@@ -15,7 +14,6 @@ import type { Role } from '@/types';
 export default function Signup() {
   const t = useT();
   const { colors } = useTheme();
-  const login = useSessionStore((s) => s.login);
   const [businessName, setBusinessName] = useState('');
   const [businessType, setBusinessType] = useState<Extract<Role, 'RESTAURANT' | 'HOTEL'>>('RESTAURANT');
   const [phone, setPhone] = useState('');
@@ -24,30 +22,38 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [tinTouched, setTinTouched] = useState(false);
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const tinInvalid = tinTouched && !isValidTin(tin);
-  const canSubmit = businessName.trim().length > 0 && email.trim().length > 0 && isValidTin(tin) && password.length >= 6;
+  const phoneInvalid = phoneTouched && phone.trim().length < 9;
+  const canSubmit =
+    businessName.trim().length > 0 &&
+    email.trim().length > 0 &&
+    phone.trim().length >= 9 &&
+    isValidTin(tin) &&
+    password.length >= 6;
 
   const onSubmit = async () => {
-    if (!isValidTin(tin)) {
-      setTinTouched(true);
-      return;
-    }
+    setTinTouched(true);
+    setPhoneTouched(true);
+    if (!isValidTin(tin) || phone.trim().length < 9) return;
     setLoading(true);
     setError(null);
     try {
       await registerApi({
         name: businessName.trim(),
         email: email.trim(),
-        phone: phone.trim() || undefined,
+        phone: phone.trim(),
         tin: tin.replace(/\s/g, ''),
         password,
         role: businessType,
       });
-      await login({ email: email.trim(), password });
-      router.replace('/(app)/(tabs)');
+      router.push({
+        pathname: '/(auth)/verify-otp',
+        params: { phone: phone.trim(), email: email.trim(), password },
+      });
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.message);
@@ -109,7 +115,14 @@ export default function Signup() {
             </View>
           </View>
           <Input label={t('auth_email')} value={email} onChangeText={setEmail} keyboardType="email-address" />
-          <Input label={t('auth_phone')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+          <Input
+            label={t('auth_phone')}
+            value={phone}
+            onChangeText={setPhone}
+            onBlur={() => setPhoneTouched(true)}
+            keyboardType="phone-pad"
+            error={phoneInvalid ? 'Phone number is required for OTP verification' : undefined}
+          />
           <Input
             label={t('auth_tin')}
             value={tin}

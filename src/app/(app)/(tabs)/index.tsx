@@ -98,7 +98,7 @@ export default function ShopHome() {
         </View>
       </View>
       <ProductGrid
-        products={products.slice(0, 4)}
+        products={products.slice(0, 8)}
         fill
         onScroll={onScroll}
         contentContainerStyle={[styles.gridContent, { paddingBottom: tabBarHeight + space.xxl }]}

@@ -55,6 +55,24 @@ export function VouchersActive() {
       >
         <Text style={[styles.requestLabel, { color: colors.leaf }]}>{t('vouchers_requestNew')}</Text>
       </Pressable>
+      <Pressable
+        onPress={() => router.push('/(app)/vouchers/voucher-card')}
+        accessibilityRole="button"
+        accessibilityLabel="My Voucher Card"
+        style={styles.requestButton}
+      >
+        <Text style={[styles.requestLabel, { color: colors.leaf }]}>My Voucher Card →</Text>
+      </Pressable>
+      {(tier === 'STANDARD' || tier === 'PREMIUM') ? (
+        <Pressable
+          onPress={() => router.push('/(app)/vouchers/loan-session-request')}
+          accessibilityRole="button"
+          accessibilityLabel="Request a loan via card"
+          style={styles.requestButton}
+        >
+          <Text style={[styles.requestLabel, { color: colors.leaf }]}>Request a Loan (Card) →</Text>
+        </Pressable>
+      ) : null}
       <View style={styles.sectionHeaderRow}>
         <Text style={[styles.sectionLabel, { color: colors.secondary }]}>{t('vouchers_yourVouchers')}</Text>
         <Pressable

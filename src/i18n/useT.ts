@@ -1,7 +1,7 @@
-import { en, type TranslationKey } from './en';
-import { rw } from './rw';
-import { fr } from './fr';
-import { useLanguageStore } from './languageStore';
+import { en, type TranslationKey } from "./en";
+import { rw } from "./rw";
+import { fr } from "./fr";
+import { useLanguageStore } from "./languageStore";
 
 const tables = { en, rw, fr } as const;
 

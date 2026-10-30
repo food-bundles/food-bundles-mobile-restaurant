@@ -6,6 +6,8 @@ import {
   getOrderByIdApi,
   cancelOrderApi,
   reorderApi,
+  getOrderStatsApi,
+  type OrderStats,
 } from "@/api/orders.api";
 export type AsyncStatus = "idle" | "loading" | "ready" | "error";
 
@@ -20,18 +22,24 @@ export interface OrderStatusAdvance {
 interface OrdersState {
   status: AsyncStatus;
   orders: Order[];
+  stats: OrderStats | null;
+  statsStatus: AsyncStatus;
   fetch: () => Promise<void>;
   refresh: () => Promise<void>;
+  fetchStats: () => Promise<void>;
   simulateFailure: () => Promise<void>;
   fetchById: (orderId: string) => Promise<Order | null>;
   cancelOrder: (orderId: string, reason?: string) => Promise<void>;
-  reorder: (orderId: string) => Promise<void>;
+  reorder: (orderId: string) => Promise<{ warnings?: string[] }>;
   advanceOrderStatus: (orderId: string) => OrderStatusAdvance | null;
+  receiveOrderUpdate: (orderId: string, status: string, step: number) => void;
 }
 
 export const useOrdersStore = create<OrdersState>((set, get) => ({
   status: "idle",
   orders: [],
+  stats: null,
+  statsStatus: "idle",
 
   fetch: async () => {
     set({ status: "loading" });
@@ -61,6 +69,16 @@ export const useOrdersStore = create<OrdersState>((set, get) => ({
     }
   },
 
+  fetchStats: async () => {
+    set({ statsStatus: "loading" });
+    try {
+      const stats = await getOrderStatsApi();
+      set({ stats, statsStatus: "ready" });
+    } catch {
+      set({ statsStatus: "error" });
+    }
+  },
+
   simulateFailure: async () => {
     set({ status: "loading" });
     set({ status: "error", orders: [] });
@@ -85,8 +103,17 @@ export const useOrdersStore = create<OrdersState>((set, get) => ({
   },
 
   reorder: async (orderId) => {
-    await reorderApi(orderId);
+    const result = await reorderApi(orderId);
     await clearCache(CACHE_KEY);
+    return result;
+  },
+
+  receiveOrderUpdate: (orderId, status, step) => {
+    set((state) => ({
+      orders: state.orders.map((o) =>
+        o.id === orderId ? { ...o, status: status as Order['status'], step } : o,
+      ),
+    }));
   },
 
   advanceOrderStatus: (orderId) => {

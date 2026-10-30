@@ -83,18 +83,41 @@ export async function cancelOrderApi(orderId: string, reason?: string): Promise<
   await request(`/orders/${orderId}/cancel`, { method: 'POST', body: { reason } });
 }
 
-export async function reorderApi(orderId: string): Promise<void> {
-  await request(`/orders/${orderId}/reorder`, { method: 'POST' });
+export async function reorderApi(orderId: string): Promise<{ warnings?: string[] }> {
+  const res = await request<{ data?: { warnings?: string[] } }>(`/orders/${orderId}/reorder`, { method: 'POST' });
+  return res.data ?? {};
 }
 
 export interface OrderStats {
   totalOrders: number;
   totalSpent: number;
+  averageOrderValue: number;
   completedOrders: number;
   cancelledOrders: number;
 }
 
+interface BackendOrderStats {
+  totalOrders: number;
+  ordersByStatus: {
+    pending: number;
+    confirmed: number;
+    preparing: number;
+    ready: number;
+    inTransit: number;
+    delivered: number;
+    cancelled: number;
+  };
+  revenue: { total: number; average: number };
+}
+
 export async function getOrderStatsApi(): Promise<OrderStats> {
-  const res = await request<{ data: OrderStats }>('/orders/statistics');
-  return res.data;
+  const res = await request<{ data: BackendOrderStats }>('/orders/statistics');
+  const d = res.data;
+  return {
+    totalOrders: d.totalOrders,
+    totalSpent: d.revenue.total,
+    averageOrderValue: d.revenue.average,
+    completedOrders: d.ordersByStatus.delivered,
+    cancelledOrders: d.ordersByStatus.cancelled,
+  };
 }

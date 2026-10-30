@@ -1,20 +1,29 @@
 import { create } from 'zustand';
 import type { Plan, Tier } from '@/types';
-import type { CurrentSubscription } from '@/api/subscriptions.api';
+import type { CurrentSubscription, SubscribeResult, SubscriptionHistoryEntry } from '@/api/subscriptions.api';
 import {
   getSubscriptionPlansApi,
   getCurrentSubscriptionApi,
   subscribeApi,
   cancelSubscriptionApi,
+  changePlanApi,
+  renewSubscriptionApi,
+  verifySubscriptionPaymentApi,
+  getSubscriptionHistoryApi,
 } from '@/api/subscriptions.api';
 
 interface SubscriptionsState {
   plans: Plan[];
   current: CurrentSubscription | null;
+  history: SubscriptionHistoryEntry[];
   status: 'idle' | 'loading' | 'ready' | 'error';
   fetchPlans: () => Promise<void>;
   fetchCurrent: () => Promise<void>;
-  subscribe: (planId: string, paymentMethod?: string, phoneNumber?: string) => Promise<void>;
+  fetchHistory: () => Promise<void>;
+  subscribe: (planId: string, paymentMethod?: string, phoneNumber?: string) => Promise<SubscribeResult>;
+  changePlan: (newPlanId: string, phoneNumber?: string) => Promise<SubscribeResult>;
+  renew: (phoneNumber?: string) => Promise<SubscribeResult>;
+  verifyPayment: (txRef: string) => Promise<{ verified: boolean; status: string }>;
   cancel: (reason?: string) => Promise<void>;
   /** Derive the active Tier from the current subscription for sessionStore compatibility */
   activeTier: () => Tier;
@@ -23,6 +32,7 @@ interface SubscriptionsState {
 export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
   plans: [],
   current: null,
+  history: [],
   status: 'idle',
 
   fetchPlans: async () => {
@@ -31,7 +41,7 @@ export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
       const plans = await getSubscriptionPlansApi();
       set({ plans, status: 'ready' });
     } catch {
-      set({ status: 'error' });
+      set({ status: 'error', plans: [] });
     }
   },
 
@@ -44,9 +54,45 @@ export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
     }
   },
 
+  fetchHistory: async () => {
+    try {
+      const history = await getSubscriptionHistoryApi();
+      set({ history });
+    } catch {
+      // non-fatal
+    }
+  },
+
   subscribe: async (planId, paymentMethod, phoneNumber) => {
-    await subscribeApi({ planId, paymentMethod, phoneNumber });
-    await get().fetchCurrent();
+    const result = await subscribeApi({ planId, paymentMethod, phoneNumber });
+    if (result.status === 'successful') {
+      await get().fetchCurrent();
+    }
+    return result;
+  },
+
+  changePlan: async (newPlanId, phoneNumber) => {
+    const result = await changePlanApi({ newPlanId, phoneNumber });
+    if (result.status === 'successful') {
+      await get().fetchCurrent();
+    }
+    return result;
+  },
+
+  renew: async (phoneNumber) => {
+    const result = await renewSubscriptionApi({ phoneNumber });
+    if (result.status === 'successful') {
+      await get().fetchCurrent();
+    }
+    return result;
+  },
+
+  verifyPayment: async (txRef) => {
+    const result = await verifySubscriptionPaymentApi(txRef);
+    if (result.verified) {
+      await get().fetchCurrent();
+    }
+    return result;
   },
 
   cancel: async (reason) => {

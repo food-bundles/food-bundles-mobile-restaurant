@@ -3,8 +3,10 @@ import { useSessionStore } from '@/stores/sessionStore';
 
 export default function AppLayout() {
   const isAuthenticated = useSessionStore((s) => s.isAuthenticated);
+  const termsAccepted = useSessionStore((s) => s.termsAccepted);
 
   if (!isAuthenticated) return <Redirect href="/(public)/onboarding" />;
+  if (!termsAccepted) return <Redirect href="/(auth)/terms" />;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>

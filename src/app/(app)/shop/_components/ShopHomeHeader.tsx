@@ -38,10 +38,7 @@ export function ShopHomeHeader() {
             <Text style={[styles.venueInitials, { color: colors.leaf }]}>{initialsOf(businessName)}</Text>
           </View>
         )}
-        <View>
-          <Text style={[styles.orderingFor, { color: colors.secondary }]}>{t('shop_orderingFor')}</Text>
-          <Text style={[styles.venueName, { color: colors.ink }]}>{businessName}</Text>
-        </View>
+        <Text style={[styles.venueName, { color: colors.ink }]}>{businessName}</Text>
       </View>
       <View style={styles.actions}>
         <Pressable

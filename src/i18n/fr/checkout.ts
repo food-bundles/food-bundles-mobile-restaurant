@@ -58,4 +58,18 @@ export const checkout: Record<keyof typeof checkoutEn, string> = {
   paymentTile_mobileMoneyTitle: 'Mobile Money',
   paymentTile_mobileMoneySubtitle: 'MTN MoMo ou Airtel Money',
   paymentTile_change: 'Changer',
+
+  checkout_promoPlaceholder: "Code promo",
+  checkout_applyPromo: "Appliquer",
+  checkout_promoApplied: "Promo appliquée",
+  checkout_removePromo: "Supprimer le code promo",
+  checkout_remove: "Supprimer",
+  checkout_promoDiscount: "Réduction",
+  checkout_finalTotal: "Total après réduction",
+
+  checkout_voucherCard: "Carte de bon",
+  checkout_noActiveLoanSessions: "Aucune session de prêt VoucherCard active disponible.",
+  checkout_available: "disponible",
+  checkout_loanRrn: "RRN",
+  checkout_approved: "Approuvé",
 };

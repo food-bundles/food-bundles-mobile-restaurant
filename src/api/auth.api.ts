@@ -54,14 +54,26 @@ export interface RegisterPayload {
   role: 'RESTAURANT' | 'HOTEL';
 }
 
-export async function registerApi(payload: RegisterPayload): Promise<{ token: string; data: MeResponse }> {
-  const res = await request<{ token: string; data: MeResponse }>('/register', {
+export async function registerApi(payload: RegisterPayload): Promise<{ data: MeResponse }> {
+  return request<{ data: MeResponse }>('/register', {
     method: 'POST',
     body: payload,
     auth: false,
   });
+}
+
+export async function verifyOtpApi(phone: string, otp: string): Promise<{ token: string; data: MeResponse }> {
+  const res = await request<{ token: string; data: MeResponse }>('/verify-otp', {
+    method: 'POST',
+    body: { phone, otp },
+    auth: false,
+  });
   await saveToken(res.token);
   return res;
+}
+
+export async function resendOtpApi(phone: string): Promise<{ success: boolean; message: string }> {
+  return request('/resend-otp', { method: 'POST', body: { phone }, auth: false });
 }
 
 export async function updateProfileApi(data: {

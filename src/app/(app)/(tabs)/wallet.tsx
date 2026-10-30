@@ -19,13 +19,16 @@ export default function WalletBalance() {
   const [pane, setPane] = useState<WalletPane>(tab === 'vouchers' ? 'vouchers' : 'topup');
   const balance = useWalletStore((state) => state.balance);
   const transactions = useWalletStore((state) => state.transactions);
+  const voucherTransfers = useWalletStore((state) => state.voucherTransfers);
   const fetch = useWalletStore((state) => state.fetch);
+  const fetchVoucherTransfers = useWalletStore((state) => state.fetchVoucherTransfers);
   const tier = useSessionStore((state) => state.tier);
   const unlocked = isVouchersUnlocked(tier);
   const { onScroll } = useHideOnScroll();
 
   useEffect(() => {
     fetch();
+    fetchVoucherTransfers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -85,6 +88,32 @@ export default function WalletBalance() {
               <TransactionRow key={transaction.id} transaction={transaction} />
             ))}
           </View>
+          {voucherTransfers.length > 0 && (
+            <>
+              <SectionHeader
+                title={t('wallet_voucherCreditsTitle')}
+                action={
+                  <Pressable
+                    onPress={() => router.push('/(app)/wallet/voucher-transfers')}
+                    accessibilityRole="button"
+                    style={styles.seeAllButton}
+                  >
+                    <Text style={[styles.seeAllLabel, { color: colors.leaf }]}>{t('wallet_seeAll')}</Text>
+                  </Pressable>
+                }
+              />
+              <View style={styles.listGap}>
+                {voucherTransfers.slice(0, 3).map((transfer) => (
+                  <View key={transfer.id} style={[styles.transferRow, { backgroundColor: colors.paper, borderColor: colors.hairline }]}>
+                    <Text style={[styles.transferAmount, { color: colors.leaf }]}>+{transfer.amount.toLocaleString()} RWF</Text>
+                    <Text style={[styles.transferSource, { color: colors.secondary }]} numberOfLines={1}>
+                      {transfer.source === 'VOUCHER_EXPIRY' ? t('wallet_voucherExpiry') : transfer.source}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </>
+          )}
         </View>
       ) : (
         <View style={styles.paneGap}>{unlocked ? <VouchersActive /> : <VouchersLocked />}</View>
@@ -131,4 +160,7 @@ const styles = StyleSheet.create({
   seeAllButton: { minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   seeAllLabel: { ...text.label },
   listGap: { marginTop: space.sm },
+  transferRow: { borderWidth: 1, borderRadius: radius.md, padding: space.sm, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  transferAmount: { ...text.bodySemi },
+  transferSource: { ...text.caption, flex: 1, textAlign: 'right', marginLeft: space.sm },
 });

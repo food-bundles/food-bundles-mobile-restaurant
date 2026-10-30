@@ -39,6 +39,7 @@ export interface OrderLine {
   qty: number;
   each: number;
   pricePerUnitAtOrderTime?: number;
+  imageUrl?: string;
 }
 
 export interface Order {
@@ -126,11 +127,23 @@ export interface Address {
 
 export type AffiliatorStatus = 'ACTIVE' | 'INVITED';
 
+export interface AffiliatorOrder {
+  id: string;
+  orderNumber: string;
+  totalAmount: number;
+  status: string;
+  createdAt: string;
+}
+
 export interface Affiliator {
   id: string;
   name: string;
   role: string;
   status: AffiliatorStatus;
+  phone?: string;
+  email?: string;
+  createdAt?: string;
+  orders?: AffiliatorOrder[];
   conversationId?: string;
 }
 
@@ -141,10 +154,16 @@ export type BillingCycle = 'WEEKLY' | 'MONTHLY';
 
 export interface Plan {
   id: Exclude<Tier, 'NONE'>;
+  dbId?: string; // actual DB UUID used when subscribing/changing plan
   name: string;
   monthly: number;
   weekly: number;
   features: string[];
+  voucherAccess?: boolean;
+  freeDelivery?: boolean;
+  stablePricing?: boolean;
+  receiveEBM?: boolean;
+  advertisingAccess?: boolean;
 }
 
 // ─── Vouchers ─────────────────────────────────────────────────────────────────

@@ -5,6 +5,10 @@ import {
   getWalletApi,
   topUpWalletApi,
   getTransactionsApi,
+  verifyTopUpApi,
+  getVoucherTransfersApi,
+  type TopUpResult,
+  type VoucherTransfer,
 } from "@/api/wallet.api";
 export type AsyncStatus = "idle" | "loading" | "ready" | "error";
 
@@ -17,12 +21,15 @@ interface WalletState {
   walletId: string | null;
   balance: number;
   transactions: Transaction[];
+  voucherTransfers: VoucherTransfer[];
   fetch: () => Promise<void>;
+  fetchVoucherTransfers: () => Promise<void>;
   topUp: (
     amount: number,
     method?: "MOBILE_MONEY" | "CARD",
     phone?: string,
-  ) => Promise<void>;
+  ) => Promise<TopUpResult>;
+  verifyTopUp: (txId: string) => Promise<{ verified: boolean; status: string; message?: string }>;
 }
 
 export const useWalletStore = create<WalletState>((set, get) => ({
@@ -30,6 +37,7 @@ export const useWalletStore = create<WalletState>((set, get) => ({
   walletId: null,
   balance: 0,
   transactions: [],
+  voucherTransfers: [],
 
   fetch: async () => {
     set({ status: "loading" });
@@ -55,13 +63,23 @@ export const useWalletStore = create<WalletState>((set, get) => ({
     }
   },
 
+  fetchVoucherTransfers: async () => {
+    try {
+      const transfers = await getVoucherTransfersApi();
+      set({ voucherTransfers: transfers });
+    } catch {
+      // non-critical — leave existing state
+    }
+  },
+
   topUp: async (amount, method = "MOBILE_MONEY", phone) => {
     const clamped = Math.min(MAX_TOP_UP, Math.max(0, Math.round(amount)));
     set({ status: "loading" });
     const walletId = get().walletId;
     try {
+      let result: TopUpResult = { transactionId: '', status: 'pending' };
       if (walletId) {
-        await topUpWalletApi({
+        result = await topUpWalletApi({
           walletId,
           amount: clamped,
           paymentMethod: method,
@@ -69,11 +87,24 @@ export const useWalletStore = create<WalletState>((set, get) => ({
         });
       }
       await clearCache(CACHE_KEY);
-      // Optimistically update balance; real balance refreshed on next fetch
-      set({ status: "ready", balance: get().balance + clamped });
+      // Never optimistically add balance — real credit only comes after payment gateway confirms.
+      // The pending screen and polling via verifyTopUp will refresh balance on success.
+      set({ status: "ready" });
+      return result;
     } catch {
       set({ status: "ready" });
       throw new Error("Top-up failed. Please try again.");
     }
+  },
+
+  verifyTopUp: async (txId: string) => {
+    const result = await verifyTopUpApi(txId);
+    if (result.verified) {
+      await clearCache(CACHE_KEY);
+      // Re-fetch to get the actual confirmed balance
+      const wallet = await getWalletApi();
+      set({ walletId: wallet.id, balance: wallet.balance });
+    }
+    return result;
   },
 }));

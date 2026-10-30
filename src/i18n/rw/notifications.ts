@@ -28,8 +28,8 @@ export const notifications: Record<keyof typeof notificationsEn, string> = {
   notif_allCaughtUp: "Wamenye ibyose",
   notif_channelEmpty: "Nta matangazo ya {{channel}} uraboneka",
   notif_priceAlertTitle:
-    "Imenyesha ry’igiciro · {{product}} ubu iri {{price}}/kg",
-  notif_priceAlertBody: "Urwego wagenye rw’igiciro rwageraga.",
+    "Imenyesha ry'igiciro · {{product}} ubu iri {{price}}/kg",
+  notif_priceAlertBody: "Urwego wagenye rw'igiciro rwageraga.",
   notif_viewPriceAction: "Reba igiciro",
 
   notif_orderStatusChanged: "Itumiza #{{orderId}} ubu ni {{status}}",
@@ -48,34 +48,34 @@ export const notifications: Record<keyof typeof notificationsEn, string> = {
   notif_voucherApplied:
     "Inguzanyo {{code}} yakoreshejwe ku itumiza #{{orderId}}",
   notif_voucherAppliedBody:
-    "Ubwishyu bwawe bw’inguzanyo bwemejwe na kode y’inshuro imwe.",
+    "Ubwishyu bwawe bw'inguzanyo bwemejwe na kode y'inshuro imwe.",
   notif_voucherExpiringSoon:
     "Inguzanyo irangiza vuba · Yikoreshe mbere ya {{date}}",
   notif_voucherExpiringSoonBody:
-    "Inguzanyo {{code}} irangiza vuba — yikoreshe mbere y’uko irangira.",
-  notif_marketUpdate: "Amakuru y’isoko · {{summary}}",
+    "Inguzanyo {{code}} irangiza vuba — yikoreshe mbere y'uko irangira.",
+  notif_marketUpdate: "Amakuru y'isoko · {{summary}}",
   notif_consentExpiring:
-    "Uburenganzira bw’amakuru burangiza · Ongera {{source}} kugira ngo ukomeze kugira urwego rwawe",
+    "Uburenganzira bw'amakuru burangiza · Ongera {{source}} kugira ngo ukomeze kugira urwego rwawe",
   notif_consentExpiringBody:
     "Uburenganzira bwawe bwo kubona amakuru ya {{source}} burangira mu minsi 3.",
   notif_repaymentDueSoon:
     "Kwishyura bisabwa mu minsi {{days}} · {{amount}} ku muguzi wawe",
   notif_repaymentDueSoonBody:
-    "Amafaranga y’inguzanyo yawe azishyurwa ku wa {{date}}.",
+    "Amafaranga y'inguzanyo yawe azishyurwa ku wa {{date}}.",
   notif_welcomeTitle: "Murakaza neza kuri FoodBundles",
   notif_welcomeBody:
-    "Reba ibiribwa bishyashya kandi wongere urwego rw’inguzanyo.",
+    "Reba ibiribwa bishyashya kandi wongere urwego rw'inguzanyo.",
 
   settings_notificationsTitle: "Amatangazo",
   settings_notifConsentName: "Ibibutsa ku burenganzira",
   settings_notifRepaymentName: "Kwishyura",
-  settings_notifOrdersDesc: "Amakuru ku byatumijwe n’imenyesha ry’ubugezi",
-  settings_notifWalletDesc: "Imenyesha ryo kongeramo n’amafaranga make",
-  settings_notifVouchersDesc: "Inguzanyo nshya n’ibibutsa kwishyura",
-  settings_notifMarketDesc: "Incamake y’ibiciro ya buri munsi",
-  settings_notifPriceAlertsDesc: "Imenyesha ry’ibiciro wihitiyemo",
+  settings_notifOrdersDesc: "Amakuru ku byatumijwe n'imenyesha ry'ubugezi",
+  settings_notifWalletDesc: "Imenyesha ryo kongeramo n'amafaranga make",
+  settings_notifVouchersDesc: "Inguzanyo nshya n'ibibutsa kwishyura",
+  settings_notifMarketDesc: "Incamake y'ibiciro ya buri munsi",
+  settings_notifPriceAlertsDesc: "Imenyesha ry'ibiciro wihitiyemo",
   settings_notifConsentDesc:
-    "Imenyesha ry’uko uburenganzira bw’amakuru burangiza",
-  settings_notifRepaymentDesc: "Kwishyura bitegerejwe n’ibitinze",
-  settings_notifSystemDesc: "Ivugurura rya porogaramu n’amabwiriza",
+    "Imenyesha ry'uko uburenganzira bw'amakuru burangiza",
+  settings_notifRepaymentDesc: "Kwishyura bitegerejwe n'ibitinze",
+  settings_notifSystemDesc: "Ivugurura rya porogaramu n'amabwiriza",
 };

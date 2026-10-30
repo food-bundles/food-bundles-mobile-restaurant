@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Linking,
   Pressable,
   StyleSheet,
   Text,
@@ -19,37 +20,140 @@ import { scheduleLocalNotification } from "@/services/notificationService";
 import { useT, translate } from "@/i18n";
 import { formatRwf } from "@/lib";
 
+type Stage = 'form' | 'momo_pending' | 'card_redirect';
+
 /** Top-up screen: pick an amount and a payment method, then confirm to add it to the wallet balance. */
 export default function TopUp() {
   const t = useT();
   const { colors } = useTheme();
   const topUp = useWalletStore((state) => state.topUp);
+  const verifyTopUp = useWalletStore((state) => state.verifyTopUp);
   const profilePhone = useSessionStore((state) => state.profile?.phone);
   const [amount, setAmount] = useState(200000);
   const [method, setMethod] = useState<"MOBILE_MONEY" | "CARD">("MOBILE_MONEY");
   const [phone, setPhone] = useState(profilePhone ?? "");
   const [submitting, setSubmitting] = useState(false);
-  const [openSheet, setOpenSheet] = useState<"share" | "accountant" | null>(
-    null,
-  );
+  const [stage, setStage] = useState<Stage>('form');
+  const [pendingTxId, setPendingTxId] = useState<string>('');
+  const [verifying, setVerifying] = useState(false);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
+  const [openSheet, setOpenSheet] = useState<"share" | "accountant" | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopPolling = useCallback(() => {
+    if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+  }, []);
+
+  useEffect(() => () => stopPolling(), [stopPolling]);
+
+  const startPolling = useCallback((txId: string) => {
+    let attempts = 0;
+    pollRef.current = setInterval(async () => {
+      attempts += 1;
+      if (attempts > 36) { stopPolling(); return; }
+      try {
+        const res = await verifyTopUp(txId);
+        if (res.verified) {
+          stopPolling();
+          await scheduleLocalNotification({
+            channel: "wallet",
+            title: translate("notif_walletToppedUp", { amount: formatRwf(amount) }),
+            body: translate("notif_walletToppedUpBody"),
+            deepLink: "/(app)/(tabs)/wallet",
+          });
+          router.back();
+        }
+      } catch { /* silent — keep polling */ }
+    }, 5000);
+  }, [amount, verifyTopUp, stopPolling]);
+
+  const onCheckStatus = async () => {
+    if (!pendingTxId || verifying) return;
+    setVerifying(true);
+    setVerifyError(null);
+    try {
+      const res = await verifyTopUp(pendingTxId);
+      if (res.verified) {
+        stopPolling();
+        router.back();
+      } else {
+        setVerifyError(res.message ?? t('wallet_paymentNotConfirmed'));
+      }
+    } catch {
+      setVerifyError(t('wallet_verifyFailed'));
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   const onConfirm = async () => {
     setSubmitting(true);
     try {
-      await topUp(amount, method, phone || undefined);
-      await scheduleLocalNotification({
-        channel: "wallet",
-        title: translate("notif_walletToppedUp", { amount: formatRwf(amount) }),
-        body: translate("notif_walletToppedUpBody"),
-        deepLink: "/(app)/(tabs)/wallet",
-      });
-      router.back();
+      const result = await topUp(amount, method, phone || undefined);
+      if (method === 'CARD' && result.redirectUrl) {
+        setPendingTxId(result.transactionId);
+        setStage('card_redirect');
+        await Linking.openURL(result.redirectUrl);
+        startPolling(result.transactionId);
+      } else if (method === 'MOBILE_MONEY') {
+        if (result.transactionId) {
+          setPendingTxId(result.transactionId);
+          setStage('momo_pending');
+          startPolling(result.transactionId);
+        } else {
+          await scheduleLocalNotification({
+            channel: "wallet",
+            title: translate("notif_walletToppedUp", { amount: formatRwf(amount) }),
+            body: translate("notif_walletToppedUpBody"),
+            deepLink: "/(app)/(tabs)/wallet",
+          });
+          router.back();
+        }
+      } else {
+        router.back();
+      }
     } catch {
       // error handled inside topUp
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (stage === 'momo_pending' || stage === 'card_redirect') {
+    const isMomo = stage === 'momo_pending';
+    return (
+      <View style={[styles.container, { backgroundColor: colors.oat }]}>
+        <ScreenHeader title={t("wallet_topUpWallet")} />
+        <ScreenScroll contentInsetBottom={80} applyTopInset={false}>
+          <View style={styles.pendingCard}>
+            <Text style={[styles.pendingTitle, { color: colors.ink }]}>
+              {isMomo ? t('wallet_momoSentTitle') : t('wallet_cardRedirectTitle')}
+            </Text>
+            <Text style={[styles.pendingMessage, { color: colors.secondary }]}>
+              {isMomo ? t('wallet_momoSentMessage') : t('wallet_cardRedirectMessage')}
+            </Text>
+            {verifyError ? (
+              <Text style={[styles.verifyError, { color: colors.chili }]}>{verifyError}</Text>
+            ) : null}
+          </View>
+        </ScreenScroll>
+        <StickyFooter>
+          <Pressable
+            onPress={onCheckStatus}
+            disabled={verifying}
+            accessibilityRole="button"
+            style={[styles.button, { backgroundColor: colors.marigold }, verifying && styles.buttonDisabled]}
+          >
+            {verifying ? (
+              <ActivityIndicator color={colors.pine} />
+            ) : (
+              <Text style={[styles.buttonLabel, { color: colors.pine }]}>{t('wallet_checkPaymentStatus')}</Text>
+            )}
+          </Pressable>
+        </StickyFooter>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.oat }]}>
@@ -143,4 +247,8 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: { opacity: 0.5 },
   buttonLabel: { ...text.bodySemi },
+  pendingCard: { marginTop: space.xl, gap: space.md },
+  pendingTitle: { ...text.h2 },
+  pendingMessage: { ...text.body },
+  verifyError: { ...text.caption },
 });

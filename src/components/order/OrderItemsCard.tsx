@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { radius, space, text, useTheme } from '@/theme';
-import { PriceText } from '@/components/product';
+import { PriceText, ProductLineImage } from '@/components/product';
 import { useT } from '@/i18n';
 import type { OrderLine } from '@/types';
 
@@ -28,6 +28,7 @@ export function OrderItemsCard({ lines, title, showCount = true, bare = false }:
       </View>
       {lines.map((line) => (
         <View key={line.productId} style={styles.row}>
+          <ProductLineImage source={line.imageUrl ? { uri: line.imageUrl } : undefined} label={line.name} />
           <View style={styles.nameCol}>
             <Text style={[styles.name, { color: colors.ink }]}>{line.name}</Text>
             <Text style={[styles.qty, { color: colors.secondary }]}>

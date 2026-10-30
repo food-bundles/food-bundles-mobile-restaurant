@@ -7,6 +7,7 @@ import {
   markConversationReadApi,
 } from '@/api/chat.api';
 import { getToken } from '@/api/client';
+import { useOrdersStore } from './ordersStore';
 
 export const YOU_ID = 'me';
 export const SUPPORT_CONVERSATION_KIND = 'support';
@@ -61,6 +62,9 @@ function connectWs(userId: string) {
         if (senderId !== store.myId) {
           store.setTyping(isTyping ? conversationId : null);
         }
+      } else if (msg.type === 'ORDER_UPDATE') {
+        const { orderId, status, step } = msg.data;
+        useOrdersStore.getState().receiveOrderUpdate(orderId, status, step);
       } else if (msg.type === 'CHAT_READ') {
         const { conversationId, readAt } = msg.data;
         useChatStore.setState((state) => ({

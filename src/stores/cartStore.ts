@@ -16,6 +16,7 @@ export interface CartLine {
   unitPrice?: number;
   name?: string;
   unit?: string;
+  imageUrl?: string;
 }
 
 interface CartState {
@@ -61,6 +62,7 @@ export const useCartStore = create<CartState>((set, get) => ({
         unitPrice: item.unitPrice,
         name: item.product?.productName,
         unit: item.product?.unit,
+        imageUrl: item.product?.images?.[0] ?? undefined,
       }));
       set({ serverCart: cart, lines, synced: true });
     } catch (err) {
@@ -128,6 +130,7 @@ export const useCartStore = create<CartState>((set, get) => ({
               unitPrice: item.unitPrice,
               name: item.product?.productName ?? l.name,
               unit: item.product?.unit ?? l.unit,
+              imageUrl: item.product?.images?.[0] ?? l.imageUrl,
             }
           : l,
       ),
